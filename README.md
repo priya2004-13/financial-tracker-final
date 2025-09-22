@@ -1,5 +1,4 @@
-```markdown
-# ⚡ Vite + Express Fullstack Starter (TypeScript)
+## ⚡ Vite + Express Fullstack Starter (TypeScript)
 
 Welcome to your lightning-fast fullstack playground! This repo combines a sleek Vite-powered frontend with a robust Express backend—both written in TypeScript for maximum type safety and developer joy.
 
@@ -7,12 +6,12 @@ Welcome to your lightning-fast fullstack playground! This repo combines a sleek 
 
 ## 🧭 Project Overview
 
-```
 📦 root/
 ├── client/   → Vite + React + TypeScript
 ├── server/   → Express + TypeScript
 └── README.md
-```
+
+https://github.com/priya2004-13/financial-tracker-final.git
 
 - **Frontend**: Built with Vite for instant hot reloads and blazing builds.
 - **Backend**: Powered by Express and Nodemon for smooth dev cycles.
@@ -25,8 +24,8 @@ Welcome to your lightning-fast fullstack playground! This repo combines a sleek 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/priya2004-13/financial-tracker-final.git
+cd financial-tracker-final
 ```
 
 ### 2. Install dependencies
@@ -61,7 +60,7 @@ cd server
 npm run dev
 ```
 
-Runs Express server with Nodemon at `http://localhost:3000`.
+Runs Express server with Nodemon at `http://localhost:3001`.
 
 ---
 
@@ -88,29 +87,6 @@ npm run build
 - Compiles TypeScript
 - Output: `server/dist` or configured `outDir`
 
----
-
-## 👀 Preview Frontend Build
-
-```bash
-cd client
-npm run preview
-```
-
-Serves the production build locally using Vite’s preview server.
-
----
-
-## 🧹 Linting (Frontend)
-
-```bash
-cd client
-npm run lint
-```
-
-Runs ESLint with strict rules and unused directive checks.
-
----
 
 ## 🌐 Deployment Tips
 
@@ -135,17 +111,3 @@ Runs ESLint with strict rules and unused directive checks.
 - 🚂 Express
 - 🔁 Nodemon
 - 🧹 ESLint
-
----
-
-## 🤝 Contribute
-
-Pull requests welcome! Feel free to fork, improve, and share.
-
----
-
-## 📬 Contact
-
-Made with ❤️ by [Your Name].  
-Let’s build something amazing together.
-```
