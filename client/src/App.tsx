@@ -3,18 +3,31 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Dashboard } from "./pages/dashboard";
 import { Auth } from "./pages/auth";
 import { FinancialRecordsProvider } from "./contexts/financial-record-context";
-import { SignedIn, UserButton } from "@clerk/clerk-react";
-// import { dark } from "@clerk/themes";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/clerk-react";
 
 function App() {
   return (
     <Router>
       <div className="app-container">
         <div className="navbar">
-          <Link to="/"> Dashboard</Link>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
+          <Link to="/">
+            <h1>Finance Tracker</h1>
+          </Link>
+          <div className="auth-buttons">
+            <SignedOut>
+              <SignUpButton mode="modal" />
+              <SignInButton mode="modal" />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
         </div>
         <Routes>
           <Route
