@@ -20,9 +20,14 @@
   backdrop-filter: blur(10px);
 }
 .navbar-link{
-text-decoration: none;
-color: white;
+
 display: flex;
+}
+.navbar-link img{
+  height: 100px;
+  margin-right: 10px; 
+   
+   
 }
 .navbar-brand {
   display: flex;

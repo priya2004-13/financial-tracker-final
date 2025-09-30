@@ -10,14 +10,14 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/clerk-react";
-
+import logo from "./assets/brand_logo.png";
 function App() {
   return (
     <Router>
       <div className="app-container">
         <div className="navbar">
           <Link to="/" className="navbar-link" >
-            <h1>Finance Tracker</h1>
+            <img src={logo} alt="brand logo" />
           </Link>
           <div className="auth-buttons">
             <SignedOut>

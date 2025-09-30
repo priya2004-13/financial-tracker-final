@@ -5,6 +5,7 @@ import { FinancialRecordChart } from "./financial-record-chart";
 import "./financial-record.css";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import { useMemo } from "react";
+import { CategoryChart } from "./CategoryChart";
 
 export const Dashboard = () => {
   const { user } = useUser();
@@ -50,6 +51,7 @@ export const Dashboard = () => {
         <div className="dashboard-right">
           <FinancialRecordChart />
           <FinancialRecordList />
+          <CategoryChart />
         </div>
       </div>
     </div>
