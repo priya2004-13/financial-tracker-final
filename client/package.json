@@ -13,6 +13,7 @@
     "@clerk/clerk-react": "^5.0.0",
     "@clerk/themes": "^2.0.0",
     "@types/react-table": "^7.7.20",
+    "lucide-react": "^0.544.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",

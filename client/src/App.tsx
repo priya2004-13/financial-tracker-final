@@ -16,7 +16,7 @@ function App() {
     <Router>
       <div className="app-container">
         <div className="navbar">
-          <Link to="/">
+          <Link to="/" className="navbar-link" >
             <h1>Finance Tracker</h1>
           </Link>
           <div className="auth-buttons">

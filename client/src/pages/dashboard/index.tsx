@@ -8,7 +8,7 @@ import { useMemo } from "react";
 
 export const Dashboard = () => {
   const { user } = useUser();
-  const { records } = useFinancialRecords();
+  const { records,addRecord } = useFinancialRecords();
 
   const totalIncome = useMemo(() => {
     return records
@@ -31,7 +31,7 @@ export const Dashboard = () => {
       <h1> Welcome {user?.firstName}! Here Are Your Finances:</h1>
       <div className="dashboard-content">
         <div className="dashboard-left">
-          <FinancialRecordForm />
+          <FinancialRecordForm   />
           <div className="summary">
             <div className="summary-card">
               <h2>Total Income</h2>

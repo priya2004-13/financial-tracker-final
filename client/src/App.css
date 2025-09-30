@@ -2,11 +2,13 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 50%, #fce7f3 100%);
 }
+
+/* Modern Navbar */
 .navbar {
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); /* ग्रेडिएंट बैकग्राउंड */
-  border-bottom: none;
-  padding: 0 2rem;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  padding: 0 var(--spacing-xl);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,18 +16,76 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(10px);
+}
+.navbar-link{
+text-decoration: none;
+color: white;
+display: flex;
+}
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  text-decoration: none;
   color: white;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.navbar a {
-  color: white; /* लिंक का रंग सफेद */
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 1.75rem;
+.navbar-logo {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
 }
+
+.navbar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.navbar-subtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+}
+
 .auth-buttons {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--spacing-md);
+}
+
+.auth-buttons button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.auth-buttons button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Footer */
+.app-footer {
+  margin-top: auto;
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
 }

@@ -1,0 +1,94 @@
+﻿.record-form-container {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.header-icon {
+  padding: 0.5rem;
+  background-image: linear-gradient(to bottom right, #6366f1, #9333ea);
+  border-radius: 0.75rem;
+}
+
+.header-icon .icon {
+  color: #ffffff;
+}
+
+.form-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.form-body > *:not([hidden]) ~ *:not([hidden]) {
+  margin-top: 1rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 2px solid #e5e7eb;
+  transition: border-color 200ms;
+}
+
+.form-input:focus,
+.form-select:focus {
+  border-color: #6366f1;
+  outline: none;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+.form-input.pl-10 {
+  padding-left: 2.5rem;
+}
+
+.form-select {
+  padding-left: 2.5rem;
+  appearance: none;
+  background-color: #ffffff;
+}
+
+.submit-button {
+  width: 100%;
+  background-image: linear-gradient(to right, #6366f1, #9333ea);
+  color: #ffffff;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 200ms;
+}
+
+.submit-button:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-0.125rem);
+}
