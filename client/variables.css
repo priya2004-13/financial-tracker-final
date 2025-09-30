@@ -1,15 +1,15 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #6a11cb;
-  --secondary-color: #2575fc;
-  --background-light: #fdfcff;
-  --text-primary: #333;
-  --text-secondary: #888;
-  --card-bg: #ffffff;
-  --border-color: #f0f0f0;
-  --shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
-  --success-color: #4caf50;
-  --danger-color: #f44336;
-  --font-family: 'Poppins', sans-serif;
+  --primary-color: #8E44AD; /* मुख्य रंग - बैंगनी */
+  --secondary-color: #3498DB; /* द्वितीयक रंग - नीला */
+  --background-light: #F4F6F9; /* हल्का बैकग्राउंड */
+  --text-primary: #2C3E50; /* मुख्य टेक्स्ट का रंग */
+  --text-secondary: #808B96; /* द्वितीयक टेक्स्ट का रंग */
+  --card-bg: #FFFFFF; /* कार्ड का बैकग्राउंड - सफेद */
+  --border-color: #EAECEE; /* बॉर्डर का रंग */
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* शैडो इफेक्ट */
+  --success-color: #2ECC71; /* सफलता का रंग - हरा */
+  --danger-color: #E74C3C; /* खतरे का रंग - लाल */
+  --font-family: 'Poppins', sans-serif; /* नया फ़ॉन्ट */
 }

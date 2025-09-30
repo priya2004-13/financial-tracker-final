@@ -1,57 +1,31 @@
-/* General page styles */
-body,
-html {
-  margin: 0;
-  padding: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f7fa;
-  color: #333;
-}
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
-
 .navbar {
-  background-color: var(--card-bg);
-  border-bottom: 1px solid var(--border-color);
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); /* ग्रेडिएंट बैकग्राउंड */
+  border-bottom: none;
   padding: 0 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 70px;
+  height: 80px;
   position: sticky;
   top: 0;
   z-index: 1000;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .navbar a {
-  color: var(--primary-color);
+  color: white; /* लिंक का रंग सफेद */
   text-decoration: none;
   font-weight: 700;
   font-size: 1.75rem;
 }
-
 .auth-buttons {
   display: flex;
   align-items: center;
   gap: 1rem;
-}
-
-.sign-in-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  flex-grow: 1;
-  padding: 2rem;
-}
-
-.sign-in-container h1 {
-  margin-bottom: 2rem;
-  font-size: 2.5rem;
-  color: var(--primary-color);
-  font-weight: 600;
 }
