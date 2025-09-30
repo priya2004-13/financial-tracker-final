@@ -1,149 +1,166 @@
-/* Centered container for the app */
 .dashboard-container {
-  width: 90%;
+  padding: 2rem;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
+.dashboard-container h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
 .dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.dashboard-left, .dashboard-right {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-.dashboard-left {
-  flex: 1;
-}
-
-.dashboard-right {
-  flex: 2;
-}
-
-/* General styling for headers within the app */
-h1,
-h2 {
-  color: #2c3e50;
-  text-align: center;
-}
-
-/* Form and list container */
-.form-container,
-.list-container {
-  margin-bottom: 20px;
-}
-
-/* Summary cards */
+/* Summary Cards */
 .summary {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
 }
 
 .summary-card {
-  flex: 1;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #f8f9fa;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  background-color: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  text-align: left;
+  border: 1px solid var(--border-color);
 }
 
 .summary-card h2 {
-  margin-top: 0;
-  font-size: 18px;
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-secondary);
+  text-align: left;
+  font-weight: 500;
 }
 
 .summary-card p {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
 }
 
-/* Chart container */
-.chart-container {
-  margin-bottom: 20px;
-  padding: 20px;
-  background-color: #f8f9fa;
+/* Form Container */
+.form-container {
+  background-color: var(--card-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.form-field {
+  margin-bottom: 1.5rem;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-family);
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* Common class for all buttons */
+.input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
 .button {
-  background-color: #3498db;
-  color: #ffffff;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  color: white;
   border: none;
-  padding: 8px 15px;
-  margin: 5px;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: transform 0.2s, box-shadow 0.3s;
 }
 
 .button:hover {
-  background-color: #2980b9;
-}
-.button-delete {
-  background-color: #e74c3c;
-  color: #ffffff;
-  border: none;
-  padding: 8px 15px;
-  margin: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(67, 97, 238, 0.2);
 }
 
-.button-delete:hover {
-  background-color: #c0392b;
-}
-
-/* Common class for all input fields and selects */
-.input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  background-color: transparent;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  color: #3498db;
-}
-
-/* Labels for better readability */
-label {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 5px;
+/* Chart & Table */
+.chart-container, .table-container {
+  background-color: var(--card-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
 }
 
 .table-container {
-  margin: 20px;
-  overflow-x: auto; /* Enables horizontal scrolling if the table is too wide */
+  overflow-x: auto;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.table th,
-.table td {
-  padding: 12px 15px;
-  border: 1px solid #ddd; /* Light grey border for cells */
+.table th, .table td {
+  padding: 1rem;
   text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
 }
 
 .table th {
-  background-color: #3498db; /* Darker blue header background */
-  color: white;
-  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-transform: uppercase;
 }
 
-.table tbody tr:nth-child(odd) {
-  background-color: #f2f2f2; /* Zebra striping for rows, light grey */
+.table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .table tbody tr:hover {
-  background-color: #e8f4f8; /* Light blue hover effect for rows */
+  background-color: #f7f9fc;
+}
+
+.button-delete {
+  background-color: #e74c3c;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button-delete:hover {
+  background-color: #c0392b;
 }

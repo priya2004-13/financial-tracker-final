@@ -7,52 +7,51 @@ html {
   background-color: #f4f7fa;
   color: #333;
 }
-
 .app-container {
-  width: 100vw;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  min-height: 100vh;
 }
 
-/* Navbar styles */
 .navbar {
-  background-color: #3498db;
-  padding: 10px 50px;
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: white;
-  width: 100%;
-  height: 60px;
+  height: 70px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .navbar a {
-  color: white;
+  color: var(--primary-color);
   text-decoration: none;
-  font-weight: bold;
-  transition: color 0.3s;
-}
-
-.navbar a:hover {
-  color: #e0e0e0;
-}
-
-.navbar h1 {
-  margin: 0;
-  font-size: 24px;
+  font-weight: 700;
+  font-size: 1.75rem;
 }
 
 .auth-buttons {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 1rem;
 }
 
 .sign-in-container {
-  margin-top: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-grow: 1;
+  padding: 2rem;
 }
 
-.sign-in-container button {
-  margin: 10px;
+.sign-in-container h1 {
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  font-weight: 600;
 }
