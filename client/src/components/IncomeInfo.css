@@ -1,0 +1,71 @@
+﻿.income-info-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(5, 150, 105, 0.05));
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-left: 4px solid var(--success-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.income-info-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.income-info-header svg {
+  color: var(--success-color);
+}
+
+.income-info-header h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.income-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  padding: var(--spacing-xs) 0;
+}
+
+.breakdown-row.total {
+  border-top: 2px solid rgba(16, 185, 129, 0.2);
+  padding-top: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+  font-weight: 600;
+}
+
+.breakdown-label {
+  color: var(--text-secondary);
+}
+
+.breakdown-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.breakdown-value.additional {
+  color: var(--success-color);
+}
+
+.income-note {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+  padding: var(--spacing-sm);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-md);
+  line-height: 1.5;
+}

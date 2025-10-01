@@ -1,0 +1,233 @@
+﻿.budget-tracking-container {
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+}
+
+.tracking-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.tracking-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.tracking-overview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+  border-radius: var(--radius-lg);
+}
+
+.overview-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  text-align: center;
+}
+
+.overview-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.overview-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.overview-value.spent {
+  color: var(--warning-color);
+}
+
+.overview-value.positive {
+  color: var(--success-color);
+}
+
+.overview-value.negative {
+  color: var(--danger-color);
+}
+
+.tracking-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.tracking-item {
+  padding: var(--spacing-lg);
+  background: var(--background-light);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--border-color);
+  transition: all var(--transition-base);
+}
+
+.tracking-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.tracking-item.good {
+  border-left-color: var(--success-color);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.tracking-item.warning {
+  border-left-color: var(--warning-color);
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.tracking-item.exceeded {
+  border-left-color: var(--danger-color);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.tracking-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.tracking-category {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.category-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.category-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning-color);
+}
+
+.status-badge.exceeded {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+}
+
+.tracking-amounts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+}
+
+.amount-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.amount-label {
+  color: var(--text-secondary);
+}
+
+.amount-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.amount-value.negative {
+  color: var(--danger-color);
+}
+
+.tracking-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-percentage {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  min-width: 40px;
+  text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .tracking-overview {
+    grid-template-columns: 1fr;
+  }
+  
+  .budget-categories-display {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Loading State */
+.loading-dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: var(--spacing-lg);
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-dashboard p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}

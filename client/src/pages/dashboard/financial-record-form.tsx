@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
-
+import "./RecordForm.css";
 export const FinancialRecordForm = () => {
   const [description, setDescription] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
@@ -31,9 +31,9 @@ export const FinancialRecordForm = () => {
   };
 
   return (
-    <div className="form-container">
+    <div className="record-form-container">
       <form onSubmit={handleSubmit}>
-        <div className="form-field">
+        <div className="form-label">
           <label>Description:</label>
           <input
             type="text"
@@ -43,7 +43,7 @@ export const FinancialRecordForm = () => {
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
-        <div className="form-field">
+        <div className="form-label">
           <label>Amount:</label>
           <input
             type="number"
@@ -53,7 +53,7 @@ export const FinancialRecordForm = () => {
             onChange={(e) => setAmount(e.target.value)}
           />
         </div>
-        <div className="form-field">
+        <div className="form-label">
           <label>Category:</label>
           <select
             required
@@ -70,7 +70,7 @@ export const FinancialRecordForm = () => {
             <option value="Other">Other</option>
           </select>
         </div>
-        <div className="form-field">
+        <div className="form-label">
           <label>Payment Method:</label>
           <select
             required
@@ -78,8 +78,8 @@ export const FinancialRecordForm = () => {
             value={paymentMethod}
             onChange={(e) => setPaymentMethod(e.target.value)}
           >
-            <option value="">Select a Payment Method</option>
-            <option value="Credit Card">Credit Card</option>
+            <option className="form-select" value="">Select a Payment Method</option>
+            <option className="form-select" value="Credit Card">Credit Card</option>
             <option value="Cash">Cash</option>
             <option value="Bank Transfer">Bank Transfer</option>
           </select>
