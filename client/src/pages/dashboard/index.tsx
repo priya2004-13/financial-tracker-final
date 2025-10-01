@@ -131,7 +131,7 @@ export const Dashboard = () => {
             value={budgetAdherence}
             icon={Target}
             color="#8b5cf6"
-            trend={`${budgetAdherence.toFixed(0)}% remaining`}
+            trend={`₹${budgetAdherence.toFixed(0)}% remaining`}
             prefix=""
           />
         )}

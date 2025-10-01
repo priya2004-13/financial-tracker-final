@@ -71,16 +71,16 @@ export const BudgetTracking = () => {
         <div className="tracking-overview">
           <div className="overview-stat">
             <span className="overview-label">Monthly Salary</span>
-            <span className="overview-value income">${monthlySalary.toFixed(2)}</span>
+            <span className="overview-value income">₹{monthlySalary.toFixed(2)}</span>
           </div>
           <div className="overview-stat">
             <span className="overview-label">Total Spent</span>
-            <span className="overview-value spent">${totalSpent.toFixed(2)}</span>
+            <span className="overview-value spent">₹{totalSpent.toFixed(2)}</span>
           </div>
           <div className="overview-stat">
             <span className="overview-label">Remaining</span>
-            <span className={`overview-value ${savingsAfterExpenses < 0 ? 'negative' : 'positive'}`}>
-              ${Math.abs(savingsAfterExpenses).toFixed(2)}
+            <span className={`overview-value ₹{savingsAfterExpenses < 0 ? 'negative' : 'positive'}`}>
+              ₹{Math.abs(savingsAfterExpenses).toFixed(2)}
             </span>
           </div>
         </div>
@@ -88,7 +88,7 @@ export const BudgetTracking = () => {
 
       <div className="tracking-items">
         {trackingData.map((item) => (
-          <div key={item.category} className={`tracking-item ${item.status}`}>
+          <div key={item.category} className={`tracking-item ₹{item.status}`}>
             <div className="tracking-item-header">
               <div className="tracking-category">
                 <span className="category-dot" style={{ backgroundColor: item.color }} />
@@ -111,16 +111,16 @@ export const BudgetTracking = () => {
             <div className="tracking-amounts">
               <div className="amount-row">
                 <span className="amount-label">Spent:</span>
-                <span className="amount-value">${item.spent.toFixed(2)}</span>
+                <span className="amount-value">₹{item.spent.toFixed(2)}</span>
               </div>
               <div className="amount-row">
                 <span className="amount-label">Budget:</span>
-                <span className="amount-value">${item.budgetAmount.toFixed(2)}</span>
+                <span className="amount-value">₹{item.budgetAmount.toFixed(2)}</span>
               </div>
               <div className="amount-row">
                 <span className="amount-label">Remaining:</span>
-                <span className={`amount-value ${item.remaining < 0 ? 'negative' : ''}`}>
-                  ${Math.abs(item.remaining).toFixed(2)}
+                <span className={`amount-value ₹{item.remaining < 0 ? 'negative' : ''}`}>
+                  ₹{Math.abs(item.remaining).toFixed(2)}
                 </span>
               </div>
             </div>
@@ -130,7 +130,7 @@ export const BudgetTracking = () => {
                 <div
                   className="progress-fill"
                   style={{
-                    width: `${item.percentage}%`,
+                    width: `₹{item.percentage}%`,
                     backgroundColor: item.color,
                   }}
                 />

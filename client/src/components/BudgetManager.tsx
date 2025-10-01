@@ -105,7 +105,7 @@ export const BudgetManager = () => {
               className="form-input"
               value={formData.monthlySalary}
               onChange={(e) =>
-                setFormData({ ...formData, monthlySalary: parseFloat(e.target.value) || 0 })
+                setFormData({ ...formData, monthlySalary: parseFloat(e.target.value) })
               }
               placeholder="Enter your monthly salary"
               step="0.01"
@@ -123,9 +123,9 @@ export const BudgetManager = () => {
                   className="form-input"
                   value={value}
                   onChange={(e) => handleCategoryBudgetChange(category, e.target.value)}
-                  placeholder={`Budget for ${category}`}
+                  placeholder={`Budget for ₹{category}`}
                   step="0.01"
-                  min="0"
+                    required
                 />
               </div>
             ))}
@@ -134,12 +134,12 @@ export const BudgetManager = () => {
           <div className="budget-summary">
             <div className="summary-row">
               <span>Total Allocated:</span>
-              <span className="summary-value">${totalBudgetAllocated.toFixed(2)}</span>
+              <span className="summary-value">₹{totalBudgetAllocated.toFixed(2)}</span>
             </div>
             <div className="summary-row">
               <span>Remaining:</span>
-              <span className={`summary-value ${remainingBudget < 0 ? 'negative' : 'positive'}`}>
-                ${remainingBudget.toFixed(2)}
+              <span className={`summary-value ₹{remainingBudget < 0 ? 'negative' : 'positive'}`}>
+                ₹{remainingBudget.toFixed(2)}
               </span>
             </div>
           </div>
@@ -165,14 +165,14 @@ export const BudgetManager = () => {
         <div className="budget-display">
           <div className="budget-stat main-stat">
             <div className="stat-label">Monthly Salary</div>
-            <div className="stat-value">${budget?.monthlySalary.toFixed(2)}</div>
+            <div className="stat-value">₹{budget?.monthlySalary.toFixed(2)}</div>
           </div>
 
           <div className="budget-categories-display">
             {Object.entries(budget?.categoryBudgets || {}).map(([category, value]) => (
               <div key={category} className="category-budget-item">
                 <span className="category-name">{category}</span>
-                <span className="category-value">${value.toFixed(2)}</span>
+                <span className="category-value">₹{value.toFixed(2)}</span>
               </div>
             ))}
           </div>

@@ -35,17 +35,17 @@ export const IncomeInfo = () => {
       <div className="income-breakdown">
         <div className="breakdown-row">
           <span className="breakdown-label">Base Salary (from budget):</span>
-          <span className="breakdown-value">${monthlySalary.toFixed(2)}</span>
+          <span className="breakdown-value">₹{monthlySalary.toFixed(2)}</span>
         </div>
         {additionalIncome > 0 && (
           <div className="breakdown-row">
             <span className="breakdown-label">Additional Income:</span>
-            <span className="breakdown-value additional">+${additionalIncome.toFixed(2)}</span>
+            <span className="breakdown-value additional">+₹{additionalIncome.toFixed(2)}</span>
           </div>
         )}
         <div className="breakdown-row total">
           <span className="breakdown-label">Total This Month:</span>
-          <span className="breakdown-value">${totalIncome.toFixed(2)}</span>
+          <span className="breakdown-value">₹{totalIncome.toFixed(2)}</span>
         </div>
       </div>
       <p className="income-note">

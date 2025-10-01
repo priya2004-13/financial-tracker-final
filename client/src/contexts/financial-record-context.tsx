@@ -54,7 +54,7 @@ export const FinancialRecordsProvider = ({
     if (!user) return;
     try {
       const response = await fetch(
-        `http://localhost:3001/financial-records/getAllByUserID/${user.id}`
+        `http://localhost:3001/financial-records/getAllByUserID/₹{user.id}`
       );
 
       if (response.ok) {
@@ -70,7 +70,7 @@ export const FinancialRecordsProvider = ({
     if (!user) return;
     try {
       const response = await fetch(
-        `http://localhost:3001/budget/${user.id}`
+        `http://localhost:3001/budget/₹{user.id}`
       );
 
       if (response.ok) {
@@ -115,7 +115,7 @@ export const FinancialRecordsProvider = ({
   const updateRecord = async (id: string, newRecord: FinancialRecord) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/financial-records/${id}`,
+        `http://localhost:3001/financial-records/₹{id}`,
         {
           method: "PUT",
           body: JSON.stringify(newRecord),
@@ -145,7 +145,7 @@ export const FinancialRecordsProvider = ({
   const deleteRecord = async (id: string) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/financial-records/${id}`,
+        `http://localhost:3001/financial-records/₹{id}`,
         {
           method: "DELETE",
         }
@@ -165,7 +165,7 @@ export const FinancialRecordsProvider = ({
   const updateBudget = async (budgetData: UserBudget) => {
     if (!user) return;
     try {
-      const response = await fetch(`http://localhost:3001/budget/${user.id}`, {
+      const response = await fetch(`http://localhost:3001/budget/₹{user.id}`, {
         method: "PUT",
         body: JSON.stringify(budgetData),
         headers: {

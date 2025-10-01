@@ -45,14 +45,14 @@ export const CategoryChart = () => {
               <div className="chart-item-header">
                 <span className="chart-item-category">{item.category}</span>
                 <span className="chart-item-value">
-                  ${item.amount.toFixed(2)} ({item.percentage}%)
+                  ₹{item.amount.toFixed(2)} ({item.percentage}%)
                 </span>
               </div>
               <div className="chart-progress-bar">
                 <div
                   className="chart-progress-fill"
                   style={{
-                    width: `${item.percentage}%`,
+                    width: `₹{item.percentage}%`,
                     backgroundColor: item.color,
                   }}
                 />
