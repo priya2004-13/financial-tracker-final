@@ -16,7 +16,8 @@ import {
   Search,
   Filter,
   TrendingUp,
-  TrendingDown
+  TrendingDown,
+  IndianRupee
 } from "lucide-react";
 import "./recordList.css";
 
@@ -155,7 +156,7 @@ export const FinancialRecordList = () => {
                 className={`sort-btn ₹{sortBy === 'amount' ? 'active' : ''}`}
                 onClick={() => setSortBy('amount')}
               >
-                <DollarSign size={16} />
+                <IndianRupee size={16} />
                 Amount
               </button>
               <button

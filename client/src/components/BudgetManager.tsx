@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from "react";
 import { useFinancialRecords } from '../contexts/financial-record-context'
-import { DollarSign, Target, TrendingUp, AlertCircle } from "lucide-react";
+import { DollarSign, Target, TrendingUp, AlertCircle, IndianRupee } from "lucide-react";
 import "./BudgetManager.css";
 
 export const BudgetManager = () => {
@@ -97,7 +97,7 @@ export const BudgetManager = () => {
         <form onSubmit={handleSubmit} className="budget-form">
           <div className="form-group">
             <label className="form-label">
-              <DollarSign size={16} />
+              <IndianRupee size={16} />
               Monthly Salary
             </label>
             <input

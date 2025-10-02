@@ -227,6 +227,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-md);
+   
 }
 
 .category-budget-item {
@@ -243,6 +244,7 @@
 .category-budget-item:hover {
   background: var(--hover-bg);
   transform: translateY(-2px);
+   
 }
 
 .category-name {

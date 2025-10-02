@@ -18,6 +18,7 @@ function App() {
         <div className="navbar">
           <Link to="/" className="navbar-link" >
             <img src={logo} alt="brand logo" />
+            <h1>Financi</h1>
           </Link>
           <div className="auth-buttons">
             <SignedOut>

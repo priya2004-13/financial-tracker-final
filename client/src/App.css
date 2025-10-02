@@ -20,14 +20,27 @@
   backdrop-filter: blur(10px);
 }
 .navbar-link{
-
+  cursor: pointer;
+  text-decoration: none;
 display: flex;
 }
 .navbar-link img{
-  height: 100px;
+  height: 50px;
+  border-radius: 50%;
   margin-right: 10px; 
    
    
+}
+.navbar-link h1{
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.5px;
+  align-self: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 .navbar-brand {
   display: flex;
