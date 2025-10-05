@@ -1,0 +1,151 @@
+/* client/src/pages/auth/AuthCard.css */
+
+.auth-card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px); /* Full height minus navbar height */
+  padding: var(--spacing-xl);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+}
+
+.auth-card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-xl);
+  max-width: 450px;
+  width: 100%;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  transition: transform 0.3s ease;
+  
+  /* --- New Animation Addition --- */
+  animation: bounceIn 0.8s ease-out forwards;
+  opacity: 0;
+  /* ---------------------------- */
+}
+
+.auth-card:hover {
+  transform: translateY(-5px);
+}
+
+.auth-header {
+  margin-bottom: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-logo-icon {
+  width: 60px;
+  height: 60px;
+  margin-bottom: var(--spacing-md);
+  /* Reusing styles from dashboard/navbar for brand consistency */
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+}
+
+.auth-logo-icon img {
+  width: 40px;
+  height: 40px;
+  filter: brightness(1.5);
+}
+
+.auth-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.auth-subtitle {
+  color: var(--text-secondary);
+  margin-top: var(--spacing-xs);
+  font-size: 1rem;
+}
+
+.auth-buttons-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.auth-buttons-group .cl-signuppath,
+.auth-buttons-group .cl-signinpath {
+  width: 100%;
+  
+  /* --- Button Animations --- */
+  opacity: 0;
+  animation: fadeInDown 0.5s ease-out forwards;
+}
+/* Delay the second button */
+.auth-buttons-group .cl-signinpath {
+  animation-delay: 0.3s;
+}
+/* ------------------------- */
+
+
+.auth-buttons-group button {
+  /* Inherit/override Clerk's default button styles for primary look */
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.auth-buttons-group button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+
+.auth-buttons-group .cl-signuppath button {
+  background: var(--background-light);
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
+}
+
+.auth-buttons-group .cl-signuppath button:hover {
+  background: var(--hover-bg);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+/* --- New Keyframes for Animation --- */
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ---------------------------------- */
