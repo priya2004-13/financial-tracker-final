@@ -1,71 +1,70 @@
-﻿.dashboard-container {
-  max-width: 1400px;
+﻿/* dashboard.css - Mobile First Responsive Design */
+
+/* Dashboard Container - Mobile First */
+.dashboard-container {
+  max-width: 100%; /* Mobile पर full width / Full width on mobile */
   margin: 0 auto;
-  padding: var(--spacing-2xl) var(--spacing-xl);
+  padding: 1rem; /* Mobile के लिए कम padding / Less padding for mobile */
   display: flex;
   flex-direction: column;
 }
 
+/* Dashboard Header */
 .dashboard-header {
-  margin-bottom: var(--spacing-2xl);
+  margin-bottom: 1.5rem;
 }
 
 .dashboard-welcome {
-  font-size: 2rem;
+  font-size: 1.5rem; /* Mobile के लिए छोटा / Smaller for mobile */
   font-weight: 700;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: var(--spacing-xs);
+  word-wrap: break-word; /* Long names को wrap करें / Wrap long names */
 }
 
 .dashboard-subtitle {
   color: var(--text-secondary);
-  font-size: 1rem;
+  font-size: 0.875rem;
 }
 
-/* Stats Grid */
+/* Stats Grid - Mobile First (1 column) */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--spacing-xl);
-  margin-bottom: var(--spacing-2xl);
+  grid-template-columns: 1fr; /* Mobile पर single column / Single column on mobile */
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Main Grid Layout */
+/* Main Grid Layout - Mobile First (Stacked) */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 400px 1fr;
-  gap: var(--spacing-xl);
+  grid-template-columns: 1fr; /* Mobile पर stacked layout / Stacked layout on mobile */
+  gap: 1.5rem;
   align-items: start;
-}
-
-@media (max-width: 1200px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .dashboard-sidebar {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl);
-  position: sticky;
-  top: 100px;
+  gap: 1.5rem;
+  position: relative; /* Mobile पर sticky नहीं / Not sticky on mobile */
+  top: auto;
 }
 
 .dashboard-main {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl);
+  gap: 1.5rem;
 }
 
 /* Form Container */
 .form-container {
   background: var(--card-bg);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
+  padding: 1rem; /* Mobile के लिए कम padding / Less padding for mobile */
   box-shadow: var(--shadow-lg);
 }
 
@@ -74,21 +73,23 @@
   align-items: center;
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap; /* Mobile पर wrap हो सके / Can wrap on mobile */
 }
 
 .form-icon {
-  width: 40px;
-  height: 40px;
+  width: 36px; /* Mobile के लिए छोटा / Smaller for mobile */
+  height: 36px;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
+  flex-shrink: 0;
 }
 
 .form-title {
-  font-size: 1.25rem;
+  font-size: 1.125rem; /* Mobile के लिए छोटा / Smaller for mobile */
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
@@ -97,12 +98,13 @@
 .form-fields {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 1rem;
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .form-label {
@@ -120,15 +122,24 @@
   font-size: 1rem;
   background: var(--card-bg);
   color: var(--text-primary);
+  transition: all var(--transition-base);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .form-input-with-icon {
   position: relative;
+  width: 100%;
 }
 
 .form-input-with-icon input,
 .form-input-with-icon select {
   padding-left: 2.5rem;
+  width: 100%;
 }
 
 .form-input-icon {
@@ -151,6 +162,7 @@
   border: none;
   cursor: pointer;
   transition: all var(--transition-base);
+  white-space: nowrap;
 }
 
 .form-submit:hover {
@@ -166,21 +178,22 @@
 .chart-container {
   background: var(--card-bg);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
+  padding: 1rem;
   box-shadow: var(--shadow-lg);
+  overflow: hidden; /* Overflow को prevent करें / Prevent overflow */
 }
 
 .chart-title {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 1rem;
 }
 
 .chart-items {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 1rem;
 }
 
 .chart-item {
@@ -193,6 +206,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-xs);
+  gap: 0.5rem;
+  flex-wrap: wrap; /* Mobile पर wrap हो सके / Can wrap on mobile */
 }
 
 .chart-item-category {
@@ -204,6 +219,7 @@
 .chart-item-value {
   font-size: 0.875rem;
   color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 .chart-progress-bar {
@@ -239,7 +255,7 @@
   100% { transform: translateX(100%); }
 }
 
-/* Records List */
+/* Records Container */
 .records-container {
   background: var(--card-bg);
   border-radius: var(--radius-xl);
@@ -248,13 +264,13 @@
 }
 
 .records-header {
-  padding: var(--spacing-xl);
+  padding: 1rem;
   border-bottom: 1px solid var(--border-color);
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
 }
 
 .records-title {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
@@ -262,10 +278,12 @@
 
 .records-table-wrapper {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 .records-table {
   width: 100%;
+  min-width: 600px; /* Table के लिए minimum width / Minimum width for table */
   border-collapse: collapse;
 }
 
@@ -274,7 +292,7 @@
 }
 
 .records-table th {
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: 0.75rem 1rem;
   text-align: left;
   font-size: 0.75rem;
   font-weight: 600;
@@ -288,9 +306,10 @@
 }
 
 .records-table td {
-  padding: var(--spacing-lg);
+  padding: 1rem;
   border-bottom: 1px solid var(--border-color);
   color: var(--text-primary);
+  font-size: 0.875rem;
 }
 
 .records-table tbody tr {
@@ -317,6 +336,10 @@
 .cell-description {
   font-weight: 500;
   color: var(--text-primary);
+  max-width: 200px; /* Long text को limit करें / Limit long text */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cell-category {
@@ -326,6 +349,7 @@
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .cell-payment {
@@ -337,6 +361,7 @@
   text-align: right;
   font-weight: 600;
   font-size: 0.875rem;
+  white-space: nowrap;
 }
 
 .cell-amount.income {
@@ -363,6 +388,7 @@
   font-weight: 600;
   border: 1px solid rgba(239, 68, 68, 0.2);
   transition: all var(--transition-base);
+  white-space: nowrap;
 }
 
 .btn-delete:hover {
@@ -374,14 +400,175 @@
 
 /* Empty State */
 .empty-state {
-  padding: var(--spacing-2xl);
+  padding: 2rem 1rem;
   text-align: center;
   color: var(--text-secondary);
 }
 
 .empty-state-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto var(--spacing-lg);
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1rem;
   opacity: 0.3;
+}
+
+/* Loading State */
+.loading-dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: var(--spacing-lg);
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-dashboard p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* ============================================ */
+/* RESPONSIVE BREAKPOINTS */
+/* ============================================ */
+
+/* Small devices (landscape phones, 640px and up) */
+@media (min-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on small tablets */
+    gap: 1.25rem;
+  }
+  
+  .form-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .form-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .dashboard-container {
+    padding: 1.5rem;
+  }
+  
+  .dashboard-header {
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .dashboard-welcome {
+    font-size: 1.75rem;
+  }
+  
+  .dashboard-subtitle {
+    font-size: 1rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .dashboard-grid {
+    gap: 1.5rem;
+  }
+  
+  .form-container,
+  .chart-container,
+  .records-header {
+    padding: 1.5rem;
+  }
+  
+  .empty-state {
+    padding: 2.5rem 1.5rem;
+  }
+  
+  .empty-state-icon {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+  .dashboard-container {
+    padding: var(--spacing-2xl) var(--spacing-xl);
+    max-width: 1400px;
+  }
+  
+  .dashboard-welcome {
+    font-size: 2rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on desktop */
+    gap: var(--spacing-xl);
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 400px 1fr; /* Sidebar + Main content */
+    gap: var(--spacing-xl);
+  }
+  
+  .dashboard-sidebar {
+    position: sticky;
+    top: 100px; /* Sticky sidebar on desktop */
+  }
+  
+  .form-container,
+  .chart-container {
+    padding: var(--spacing-xl);
+  }
+  
+  .chart-title {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .chart-items {
+    gap: var(--spacing-lg);
+  }
+  
+  .records-header {
+    padding: var(--spacing-xl);
+  }
+  
+  .records-title {
+    font-size: 1.25rem;
+  }
+  
+  .records-table th {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .records-table td {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* Extra large devices (large desktops, 1280px and up) */
+@media (min-width: 1280px) {
+  .dashboard-container {
+    max-width: 1600px;
+  }
+  
+  .cell-description {
+    max-width: 300px;
+  }
 }

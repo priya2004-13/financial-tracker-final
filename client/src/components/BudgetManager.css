@@ -1,7 +1,9 @@
-﻿.budget-container {
+﻿./* BudgetManager.css - Mobile First Responsive */
+
+.budget-container {
   background: var(--card-bg);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
+  padding: 1rem; /* Mobile के लिए / For mobile */
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border-color);
 }
@@ -10,7 +12,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 1.5rem;
+  gap: 0.5rem;
+  flex-wrap: wrap; /* Mobile पर wrap हो सके / Can wrap on mobile */
 }
 
 .budget-header-left {
@@ -20,28 +24,29 @@
 }
 
 .budget-icon {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
+  flex-shrink: 0;
 }
 
 .budget-title {
-  font-size: 1.25rem;
+  font-size: 1.125rem; /* Mobile के लिए छोटा / Smaller for mobile */
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
 }
 
 .budget-subtitle {
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+  margin: 1rem 0 0.75rem 0;
 }
 
 .btn-edit {
@@ -54,6 +59,298 @@
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-base);
+  width: 100%; /* Mobile पर full width / Full width on mobile */
+}
+
+.btn-secondary:hover {
+  background: var(--hover-bg);
+  border-color: var(--text-tertiary);
+}
+
+.budget-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.form-input {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  transition: all var(--transition-base);
+  width: 100%;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.budget-categories {
+  padding: 1rem;
+  background: var(--background-light);
+  border-radius: var(--radius-lg);
+}
+
+.budget-summary {
+  padding: 1rem;
+  background: var(--background-light);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  gap: 0.5rem;
+  flex-wrap: wrap; /* Mobile पर wrap हो सके / Can wrap on mobile */
+}
+
+.summary-value {
+  font-weight: 700;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.summary-value.positive {
+  color: var(--success-color);
+}
+
+.summary-value.negative {
+  color: var(--danger-color);
+}
+
+.alert {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.alert-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning-color);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column; /* Mobile पर stack करें / Stack on mobile */
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.budget-display {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.budget-stat {
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.75rem; /* Mobile के लिए छोटा / Smaller for mobile */
+  font-weight: 700;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  word-break: break-word;
+}
+
+.budget-categories-display {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile पर single column / Single column on mobile */
+  gap: 0.75rem;
+}
+
+.category-budget-item {
+  padding: 0.875rem;
+  background: var(--background-light);
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition-base);
+}
+
+.category-budget-item:hover {
+  background: var(--hover-bg);
+  transform: translateY(-2px);
+}
+
+.category-name {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.category-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.empty-budget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.empty-budget svg {
+  color: var(--text-tertiary);
+  opacity: 0.5;
+}
+
+.empty-budget h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.empty-budget p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+.loading-state {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* ============================================ */
+/* RESPONSIVE BREAKPOINTS */
+/* ============================================ */
+
+/* Small devices (640px and up) */
+@media (min-width: 640px) {
+  .budget-categories-display {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 1rem;
+  }
+  
+  .form-actions {
+    flex-direction: row; /* Buttons side by side */
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: auto;
+  }
+  
+  .budget-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .budget-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Medium devices (768px and up) */
+@media (min-width: 768px) {
+  .budget-container {
+    padding: 1.5rem;
+  }
+  
+  .budget-header {
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .budget-form {
+    gap: var(--spacing-lg);
+  }
+  
+  .budget-categories {
+    padding: var(--spacing-lg);
+  }
+  
+  .budget-summary {
+    padding: var(--spacing-lg);
+  }
+  
+  .budget-display {
+    gap: var(--spacing-xl);
+  }
+  
+  .budget-stat {
+    padding: var(--spacing-lg);
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+  }
+  
+  .empty-budget {
+    padding: var(--spacing-2xl);
+  }
+  
+  .loading-state {
+    padding: var(--spacing-2xl);
+  }
+}
+
+/* Large devices (1024px and up) */
+@media (min-width: 1024px) {
+  .budget-container {
+    padding: var(--spacing-xl);
+  }
+}(--transition-base);
+  white-space: nowrap;
 }
 
 .btn-edit:hover {
@@ -65,6 +362,7 @@
 .btn-primary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--spacing-xs);
   padding: 0.75rem 1.5rem;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -75,6 +373,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-base);
+  width: 100%; /* Mobile पर full width / Full width on mobile */
 }
 
 .btn-primary:hover {
@@ -91,6 +390,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
+
   transition: all var(--transition-base);
 }
 

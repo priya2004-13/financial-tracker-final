@@ -1,4 +1,6 @@
-﻿ .records-container {
+﻿/* recordList.css - Mobile First Responsive Design */
+
+.records-container {
   background: var(--card-bg);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
@@ -9,45 +11,47 @@
 .records-header-section {
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
   border-bottom: 1px solid var(--border-color);
-  padding: var(--spacing-xl);
+  padding: 1rem; /* Mobile के लिए / For mobile */
 }
 
 .records-header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+  flex-wrap: wrap; /* Mobile पर wrap हो सके / Can wrap on mobile */
 }
 
 .records-main-title {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  font-size: 1.5rem;
+  gap: 0.5rem;
+  font-size: 1.125rem; /* Mobile के लिए छोटा / Smaller for mobile */
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
 }
 
 .records-count-badge {
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.75rem;
   background: rgba(99, 102, 241, 0.1);
   color: var(--primary-color);
   border-radius: 9999px;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
-/* Filter Bar */
+/* Filter Bar - Mobile First */
 .records-filter-bar {
   display: flex;
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
+  flex-direction: column; /* Mobile पर vertical stack / Vertical stack on mobile */
+  gap: 0.75rem;
 }
 
 .search-box {
-  flex: 1;
-  min-width: 250px;
+  width: 100%;
   position: relative;
   display: flex;
   align-items: center;
@@ -76,6 +80,7 @@
   font-size: 0.875rem;
   color: var(--text-primary);
   background: transparent;
+  min-width: 0; /* Input overflow को रोकें / Prevent input overflow */
 }
 
 .search-input::placeholder {
@@ -84,7 +89,8 @@
 
 .filter-controls {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
+  flex-wrap: wrap; /* Mobile पर wrap हो सके / Can wrap on mobile */
 }
 
 .filter-group {
@@ -95,10 +101,13 @@
   background: white;
   border: 2px solid var(--border-color);
   border-radius: var(--radius-lg);
+  flex: 1; /* Mobile पर equal width / Equal width on mobile */
+  min-width: 0;
 }
 
 .filter-group svg {
   color: var(--text-tertiary);
+  flex-shrink: 0;
 }
 
 .filter-select {
@@ -109,16 +118,18 @@
   color: var(--text-primary);
   background: transparent;
   cursor: pointer;
-  min-width: 100px;
+  min-width: 0;
+  flex: 1;
 }
 
 .sort-group {
   display: flex;
-  gap: var(--spacing-xs);
+  gap: 0.25rem;
   background: white;
   border: 2px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 0.25rem;
+  flex: 1; /* Mobile पर equal width / Equal width on mobile */
 }
 
 .sort-btn {
@@ -129,11 +140,14 @@
   background: transparent;
   border: none;
   border-radius: var(--radius-md);
-  font-size: 0.875rem;
+  font-size: 0.75rem; /* Mobile के लिए छोटा / Smaller for mobile */
   font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
   transition: all var(--transition-base);
+  white-space: nowrap;
+  flex: 1;
+  justify-content: center;
 }
 
 .sort-btn:hover {
@@ -149,6 +163,7 @@
 .sort-order-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 0.5rem;
   background: transparent;
   border: none;
@@ -156,6 +171,7 @@
   color: var(--text-secondary);
   cursor: pointer;
   transition: all var(--transition-base);
+  flex-shrink: 0;
 }
 
 .sort-order-btn:hover {
@@ -165,25 +181,26 @@
 
 /* Records List */
 .records-list {
-  padding: var(--spacing-lg);
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  max-height: 600px;
+  gap: 0.75rem;
+  max-height: 500px; /* Mobile के लिए कम height / Less height for mobile */
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
-/* Record Card */
+/* Record Card - Mobile Optimized */
 .record-card {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-lg);
+  flex-direction: column; /* Mobile पर vertical layout / Vertical layout on mobile */
+  padding: 1rem;
   background: white;
   border: 2px solid var(--border-color);
   border-radius: var(--radius-lg);
   transition: all var(--transition-base);
   position: relative;
+  gap: 0.75rem;
 }
 
 .record-card::before {
@@ -213,13 +230,13 @@
 
 .record-card-left {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-  flex: 1;
+  flex-direction: column; /* Mobile पर vertical / Vertical on mobile */
+  gap: 0.75rem;
+  width: 100%;
 }
 
 .record-category-badge {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
   padding: 0.5rem 0.875rem;
@@ -227,19 +244,21 @@
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
+  align-self: flex-start;
 }
 
 .record-details {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
-  flex: 1;
+  width: 100%;
 }
 
 .record-description {
   font-weight: 600;
   color: var(--text-primary);
-  font-size: 1rem;
+  font-size: 0.95rem;
+  word-break: break-word; /* Long text को wrap करें / Wrap long text */
 }
 
 .description-text {
@@ -249,7 +268,7 @@
 .record-meta {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: 0.75rem;
   font-size: 0.75rem;
   color: var(--text-secondary);
 }
