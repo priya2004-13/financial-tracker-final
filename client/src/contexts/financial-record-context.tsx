@@ -1,21 +1,25 @@
+// client/src/contexts/financial-record-context.tsx
 import { useUser } from "@clerk/clerk-react";
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   FinancialRecord as FinancialRecordType,
   UserBudget,
-  fetchFinancialRecords as apiFetchFinancialRecords,
-  addFinancialRecord as apiAddFinancialRecord,
-  updateFinancialRecord as apiUpdateFinancialRecord,
-  deleteFinancialRecord as apiDeleteFinancialRecord,
-  fetchBudget as apiFetchBudget,
+  fetchFinancialRecords,
+  addFinancialRecord,
+  updateFinancialRecord,
+  deleteFinancialRecord,
+  fetchBudget,
   updateBudget as apiUpdateBudget,
-} from "../../services/api"; // Updated imports
+} from "../../services/api"; // Corrected import
+
+export interface FinancialRecord extends FinancialRecordType {} // Re-exporting for clarity
+
 
 interface FinancialRecordsContextType {
-  records: FinancialRecordType[];
+  records: FinancialRecord[];
   budget: UserBudget | null;
-  addRecord: (record: FinancialRecordType) => void;
-  updateRecord: (id: string, newRecord: FinancialRecordType) => void;
+  addRecord: (record: FinancialRecord) => void;
+  updateRecord: (id: string, newRecord: FinancialRecord) => void;
   deleteRecord: (id: string) => void;
   updateBudget: (budget: UserBudget) => void;
   isLoading: boolean;
@@ -30,7 +34,7 @@ export const FinancialRecordsProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [records, setRecords] = useState<FinancialRecordType[]>([]);
+  const [records, setRecords] = useState<FinancialRecord[]>([]);
   const [budget, setBudget] = useState<UserBudget | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useUser();
@@ -39,48 +43,56 @@ export const FinancialRecordsProvider = ({
     if (user) {
       setIsLoading(true);
       Promise.all([
-        apiFetchFinancialRecords(user.id).then(setRecords),
-        apiFetchBudget(user.id).then(setBudget),
+        fetchFinancialRecords(user.id).then(setRecords).catch(console.error),
+        fetchBudget(user.id).then(setBudget).catch(console.error),
       ]).finally(() => {
         setIsLoading(false);
       });
     }
   }, [user]);
 
-  const addRecord = async (record: FinancialRecordType) => {
-    const newRecord = await apiAddFinancialRecord(record);
-    setRecords((prev) => [...prev, newRecord]);
+  const addRecord = async (record: FinancialRecord) => {
+    try {
+      const newRecord = await addFinancialRecord(record);
+      setRecords((prev) => [...prev, newRecord]);
+    } catch (err) {
+      console.error("Error adding record:", err);
+    }
   };
 
-  const updateRecord = async (id: string, newRecord: FinancialRecordType) => {
-    const updatedRecord = await apiUpdateFinancialRecord(id, newRecord);
-    setRecords((prev) =>
-      prev.map((record) => (record._id === id ? updatedRecord : record))
-    );
+  const updateRecord = async (id: string, newRecord: FinancialRecord) => {
+    try {
+      const updatedRecord = await updateFinancialRecord(id, newRecord);
+      setRecords((prev) =>
+        prev.map((r) => (r._id === id ? updatedRecord : r))
+      );
+    } catch (err) {
+      console.error("Error updating record:", err);
+    }
   };
 
   const deleteRecord = async (id: string) => {
-    await apiDeleteFinancialRecord(id);
-    setRecords((prev) => prev.filter((record) => record._id !== id));
+    try {
+      await deleteFinancialRecord(id);
+      setRecords((prev) => prev.filter((record) => record._id !== id));
+    } catch (err) {
+      console.error("Error deleting record:", err);
+    }
   };
 
-  const updateBudgetHandler = async (budgetData: UserBudget) => {
+  const updateBudget = async (budgetData: UserBudget) => {
     if (!user) return;
-    const updatedBudget = await apiUpdateBudget(user.id, budgetData);
-    setBudget(updatedBudget);
+    try {
+      const updatedBudget = await apiUpdateBudget(user.id, budgetData);
+      setBudget(updatedBudget);
+    } catch (err) {
+      console.error("Error updating budget:", err);
+    }
   };
 
   return (
     <FinancialRecordsContext.Provider
-      value={{
-        records,
-        budget,
-        addRecord,
-        updateRecord,
-        deleteRecord,
-        updateBudget: updateBudgetHandler,
-        isLoading,
-      }}
+      value={{ records, budget, addRecord, updateRecord, deleteRecord, updateBudget, isLoading }}
     >
       {children}
     </FinancialRecordsContext.Provider>

@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import {
-  FinancialRecord,
   useFinancialRecords,
 } from "../../contexts/financial-record-context";
 import { 
@@ -9,7 +8,6 @@ import {
   Check, 
   X, 
   Calendar,
-  DollarSign,
   CreditCard,
   Tag,
   FileText,
@@ -20,7 +18,7 @@ import {
   IndianRupee
 } from "lucide-react";
 import "./recordList.css";
-
+import { FinancialRecord } from "../../../services/api"
 const CATEGORY_COLORS: Record<string, string> = {
   Salary: '#10b981',
   Food: '#f97316',
@@ -56,7 +54,6 @@ export const FinancialRecordList = () => {
         return sortOrder === "asc" ? a.amount - b.amount : b.amount - a.amount;
       }
     });
-
     return filtered;
   }, [records, searchTerm, filterCategory, sortBy, sortOrder]);
 
@@ -69,17 +66,14 @@ export const FinancialRecordList = () => {
       paymentMethod: record.paymentMethod,
     });
   };
-
   const cancelEdit = () => {
     setEditingId(null);
     setEditForm({});
   };
-
   const saveEdit = (id: string) => {
     if (!editForm.description || !editForm.amount || !editForm.category || !editForm.paymentMethod) {
       return;
     }
-
     const originalRecord = records.find(r => r._id === id);
     if (originalRecord) {
       updateRecord(id, {
@@ -92,7 +86,6 @@ export const FinancialRecordList = () => {
     }
     cancelEdit();
   };
-
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
@@ -100,9 +93,7 @@ export const FinancialRecordList = () => {
       year: 'numeric'
     });
   };
-
   const categories = ["All", "Food", "Rent", "Salary", "Utilities", "Entertainment", "Other"];
-
   return (
     <div className=" records-container">
       {/* Header */}
@@ -116,7 +107,6 @@ export const FinancialRecordList = () => {
             {filteredAndSortedRecords.length} {filteredAndSortedRecords.length === 1 ? 'record' : 'records'}
           </div>
         </div>
-
         {/* Search and Filter Bar */}
         <div className="records-filter-bar">
           <div className="search-box">
@@ -129,7 +119,6 @@ export const FinancialRecordList = () => {
               className="search-input"
             />
           </div>
-
           <div className="filter-controls">
             <div className="filter-group">
               <Filter size={16} />

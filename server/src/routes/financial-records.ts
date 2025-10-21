@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import FinancialRecordModel from "../schema/financial-record";
-import { getCategory } from "../ai/geminiCategorizer"; // Updated import
-
+import { getCategory } from "../ai/geminiCategorizer"; 
 const router = express.Router();
 
 router.get("/getAllByUserID/:userId", async (req: Request, res: Response) => {

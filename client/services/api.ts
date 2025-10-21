@@ -28,22 +28,16 @@ export interface UserBudget {
 // --- Financial Records API Functions ---
 
 /**
- * Fetches all financial records for a given user.
- * @param userId - The ID of the user.
- * @returns A promise that resolves to an array of financial records.
+ * Corresponds to: GET /financial-records/getAllByUserID/:userId
  */
 export const fetchFinancialRecords = async (userId: string): Promise<FinancialRecord[]> => {
   const response = await fetch(`${API_BASE_URL}/financial-records/getAllByUserID/${userId}`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch records");
-  }
+  if (!response.ok) throw new Error("Failed to fetch records");
   return response.json();
 };
 
 /**
- * Adds a new financial record. The category is determined by the AI on the backend.
- * @param record - The financial record to add.
- * @returns A promise that resolves to the newly created record.
+ * Corresponds to: POST /financial-records
  */
 export const addFinancialRecord = async (record: FinancialRecord): Promise<FinancialRecord> => {
   const response = await fetch(`${API_BASE_URL}/financial-records`, {
@@ -51,17 +45,12 @@ export const addFinancialRecord = async (record: FinancialRecord): Promise<Finan
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(record),
   });
-  if (!response.ok) {
-    throw new Error("Failed to add record");
-  }
+  if (!response.ok) throw new Error("Failed to add record");
   return response.json();
 };
 
 /**
- * Updates an existing financial record.
- * @param id - The ID of the record to update.
- * @param newRecord - The updated financial record data.
- * @returns A promise that resolves to the updated record.
+ * Corresponds to: PUT /financial-records/:id
  */
 export const updateFinancialRecord = async (id: string, newRecord: FinancialRecord): Promise<FinancialRecord> => {
   const response = await fetch(`${API_BASE_URL}/financial-records/${id}`, {
@@ -69,33 +58,25 @@ export const updateFinancialRecord = async (id: string, newRecord: FinancialReco
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newRecord),
   });
-  if (!response.ok) {
-    throw new Error("Failed to update record");
-  }
+  if (!response.ok) throw new Error("Failed to update record");
   return response.json();
 };
 
 /**
- * Deletes a financial record.
- * @param id - The ID of the record to delete.
- * @returns A promise that resolves to the deleted record.
+ * Corresponds to: DELETE /financial-records/:id
  */
 export const deleteFinancialRecord = async (id: string): Promise<FinancialRecord> => {
   const response = await fetch(`${API_BASE_URL}/financial-records/${id}`, {
     method: "DELETE",
   });
-  if (!response.ok) {
-    throw new Error("Failed to delete record");
-  }
+  if (!response.ok) throw new Error("Failed to delete record");
   return response.json();
 };
 
 // --- AI-Powered Category Suggestion ---
 
 /**
- * Suggests a category for a given expense description using the Gemini API.
- * @param description - The expense description.
- * @returns A promise that resolves to an object containing the suggested category.
+ * Corresponds to: POST /financial-records/suggest-category
  */
 export const suggestCategory = async (description: string): Promise<{ category: string }> => {
   const response = await fetch(`${API_BASE_URL}/financial-records/suggest-category`, {
@@ -103,32 +84,23 @@ export const suggestCategory = async (description: string): Promise<{ category: 
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ description }),
   });
-  if (!response.ok) {
-    throw new Error("Failed to suggest category");
-  }
+  if (!response.ok) throw new Error("Failed to suggest category");
   return response.json();
 };
 
 // --- Budget API Functions ---
 
 /**
- * Fetches the budget for a given user.
- * @param userId - The ID of the user.
- * @returns A promise that resolves to the user's budget.
+ * Corresponds to: GET /budget/:userId
  */
 export const fetchBudget = async (userId: string): Promise<UserBudget> => {
   const response = await fetch(`${API_BASE_URL}/budget/${userId}`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch budget");
-  }
+  if (!response.ok) throw new Error("Failed to fetch budget");
   return response.json();
 };
 
 /**
- * Creates or updates the budget for a given user.
- * @param userId - The ID of the user.
- * @param budgetData - The budget data to update.
- * @returns A promise that resolves to the updated budget.
+ * Corresponds to: PUT /budget/:userId
  */
 export const updateBudget = async (userId: string, budgetData: UserBudget): Promise<UserBudget> => {
   const response = await fetch(`${API_BASE_URL}/budget/${userId}`, {
@@ -136,23 +108,17 @@ export const updateBudget = async (userId: string, budgetData: UserBudget): Prom
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(budgetData),
   });
-  if (!response.ok) {
-    throw new Error("Failed to update budget");
-  }
+  if (!response.ok) throw new Error("Failed to update budget");
   return response.json();
 };
 
 /**
- * Deletes the budget for a given user.
- * @param userId - The ID of the user.
- * @returns A promise that resolves to the deleted budget.
+ * Corresponds to: DELETE /budget/:userId
  */
 export const deleteBudget = async (userId: string): Promise<UserBudget> => {
     const response = await fetch(`${API_BASE_URL}/budget/${userId}`, {
         method: "DELETE",
     });
-    if (!response.ok) {
-        throw new Error("Failed to delete budget");
-    }
+    if (!response.ok) throw new Error("Failed to delete budget");
     return response.json();
 };
