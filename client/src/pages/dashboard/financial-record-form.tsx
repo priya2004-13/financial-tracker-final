@@ -1,15 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
+import { suggestCategory as apiSuggestCategory } from "../../../services/api"; 
 import "./RecordForm.css";
+
 export const FinancialRecordForm = () => {
   const [description, setDescription] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const { addRecord } = useFinancialRecords();
-
   const { user } = useUser();
+  const [isSuggesting, setIsSuggesting] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (description) {
+        suggestCategory(description);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [description]);
+
+  const suggestCategory = async (description: string) => {
+    setIsSuggesting(true);
+    try {
+      const { category } = await apiSuggestCategory(description);
+      setCategory(category);
+    } catch (err) {
+      console.error("Error suggesting category:", err);
+    } finally {
+      setIsSuggesting(false);
+    }
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -54,7 +78,7 @@ export const FinancialRecordForm = () => {
           />
         </div>
         <div className="form-label">
-          <label>Category:</label>
+          <label>Category: {isSuggesting && "(Suggesting...)"}</label>
           <select
             required
             className="input"

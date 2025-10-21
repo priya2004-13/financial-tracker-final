@@ -11,7 +11,7 @@ const port = process.env.PORT || 3001;
 app.use(express.json());
 app.use(cors());
 
-console.log(process.env.MONGO_URI);
+// console.log("MongoDB URI:", process.env.MONGO_URI);
 const mongoURI: string = process.env.MONGO_URI || 'mongodb://localhost:27017/financial-tracker'; 
 
 mongoose

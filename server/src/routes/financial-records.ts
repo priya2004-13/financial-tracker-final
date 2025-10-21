@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import FinancialRecordModel from "../schema/financial-record";
+import { getCategory } from "../ai/geminiCategorizer"; // Updated import
 
 const router = express.Router();
 
@@ -17,12 +18,18 @@ router.get("/getAllByUserID/:userId", async (req: Request, res: Response) => {
 });
 
 router.post("/", async (req: Request, res: Response) => {
-  console.log(req.body)
   try {
     const newRecordBody = req.body;
-    const newRecord = new FinancialRecordModel(newRecordBody);
+
+    // Use the Gemini API to get the category
+    const category = await getCategory(newRecordBody.description);
+
+    const newRecord = new FinancialRecordModel({
+      ...newRecordBody,
+      category: category,
+    });
+
     const savedRecord = await newRecord.save();
-    
     res.status(200).send(savedRecord);
   } catch (err) {
     res.status(500).send(err);
@@ -55,6 +62,20 @@ router.delete("/:id", async (req: Request, res: Response) => {
     res.status(200).send(record);
   } catch (err) {
     res.status(500).send(err);
+  }
+});
+
+// Update the category suggestion route to be async
+router.post("/suggest-category", async (req: Request, res: Response) => {
+  const { description } = req.body;
+  if (!description) {
+    return res.status(400).send("Description is required.");
+  }
+  try {
+    const category = await getCategory(description);
+    res.status(200).send({ category });
+  } catch (err) {
+    res.status(500).send("Error suggesting category.");
   }
 });
 
