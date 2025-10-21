@@ -1,0 +1,140 @@
+﻿/* client/src/components/SavingsGoals.css */
+
+.savings-goals-container {
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.savings-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.savings-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--success-color), #34d399);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.savings-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Form for adding new goals */
+.goal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* List of existing goals */
+.goals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem; /* For scrollbar spacing */
+}
+
+.goal-item {
+  background: var(--background-light);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  border-left: 4px solid var(--success-color);
+  transition: all var(--transition-base);
+}
+
+.goal-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.goal-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.goal-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.goal-amounts {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.current-amount {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.goal-progress-bar {
+  width: 100%;
+  height: 10px;
+  background: var(--border-color);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.goal-progress-fill {
+  height: 100%;
+  background: var(--success-color);
+  border-radius: 5px;
+  transition: width 0.5s ease-in-out;
+}
+
+.goal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.btn-delete-goal {
+  background: transparent;
+  color: var(--danger-color);
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.btn-delete-goal:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.empty-goals {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}

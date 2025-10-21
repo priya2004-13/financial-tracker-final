@@ -24,6 +24,52 @@ export interface UserBudget {
     Other: number;
   };
 }
+// --- Savings Goals API Functions ---
+
+export interface SavingsGoal {
+  _id?: string;
+  userId: string;
+  goalName: string;
+  targetAmount: number;
+  currentAmount: number;
+  targetDate: Date;
+}
+
+export const fetchSavingsGoals = async (userId: string): Promise<SavingsGoal[]> => {
+  const response = await fetch(`${API_BASE_URL}/savings-goals/${userId}`);
+  if (!response.ok) throw new Error("Failed to fetch savings goals");
+  return response.json();
+};
+
+export const addSavingsGoal = async (goal: SavingsGoal): Promise<SavingsGoal> => {
+  const response = await fetch(`${API_BASE_URL}/savings-goals`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(goal),
+  });
+  if (!response.ok) throw new Error("Failed to add savings goal");
+  return response.json();
+};
+
+export const contributeToGoal = async (goalId: string, amount: number): Promise<SavingsGoal> => {
+  const response = await fetch(`${API_BASE_URL}/savings-goals/${goalId}/contribute`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ amount }),
+  });
+  if (!response.ok) throw new Error("Failed to contribute to goal");
+  return response.json();
+};
+
+export const deleteSavingsGoal = async (goalId: string): Promise<SavingsGoal> => {
+  const response = await fetch(`${API_BASE_URL}/savings-goals/${goalId}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) throw new Error("Failed to delete savings goal");
+  return response.json();
+};
+
+
 
 // --- Financial Records API Functions ---
 
@@ -116,9 +162,9 @@ export const updateBudget = async (userId: string, budgetData: UserBudget): Prom
  * Corresponds to: DELETE /budget/:userId
  */
 export const deleteBudget = async (userId: string): Promise<UserBudget> => {
-    const response = await fetch(`${API_BASE_URL}/budget/${userId}`, {
-        method: "DELETE",
-    });
-    if (!response.ok) throw new Error("Failed to delete budget");
-    return response.json();
+  const response = await fetch(`${API_BASE_URL}/budget/${userId}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) throw new Error("Failed to delete budget");
+  return response.json();
 };

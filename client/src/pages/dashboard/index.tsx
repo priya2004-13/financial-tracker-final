@@ -9,6 +9,7 @@ import { useFinancialRecords } from "../../contexts/financial-record-context";
 import { useMemo } from "react";
 import { StatCard } from "../../components/StatCard";
 import { DollarSign, TrendingDown, Wallet, Target } from "lucide-react";
+import SavingsGoals from "../../components/SavingsGoals";
 
 export const Dashboard = () => {
   const { user } = useUser();
@@ -143,6 +144,7 @@ export const Dashboard = () => {
         <div className="dashboard-sidebar">
           <FinancialRecordForm />
           <BudgetManager />
+          <SavingsGoals />
         </div>
 
         {/* Main Content */}

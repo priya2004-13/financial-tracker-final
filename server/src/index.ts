@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import mongoose from "mongoose";
 import financialRecordRouter from "./routes/financial-records";
 import budgetRouter from "./routes/budget";
+import savingsGoalRouter from "./routes/savings-goals";  
 import cors from "cors";
 import 'dotenv/config'
 
@@ -11,7 +12,6 @@ const port = process.env.PORT || 3001;
 app.use(express.json());
 app.use(cors());
 
-// console.log("MongoDB URI:", process.env.MONGO_URI);
 const mongoURI: string = process.env.MONGO_URI || 'mongodb://localhost:27017/financial-tracker'; 
 
 mongoose
@@ -22,6 +22,7 @@ mongoose
 // Routes
 app.use("/financial-records", financialRecordRouter);
 app.use("/budget", budgetRouter);
+app.use("/savings-goals", savingsGoalRouter); // Add the new savings goals route
 
 app.listen(port, () => {
   console.log(`Server Running on Port ${port}`);
