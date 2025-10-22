@@ -135,21 +135,21 @@ export const FinancialRecordList = () => {
 
             <div className="sort-group">
               <button
-                className={`sort-btn ₹{sortBy === 'date' ? 'active' : ''}`}
+                className={`sort-btn ₹{sortBy === 'date' ? 'active' : ''} btn-primary  ripple-button`}
                 onClick={() => setSortBy('date')}
               >
                 <Calendar size={16} />
                 Date
               </button>
               <button
-                className={`sort-btn ₹{sortBy === 'amount' ? 'active' : ''}`}
+                className={`sort-btn ₹{sortBy === 'amount' ? 'active' : ''}  btn-primary ripple-button`}
                 onClick={() => setSortBy('amount')}
               >
                 <IndianRupee size={16} />
                 Amount
               </button>
               <button
-                className="sort-order-btn"
+                className="sort-order-btn  btn-primary ripple-button"
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
               >
                 {sortOrder === 'asc' ? <TrendingUp size={16} /> : <TrendingDown size={16} />}

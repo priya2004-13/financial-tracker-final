@@ -20,7 +20,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   prefix = '₹'
 }) => {
   return (
-    <div className="stat-card" style={{ borderLeftColor: color }}>
+    <div className="stat-card   gpu-accelerated" style={{ borderLeftColor: color }}>
       <div className="stat-card-content">
         <div className="stat-card-text">
           <p className="stat-card-title">{title}</p>

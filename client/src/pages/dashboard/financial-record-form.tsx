@@ -100,10 +100,11 @@ export const FinancialRecordForm = () => {
             <FileText size={16} />
             Description
           </label>
-          <input
+          <input 
+  className="form-input form-input-animated" 
             type="text"
             required
-            className="form-input"
+           
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="e.g., Grocery shopping"
@@ -115,10 +116,11 @@ export const FinancialRecordForm = () => {
             <DollarSign size={16} />
             Amount
           </label>
-          <input
+          <input 
+  className="form-input form-input-animated" 
             type="number"
             required
-            className="form-input"
+        
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.00"

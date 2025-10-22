@@ -114,7 +114,7 @@ class SavingsGoalsClass extends Component<SavingsGoalsProps, SavingsGoalsState> 
             <input
               type="text"
               name="goalName"
-              className="input"
+              className="input form-input form-input-animated "
               placeholder="Goal Name (e.g., New Laptop)"
               value={goalName}
               onChange={this.handleChange}
@@ -125,7 +125,7 @@ class SavingsGoalsClass extends Component<SavingsGoalsProps, SavingsGoalsState> 
             <input
               type="number"
               name="targetAmount"
-              className="input"
+              className='input form-input form-input-animated'
               placeholder="Target Amount"
               value={targetAmount}
               onChange={this.handleChange}
@@ -137,7 +137,7 @@ class SavingsGoalsClass extends Component<SavingsGoalsProps, SavingsGoalsState> 
              <input
               type="date"
               name="targetDate"
-              className="input"
+              className='input form-input form-input-animated'
               value={targetDate}
               onChange={this.handleChange}
               required

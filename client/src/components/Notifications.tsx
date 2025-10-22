@@ -118,7 +118,7 @@ export const Notifications = () => {
                 className="notification-bell"
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <Bell size={20} />
+                <Bell   size={20} />
                 {unreadCount > 0 && (
                     <span className="notification-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
                 )}

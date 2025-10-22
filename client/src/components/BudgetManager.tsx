@@ -101,8 +101,9 @@ export const BudgetManager = () => {
               Monthly Salary
             </label>
             <input
+              className="form-input form-input-animated"
               type="number"
-              className="form-input"
+
               value={formData.monthlySalary}
               onChange={(e) =>
                 setFormData({ ...formData, monthlySalary: parseFloat(e.target.value) })
@@ -119,13 +120,13 @@ export const BudgetManager = () => {
               <div key={category} className="form-group">
                 <label className="form-label">{category}</label>
                 <input
+                  className="form-input form-input-animated"
                   type="number"
-                  className="form-input"
                   value={value}
                   onChange={(e) => handleCategoryBudgetChange(category, e.target.value)}
                   placeholder={`Budget for ₹{category}`}
                   step="0.01"
-                    required
+                  required
                 />
               </div>
             ))}

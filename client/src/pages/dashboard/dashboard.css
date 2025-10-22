@@ -1,5 +1,6 @@
 ﻿/* dashboard.css - Mobile First Responsive Design */
-
+@import '../../enhanced-mobile.css';
+@import "../../microInteractions.css";
 /* Dashboard Container - Mobile First */
 .dashboard-container {
   max-width: 100%; /* Mobile पर full width / Full width on mobile */

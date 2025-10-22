@@ -154,6 +154,7 @@ export const Subscriptions = () => {
                         <div className="form-field">
                             <label>Subscription Name</label>
                             <input
+                        className='form-input form-input-animated'
                                 type="text"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -164,6 +165,7 @@ export const Subscriptions = () => {
                         <div className="form-field">
                             <label>Amount</label>
                             <input
+                        className='form-input form-input-animated'
                                 type="number"
                                 step="0.01"
                                 value={formData.amount}
@@ -202,6 +204,7 @@ export const Subscriptions = () => {
                     <div className="form-field">
                         <label>Next Payment Date</label>
                         <input
+                        className='form-input form-input-animated'
                             type="date"
                             value={formData.nextPaymentDate}
                             onChange={(e) => setFormData({ ...formData, nextPaymentDate: e.target.value })}
