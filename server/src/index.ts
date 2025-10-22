@@ -1,8 +1,12 @@
+// server/src/index.ts
 import express, { Express } from "express";
 import mongoose from "mongoose";
 import financialRecordRouter from "./routes/financial-records";
 import budgetRouter from "./routes/budget";
 import savingsGoalRouter from "./routes/savings-goals";  
+import recurringPaymentRouter from "./routes/recurring-payments";
+import notificationRouter from "./routes/notifications";
+import aiInsightsRouter from "./routes/ai-insights";
 import cors from "cors";
 import 'dotenv/config'
 
@@ -22,7 +26,10 @@ mongoose
 // Routes
 app.use("/financial-records", financialRecordRouter);
 app.use("/budget", budgetRouter);
-app.use("/savings-goals", savingsGoalRouter); // Add the new savings goals route
+app.use("/savings-goals", savingsGoalRouter);
+app.use("/recurring-payments", recurringPaymentRouter);
+app.use("/notifications", notificationRouter);
+app.use("/ai", aiInsightsRouter);
 
 app.listen(port, () => {
   console.log(`Server Running on Port ${port}`);

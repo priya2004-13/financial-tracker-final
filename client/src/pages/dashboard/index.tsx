@@ -1,15 +1,18 @@
+// client/src/pages/dashboard/index.tsx  
 import { useUser } from "@clerk/clerk-react";
 import { FinancialRecordForm } from "./financial-record-form";
 import { FinancialRecordList } from "./financial-record-list";
 import { FinancialRecordChart } from "./financial-record-chart";
 import { BudgetManager } from "../../components/BudgetManager";
 import { BudgetTracking } from "../../components/BudgetTracking";
+import { FinancialSummary } from "../../components/FinancialSummary";
+import { Subscriptions } from "../../components/Subscriptions";
+import SavingsGoals from "../../components/SavingsGoals";
 import "./dashboard.css";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import { useMemo } from "react";
 import { StatCard } from "../../components/StatCard";
 import { DollarSign, TrendingDown, Wallet, Target } from "lucide-react";
-import SavingsGoals from "../../components/SavingsGoals";
 
 export const Dashboard = () => {
   const { user } = useUser();
@@ -132,7 +135,7 @@ export const Dashboard = () => {
             value={budgetAdherence}
             icon={Target}
             color="#8b5cf6"
-            trend={`₹${budgetAdherence.toFixed(0)}% remaining`}
+            trend={`${budgetAdherence.toFixed(0)}% remaining`}
             prefix=""
           />
         )}
@@ -145,10 +148,14 @@ export const Dashboard = () => {
           <FinancialRecordForm />
           <BudgetManager />
           <SavingsGoals />
+          <Subscriptions />
         </div>
 
         {/* Main Content */}
         <div className="dashboard-main">
+          {/* AI Financial Summary - NEW */}
+          <FinancialSummary />
+          
           {budget && <BudgetTracking />}
           <FinancialRecordChart />
           <FinancialRecordList />
