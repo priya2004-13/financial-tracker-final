@@ -15,8 +15,10 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^4.19.2",
+    "json2csv": "^6.0.0-alpha.2",
     "mongoose": "^8.3.2",
     "nodemon": "^3.1.0",
+    "pdfkit": "^0.17.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }
