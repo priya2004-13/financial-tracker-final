@@ -176,7 +176,7 @@ export const FinancialRecordList = () => {
                 className="sort-order-btn  btn-primary ripple-button"
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
               >
-                {sortOrder === 'asc' ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
+                {sortOrder === 'asc' ? <TrendingUp size={21} /> : <TrendingDown size={21} />}
               </button>
             </div>
           </div>

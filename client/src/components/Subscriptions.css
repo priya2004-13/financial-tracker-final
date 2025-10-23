@@ -333,8 +333,23 @@
 .loading-state { font-size: 0.875rem; }
 
 
+@media (min-width: 1080px) {
+    
+    .subscription-card {
+        flex-direction: column; /* Vertical layout on larger screens */
+        align-items: center;
+    }
+    .subscription-actions {
+        width: auto; /* Auto width */
+        justify-content: flex-end; /* Align buttons right */
+    }
+    .amount {
+        margin-right: 0; /* Remove auto margin */
+        font-size: 1.25rem;
+    }
+}
 /* Responsive */
-@media (min-width: 640px) { /* Small tablets */
+@media (max-width: 640px) { /* Small tablets */
     .form-row {
         grid-template-columns: 1fr 1fr; /* Two columns */
     }
@@ -343,7 +358,7 @@
          align-self: flex-end; /* Align submit button right */
     }
     .subscription-card {
-        flex-direction: row; /* Horizontal layout */
+        flex-direction: row;  /* Horizontal layout */
         align-items: center;
         gap: 1rem;
     }
