@@ -174,7 +174,7 @@ export const Notifications = () => {
                                             </button>
                                         )}
                                         <button
-                                            className="btn-delete-notif"
+                                        className="btn-delete-notif"
                                             onClick={() => handleDelete(notification._id!)}
                                             title="Delete"
                                         >

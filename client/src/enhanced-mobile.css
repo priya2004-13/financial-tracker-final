@@ -759,3 +759,628 @@
         /* Prevents iOS zoom on focus */
     }
 }
+/* ========================================== */
+/* ENHANCED MOBILE-FIRST RESPONSIVE STYLES  */
+/* Add this to your existing CSS files       */
+/* ========================================== */
+
+/* ==================== */
+/* Touch-Friendly Interactions */
+/* ==================== */
+
+/* Larger touch targets for mobile */
+@media (max-width: 768px) {
+  button, a, .clickable {
+    min-height: 48px; /* Increased from 44px */
+    min-width: 48px;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Prevent accidental double-tap zoom */
+  * {
+    touch-action: manipulation;
+  }
+
+  /* Better input fields for mobile */
+  input, select, textarea {
+    font-size: 16px; /* Prevents iOS zoom */
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Larger action buttons in cards */
+  .action-btn {
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  /* Better spacing for form fields */
+  .form-field {
+    margin-bottom: 1.25rem;
+  }
+}
+
+/* ==================== */
+/* Swipeable Card Gestures */
+/* ==================== */
+
+.swipeable-card {
+  position: relative;
+  touch-action: pan-y;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: grab;
+}
+
+.swipeable-card:active {
+  cursor: grabbing;
+}
+
+.swipeable-card.swiping {
+  transition: none;
+}
+
+/* Reveal actions on swipe */
+.swipe-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  background: linear-gradient(90deg, transparent, var(--danger-color));
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.swipeable-card.swiping-left .swipe-actions {
+  opacity: 1;
+}
+
+/* ==================== */
+/* Pull-to-Refresh Enhancement */
+/* ==================== */
+
+.pull-to-refresh-container {
+  position: relative;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pull-indicator {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.pull-indicator.pulling {
+  transform: translateY(60px);
+}
+
+.pull-indicator svg {
+  animation: spin 1s linear infinite;
+  color: var(--primary-color);
+}
+
+/* ==================== */
+/* Bottom Sheet Modal for Mobile */
+/* ==================== */
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-modal-backdrop);
+    animation: fadeIn 0.3s ease-out;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUpMobile 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+  }
+
+  .modal-handle {
+    width: 40px;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    margin: 0 auto 1rem;
+  }
+
+  @keyframes slideUpMobile {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+/* ==================== */
+/* Sticky Headers with Shadow on Scroll */
+/* ==================== */
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: var(--card-bg);
+  transition: box-shadow 0.3s ease;
+}
+
+.sticky-header.scrolled {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ==================== */
+/* Collapsible Sections for Mobile */
+/* ==================== */
+
+@media (max-width: 768px) {
+  .collapsible-section {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--background-light);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .collapsible-header:active {
+    background: var(--hover-bg);
+  }
+
+  .collapsible-icon {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .collapsible-section.open .collapsible-icon {
+    transform: rotate(180deg);
+  }
+
+  .collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .collapsible-section.open .collapsible-content {
+    max-height: 2000px; /* Large enough for content */
+  }
+}
+
+/* ==================== */
+/* Horizontal Scrollable Cards */
+/* ==================== */
+
+.horizontal-scroll-container {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 1rem 0;
+  margin: 0 -1rem; /* Negative margin for full-width scroll */
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.horizontal-scroll-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar on mobile */
+}
+
+.scroll-card {
+  flex: 0 0 85%; /* Cards take 85% width on mobile */
+  scroll-snap-align: center;
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.3s;
+}
+
+.scroll-card:active {
+  transform: scale(0.98);
+}
+
+@media (min-width: 640px) {
+  .scroll-card {
+    flex: 0 0 45%; /* 2 cards visible on tablet */
+  }
+}
+
+@media (min-width: 1024px) {
+  .scroll-card {
+    flex: 0 0 30%; /* 3 cards visible on desktop */
+  }
+}
+
+/* Scroll indicators */
+.scroll-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.scroll-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-color);
+  transition: all 0.3s;
+}
+
+.scroll-dot.active {
+  width: 24px;
+  border-radius: 4px;
+  background: var(--primary-color);
+}
+
+/* ==================== */
+/* Floating Action Button (FAB) */
+/* ==================== */
+
+@media (max-width: 768px) {
+  .fab {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+    z-index: var(--z-fixed);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+  }
+
+  .fab:active {
+    transform: scale(0.9);
+  }
+
+  .fab::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: inherit;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .fab:active::before {
+    opacity: 0.3;
+    animation: ripple 0.6s ease-out;
+  }
+
+  @keyframes ripple {
+    to {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+}
+
+/* ==================== */
+/* Improved Record Cards for Mobile */
+/* ==================== */
+
+@media (max-width: 768px) {
+  .record-card-mobile {
+    background: var(--card-bg);
+    border-radius: var(--radius-xl);
+    padding: 1rem;
+    box-shadow: var(--shadow);
+    border-left: 4px solid;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s;
+  }
+
+  .record-card-mobile:active {
+    transform: scale(0.98);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Compact layout for mobile */
+  .record-card-header-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+
+  .record-card-details-mobile {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+}
+
+/* ==================== */
+/* Better Stats Grid for Mobile */
+/* ==================== */
+
+@media (max-width: 640px) {
+  .stats-grid-mobile {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .stat-card-compact {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .stat-card-compact:active {
+    transform: translateY(-4px) scale(0.98);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .stat-icon-compact {
+    width: 32px;
+    height: 32px;
+    margin: 0 auto 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-value-compact {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label-compact {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+/* ==================== */
+/* Haptic Feedback Visual Cues */
+/* ==================== */
+
+.haptic-feedback {
+  animation: hapticBounce 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes hapticBounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+}
+
+/* ==================== */
+/* Loading Skeleton Screens */
+/* ==================== */
+
+.skeleton-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.skeleton-line {
+  height: 12px;
+  background: linear-gradient(
+    90deg,
+    var(--border-light) 25%,
+    var(--border-color) 50%,
+    var(--border-light) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: shimmer 1.5s infinite;
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+
+.skeleton-line.medium {
+  width: 80%;
+}
+
+.skeleton-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    var(--border-light) 25%,
+    var(--border-color) 50%,
+    var(--border-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ==================== */
+/* Toast Notifications for Mobile */
+/* ==================== */
+
+@media (max-width: 768px) {
+  .toast-container {
+    position: fixed;
+    bottom: 5rem; /* Above FAB */
+    left: 1rem;
+    right: 1rem;
+    z-index: var(--z-tooltip);
+    pointer-events: none;
+  }
+
+  .toast {
+    background: var(--card-bg);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: toastSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+    margin-bottom: 0.5rem;
+  }
+
+  @keyframes toastSlideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .toast.success {
+    border-left: 4px solid var(--success-color);
+  }
+
+  .toast.error {
+    border-left: 4px solid var(--danger-color);
+  }
+
+  .toast.info {
+    border-left: 4px solid var(--info-color);
+  }
+}
+
+/* ==================== */
+/* Safe Area Insets for Notched Devices */
+/* ==================== */
+
+@supports (padding: max(0px)) {
+  .safe-area-inset-top {
+    padding-top: max(var(--spacing-lg), env(safe-area-inset-top));
+  }
+
+  .safe-area-inset-bottom {
+    padding-bottom: max(var(--spacing-lg), env(safe-area-inset-bottom));
+  }
+
+  .navbar {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+
+  @media (max-width: 768px) {
+    .fab {
+      bottom: max(1.5rem, calc(env(safe-area-inset-bottom) + 0.5rem));
+    }
+  }
+}
+
+/* ==================== */
+/* Dark Mode Improvements */
+/* ==================== */
+
+@media (prefers-color-scheme: dark) {
+  .modal-content {
+    background: #1f2937;
+  }
+
+  .sticky-header {
+    background: #1f2937;
+  }
+
+  .collapsible-header {
+    background: #374151;
+  }
+
+  .skeleton-line,
+  .skeleton-circle {
+    background: linear-gradient(
+      90deg,
+      #374151 25%,
+      #4b5563 50%,
+      #374151 75%
+    );
+    background-size: 200% 100%;
+  }
+}
+
+/* ==================== */
+/* Performance Optimizations */
+/* ==================== */
+
+.optimize-performance {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Reduce animations on low-end devices */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

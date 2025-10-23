@@ -3,10 +3,12 @@ import express, { Express } from "express";
 import mongoose from "mongoose";
 import financialRecordRouter from "./routes/financial-records";
 import budgetRouter from "./routes/budget";
-import savingsGoalRouter from "./routes/savings-goals";  
+import savingsGoalRouter from "./routes/savings-goals";
 import recurringPaymentRouter from "./routes/recurring-payments";
 import notificationRouter from "./routes/notifications";
 import aiInsightsRouter from "./routes/ai-insights";
+import categoryRouter from "./routes/category"; // Import category router
+import transactionTemplateRouter from "./routes/transaction-template"; // Import template router
 import cors from "cors";
 import 'dotenv/config'
 
@@ -16,7 +18,7 @@ const port = process.env.PORT || 3001;
 app.use(express.json());
 app.use(cors());
 
-const mongoURI: string = process.env.MONGO_URI || 'mongodb://localhost:27017/financial-tracker'; 
+const mongoURI: string = process.env.MONGO_URI || 'mongodb://localhost:27017/financial-tracker';
 
 mongoose
   .connect(mongoURI)
@@ -30,6 +32,9 @@ app.use("/savings-goals", savingsGoalRouter);
 app.use("/recurring-payments", recurringPaymentRouter);
 app.use("/notifications", notificationRouter);
 app.use("/ai", aiInsightsRouter);
+app.use("/categories", categoryRouter); 
+app.use("/transaction-templates", transactionTemplateRouter); 
+
 
 app.listen(port, () => {
   console.log(`Server Running on Port ${port}`);

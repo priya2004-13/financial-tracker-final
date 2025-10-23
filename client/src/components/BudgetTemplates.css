@@ -1,0 +1,130 @@
+﻿/* client/src/components/BudgetTemplates.css - Mobile First */
+
+.budget-templates-container {
+    background: var(--card-bg);
+    border-radius: var(--radius-xl);
+    padding: 1rem;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.disabled-overlay {
+    opacity: 0.6;
+    pointer-events: none; /* Disable interactions */
+     text-align: center;
+     font-style: italic;
+     color: var(--text-secondary);
+}
+
+
+.templates-header {
+    display: flex;
+    justify-content: space-between; /* Align items */
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    gap: 0.5rem;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.templates-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b); /* Yellow/Orange gradient */
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+
+.templates-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.template-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.template-description {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem; /* Small space below select */
+    line-height: 1.4;
+    font-style: italic;
+}
+
+.btn-apply-template {
+    width: 100%; /* Full width on mobile */
+     margin-top: 0.5rem; /* Add some space above the button */
+}
+.btn-apply-template:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+     background: var(--border-color); /* Grey out disabled button */
+     box-shadow: none;
+     transform: none;
+}
+
+
+.template-message {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.template-message.success {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.template-message.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.template-warning {
+    font-size: 0.8rem;
+    color: var(--warning-color);
+    text-align: center;
+    margin-top: -0.5rem; /* Reduce gap */
+}
+
+
+/* Medium devices (768px and up) */
+@media (min-width: 768px) {
+    .budget-templates-container {
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+     .templates-header {
+        padding-bottom: 1.5rem;
+    }
+     .templates-title {
+        font-size: 1.25rem;
+    }
+    .btn-apply-template {
+        width: auto; /* Auto width on larger screens */
+        align-self: flex-end; /* Align button to the right */
+    }
+
+}

@@ -1,12 +1,13 @@
+// client/src/pages/dashboard/financial-record-list.tsx - Updated for Split Transactions Display
 import { useMemo, useState } from "react";
 import {
   useFinancialRecords,
 } from "../../contexts/financial-record-context";
-import { 
-  Trash2, 
-  Edit2, 
-  Check, 
-  X, 
+import {
+  Trash2,
+  Edit2,
+  Check,
+  X,
   Calendar,
   CreditCard,
   Tag,
@@ -15,10 +16,13 @@ import {
   Filter,
   TrendingUp,
   TrendingDown,
-  IndianRupee
+  IndianRupee,
+  GitCommit // Icon for split transactions
 } from "lucide-react";
 import "./recordList.css";
 import { FinancialRecord } from "../../../services/api"
+
+// Existing CATEGORY_COLORS definition...
 const CATEGORY_COLORS: Record<string, string> = {
   Salary: '#10b981',
   Food: '#f97316',
@@ -26,16 +30,24 @@ const CATEGORY_COLORS: Record<string, string> = {
   Utilities: '#3b82f6',
   Entertainment: '#ec4899',
   Other: '#a855f7',
+  // Add colors for custom categories if needed, or fallback
 };
 
 export const FinancialRecordList = () => {
-  const { records, updateRecord, deleteRecord } = useFinancialRecords();
+  const { records, updateRecord, deleteRecord, categories } = useFinancialRecords(); // Get categories
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<FinancialRecord>>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [sortBy, setSortBy] = useState<"date" | "amount">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
+  // Combine default and custom categories for filtering
+  const allCategories = useMemo(() => {
+    const defaultCategories = ["All", "Food", "Rent", "Salary", "Utilities", "Entertainment", "Other"];
+    const customCategoryNames = categories.map(c => c.name);
+    return [...new Set([...defaultCategories, ...customCategoryNames])].sort();
+  }, [categories]);
 
   // Filter and sort records
   const filteredAndSortedRecords = useMemo(() => {
@@ -45,6 +57,7 @@ export const FinancialRecordList = () => {
       return matchesSearch && matchesCategory;
     });
 
+    // Simple sorting - complex split grouping might require more logic if needed later
     filtered.sort((a, b) => {
       if (sortBy === "date") {
         const dateA = new Date(a.date).getTime();
@@ -56,6 +69,12 @@ export const FinancialRecordList = () => {
     });
     return filtered;
   }, [records, searchTerm, filterCategory, sortBy, sortOrder]);
+
+
+    // Function to get category color, falling back to 'Other'
+    const getCategoryColor = (categoryName: string) => {
+        return CATEGORY_COLORS[categoryName] || CATEGORY_COLORS['Other'];
+      };
 
   const startEdit = (record: FinancialRecord) => {
     setEditingId(record._id || null);
@@ -86,14 +105,19 @@ export const FinancialRecordList = () => {
     }
     cancelEdit();
   };
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
+  const formatDate = (date: Date | string) => { // Accept string for offline potentially
+    try {
+        return new Date(date).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    } catch {
+        return "Invalid Date"; // Fallback for invalid date strings
+    }
   };
-  const categories = ["All", "Food", "Rent", "Salary", "Utilities", "Entertainment", "Other"];
+
+
   return (
     <div className=" records-container">
       {/* Header */}
@@ -127,22 +151,22 @@ export const FinancialRecordList = () => {
                 onChange={(e) => setFilterCategory(e.target.value)}
                 className="filter-select"
               >
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
+                 {allCategories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>
             </div>
 
             <div className="sort-group">
               <button
-                className={`sort-btn ₹{sortBy === 'date' ? 'active' : ''} btn-primary  ripple-button`}
+                className={`sort-btn ${sortBy === 'date' ? 'active' : ''} btn-primary  ripple-button`}
                 onClick={() => setSortBy('date')}
               >
                 <Calendar size={16} />
                 Date
               </button>
               <button
-                className={`sort-btn ₹{sortBy === 'amount' ? 'active' : ''}  btn-primary ripple-button`}
+                className={`sort-btn ${sortBy === 'amount' ? 'active' : ''}  btn-primary ripple-button`}
                 onClick={() => setSortBy('amount')}
               >
                 <IndianRupee size={16} />
@@ -152,7 +176,7 @@ export const FinancialRecordList = () => {
                 className="sort-order-btn  btn-primary ripple-button"
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
               >
-                {sortOrder === 'asc' ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                {sortOrder === 'asc' ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
               </button>
             </div>
           </div>
@@ -165,21 +189,25 @@ export const FinancialRecordList = () => {
           <div className="empty-records">
             <FileText size={64} />
             <h3>No transactions found</h3>
-            <p>Try adjusting your search or filters</p>
+            <p>Try adjusting your search or filters, or add a new record!</p>
           </div>
         ) : (
           filteredAndSortedRecords.map((record) => {
             const isEditing = editingId === record._id;
             const isIncome = record.category === 'Salary';
+             const categoryColor = getCategoryColor(record.category); // Get color safely
 
             return (
-              <div key={record._id} className={`record-card ₹{isIncome ? 'income-card' : 'expense-card'}`}>
+              <div key={record._id} className={`record-card ${isIncome ? 'income-card' : 'expense-card'} ${record.isSplit ? 'split-indicator' : ''}`}>
+               {/* Optional: Add a visual indicator for split transactions */}
+               {record.isSplit && <GitCommit size={14} className="split-icon" title="Part of a split transaction"/>}
+
                 <div className="record-card-left">
-                  <div 
+                  <div
                     className="record-category-badge"
-                    style={{ 
-                      backgroundColor: `₹{CATEGORY_COLORS[record.category]}20`,
-                      color: CATEGORY_COLORS[record.category]
+                    style={{
+                      backgroundColor: `${categoryColor}20`, // Use safe color
+                      color: categoryColor // Use safe color
                     }}
                   >
                     <Tag size={14} />
@@ -189,12 +217,9 @@ export const FinancialRecordList = () => {
                         onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
                         className="edit-select-inline"
                       >
-                        <option value="Food">Food</option>
-                        <option value="Rent">Rent</option>
-                        <option value="Salary">Salary</option>
-                        <option value="Utilities">Utilities</option>
-                        <option value="Entertainment">Entertainment</option>
-                        <option value="Other">Other</option>
+                         {allCategories.filter(c => c !== 'All').map(cat => ( // Exclude 'All' from edit options
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
                       </select>
                     ) : (
                       <span>{record.category}</span>
@@ -232,6 +257,9 @@ export const FinancialRecordList = () => {
                             <option value="Credit Card">Credit Card</option>
                             <option value="Cash">Cash</option>
                             <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Debit Card">Debit Card</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Other">Other</option>
                           </select>
                         ) : (
                           record.paymentMethod
@@ -242,7 +270,7 @@ export const FinancialRecordList = () => {
                 </div>
 
                 <div className="record-card-right">
-                  <div className={`record-amount ₹{isIncome ? 'amount-income' : 'amount-expense'}`}>
+                  <div className={`record-amount ${isIncome ? 'amount-income' : 'amount-expense'}`}>
                     {isEditing ? (
                       <input
                         type="number"
@@ -250,11 +278,13 @@ export const FinancialRecordList = () => {
                         onChange={(e) => setEditForm({ ...editForm, amount: parseFloat(e.target.value) })}
                         className="edit-input amount"
                         step="0.01"
+                        min="0.01"
                       />
                     ) : (
                       <>
                         <span className="amount-sign">{isIncome ? '+' : '-'}</span>
-                        ₹{record.amount.toFixed(2)}
+                         {/* Handle potential NaN amount for offline/corrupt data */}
+                         {typeof record.amount === 'number' ? `₹${record.amount.toFixed(2)}` : 'Invalid Amt'}
                       </>
                     )}
                   </div>
@@ -263,14 +293,14 @@ export const FinancialRecordList = () => {
                     {isEditing ? (
                       <>
                         <button
-                          className="action-btn save-btn"
+                          className="action-btn save-btn ripple-button"
                           onClick={() => saveEdit(record._id!)}
                           title="Save"
                         >
                           <Check size={16} />
                         </button>
                         <button
-                          className="action-btn cancel-btn"
+                          className="action-btn cancel-btn ripple-button"
                           onClick={cancelEdit}
                           title="Cancel"
                         >
@@ -280,14 +310,15 @@ export const FinancialRecordList = () => {
                     ) : (
                       <>
                         <button
-                          className="action-btn edit-btn"
+                          className="action-btn edit-btn ripple-button"
                           onClick={() => startEdit(record)}
                           title="Edit"
+                           disabled={record._id?.startsWith('offline_')} // Disable edit for offline records for simplicity
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
-                          className="action-btn delete-btn"
+                          className="action-btn delete-btn ripple-button"
                           onClick={() => {
                             if (window.confirm('Are you sure you want to delete this record?')) {
                               deleteRecord(record._id!);

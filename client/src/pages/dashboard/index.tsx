@@ -1,13 +1,21 @@
-// client/src/pages/dashboard/index.tsx  
+// client/src/pages/dashboard/index.tsx - Updated to include new components
 import { useUser } from "@clerk/clerk-react";
 import { FinancialRecordForm } from "./financial-record-form";
 import { FinancialRecordList } from "./financial-record-list";
-import { FinancialRecordChart } from "./financial-record-chart";
+// Removed FinancialRecordChart import, replaced by CategoryChart (Pie) and updated Bar Chart
 import { BudgetManager } from "../../components/BudgetManager";
 import { BudgetTracking } from "../../components/BudgetTracking";
 import { FinancialSummary } from "../../components/FinancialSummary";
 import { Subscriptions } from "../../components/Subscriptions";
 import SavingsGoals from "../../components/SavingsGoals";
+import { CategoryManager } from "../../components/CategoryManager"; // Import CategoryManager
+import { FinancialHealth } from "../../components/FinancialHealth"; // Import FinancialHealth
+import { TransactionTemplates } from "../../components/TransactionTemplates"; // Import TransactionTemplates
+import { BudgetTemplates } from "../../components/BudgetTemplates"; // Import BudgetTemplates
+import { CategoryChart } from "./CategoryChart"; // Import new Pie Chart
+import { FinancialRecordChart as SpendingBarChart } from "./financial-record-chart"; // Rename Bar Chart import
+
+
 import "./dashboard.css";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import { useMemo } from "react";
@@ -18,75 +26,63 @@ export const Dashboard = () => {
   const { user } = useUser();
   const { records, budget, isLoading } = useFinancialRecords();
 
-  // Calculate current month's income (from budget salary + any additional income)
-  const currentMonthIncome = useMemo(() => {
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
+  // Calculations remain the same...
+    const currentMonthIncome = useMemo(() => {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        const additionalIncome = records
+        .filter((record) => {
+            const recordDate = new Date(record.date);
+            return (
+            recordDate.getMonth() === currentMonth &&
+            recordDate.getFullYear() === currentYear &&
+            record.category === "Salary"
+            );
+        })
+        .reduce((total, record) => total + record.amount, 0);
+        return (budget?.monthlySalary || 0) + additionalIncome;
+    }, [records, budget]);
 
-    // Get additional income from records (bonuses, etc.)
-    const additionalIncome = records
-      .filter((record) => {
-        const recordDate = new Date(record.date);
-        return (
-          recordDate.getMonth() === currentMonth &&
-          recordDate.getFullYear() === currentYear &&
-          record.category === "Salary"
-        );
-      })
-      .reduce((total, record) => total + record.amount, 0);
+    const currentMonthExpenses = useMemo(() => {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        return records
+        .filter((record) => {
+            const recordDate = new Date(record.date);
+            return (
+            recordDate.getMonth() === currentMonth &&
+            recordDate.getFullYear() === currentYear &&
+            record.category !== "Salary"
+            );
+        })
+        .reduce((total, record) => total + record.amount, 0);
+    }, [records]);
 
-    // Return monthly salary from budget + any additional income
-    return (budget?.monthlySalary || 0) + additionalIncome;
-  }, [records, budget]);
+    const totalIncome = useMemo(() => {
+        return records
+        .filter((record) => record.category === "Salary")
+        .reduce((total, record) => total + record.amount, 0);
+    }, [records]);
 
-  // Calculate current month's expenses
-  const currentMonthExpenses = useMemo(() => {
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
+    const totalExpenses = useMemo(() => {
+        return records
+        .filter((record) => record.category !== "Salary")
+        .reduce((total, record) => total + record.amount, 0);
+    }, [records]);
 
-    return records
-      .filter((record) => {
-        const recordDate = new Date(record.date);
-        return (
-          recordDate.getMonth() === currentMonth &&
-          recordDate.getFullYear() === currentYear &&
-          record.category !== "Salary"
-        );
-      })
-      .reduce((total, record) => total + record.amount, 0);
-  }, [records]);
+    const balance = useMemo(() => totalIncome - totalExpenses, [totalIncome, totalExpenses]);
 
-  // Calculate total income (all time)
-  const totalIncome = useMemo(() => {
-    return records
-      .filter((record) => record.category === "Salary")
-      .reduce((total, record) => total + record.amount, 0);
-  }, [records]);
+    const budgetAdherence = useMemo(() => {
+        if (!budget || !budget.categoryBudgets) return 0;
+        const totalBudgeted = Object.values(budget.categoryBudgets).reduce((sum, val) => sum + (val || 0), 0);
+        if (totalBudgeted === 0) return currentMonthExpenses === 0 ? 100 : 0; // If no budget and no expenses, 100%. If expenses, 0%.
+        // Calculate remaining percentage
+        const remainingPercentage = Math.max(0, ( (totalBudgeted - currentMonthExpenses) / totalBudgeted ) * 100);
+        return Math.min(100, remainingPercentage); // Cap at 100%
+      }, [budget, currentMonthExpenses]);
 
-  // Calculate total expenses (all time)
-  const totalExpenses = useMemo(() => {
-    return records
-      .filter((record) => record.category !== "Salary")
-      .reduce((total, record) => total + record.amount, 0);
-  }, [records]);
-
-  const balance = useMemo(() => {
-    return totalIncome - totalExpenses;
-  }, [totalIncome, totalExpenses]);
-
-  const currentMonthBalance = useMemo(() => {
-    return currentMonthIncome - currentMonthExpenses;
-  }, [currentMonthIncome, currentMonthExpenses]);
-
-  // Calculate budget adherence percentage
-  const budgetAdherence = useMemo(() => {
-    if (!budget) return 0;
-    const totalBudget = Object.values(budget.categoryBudgets).reduce((sum, val) => sum + val, 0);
-    if (totalBudget === 0) return 0;
-    return Math.min(100, ((totalBudget - currentMonthExpenses) / totalBudget) * 100);
-  }, [budget, currentMonthExpenses]);
 
   if (isLoading) {
     return (
@@ -129,15 +125,15 @@ export const Dashboard = () => {
           color="#ef4444"
           trend="Current month"
         />
-        {budget && (
-          <StatCard
-            title="Budget Adherence"
-            value={budgetAdherence}
-            icon={Target}
-            color="#8b5cf6"
-            trend={`${budgetAdherence.toFixed(0)}% remaining`}
-            prefix=""
-          />
+        {budget && ( // Only show budget adherence if budget exists
+            <StatCard
+                title="Budget Remaining"
+                value={budgetAdherence} // Show remaining percentage
+                icon={Target}
+                color="#8b5cf6"
+                trend={`${budgetAdherence.toFixed(0)}%`} // Display percentage
+                prefix="" // No currency prefix for percentage
+            />
         )}
       </div>
 
@@ -146,18 +142,21 @@ export const Dashboard = () => {
         {/* Sidebar */}
         <div className="dashboard-sidebar">
           <FinancialRecordForm />
+          {/* <TransactionTemplates /> Add Templates */}
           <BudgetManager />
+          {/* <BudgetTemplates /> Add Budget Templates */}
+          <CategoryManager /> 
           <SavingsGoals />
-          <Subscriptions />
+          <Subscriptions /> 
         </div>
 
         {/* Main Content */}
         <div className="dashboard-main">
-          {/* AI Financial Summary - NEW */}
           <FinancialSummary />
-          
+          <FinancialHealth /> 
           {budget && <BudgetTracking />}
-          <FinancialRecordChart />
+          <CategoryChart /> 
+          <SpendingBarChart /> 
           <FinancialRecordList />
         </div>
       </div>
