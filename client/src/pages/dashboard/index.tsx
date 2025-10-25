@@ -21,6 +21,8 @@ import { useFinancialRecords } from "../../contexts/financial-record-context";
 import { useMemo } from "react";
 import { StatCard } from "../../components/StatCard";
 import { DollarSign, TrendingDown, Wallet, Target } from "lucide-react";
+import { BillReminders } from "../../components/BillReminders";
+import { SpendingInsights } from "../../components/SpendingInsights";
 
 export const Dashboard = () => {
   const { user } = useUser();
@@ -142,10 +144,12 @@ export const Dashboard = () => {
         {/* Sidebar */}
         <div className="dashboard-sidebar">
           <FinancialRecordForm />
-          {/* <TransactionTemplates /> Add Templates */}
+          <TransactionTemplates /> Add Templates
           <BudgetManager />
-          {/* <BudgetTemplates /> Add Budget Templates */}
+          <BudgetTemplates /> Add Budget Templates
+
           <CategoryManager /> 
+          <BillReminders />
           <SavingsGoals />
           <Subscriptions /> 
         </div>
@@ -154,6 +158,7 @@ export const Dashboard = () => {
         <div className="dashboard-main">
           <FinancialSummary />
           <FinancialHealth /> 
+          <SpendingInsights /> 
           {budget && <BudgetTracking />}
           <CategoryChart /> 
           <SpendingBarChart /> 
