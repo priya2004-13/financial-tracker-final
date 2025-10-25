@@ -21,7 +21,6 @@ import { useFinancialRecords } from "../../contexts/financial-record-context";
 import { useMemo } from "react";
 import { StatCard } from "../../components/StatCard";
 import { DollarSign, TrendingDown, Wallet, Target } from "lucide-react";
-import { BillReminders } from "../../components/BillReminders";
 import { SpendingInsights } from "../../components/SpendingInsights";
 
 export const Dashboard = () => {
@@ -149,7 +148,7 @@ export const Dashboard = () => {
           <BudgetTemplates /> Add Budget Templates
 
           <CategoryManager /> 
-          <BillReminders />
+      
           <SavingsGoals />
           <Subscriptions /> 
         </div>

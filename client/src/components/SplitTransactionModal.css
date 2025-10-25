@@ -1,27 +1,35 @@
-﻿/* client/src/components/SplitTransactionModal.css - Mobile First */
-
+﻿/* client/src/components/SplitTransactionModal.css - UPDATED WITH PROPER Z-INDEX */
+ 
 .split-modal-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 1050;
+    z-index: 9999;
+    /* CRITICAL: Very high z-index to overlay everything */
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1rem;
     animation: fadeIn 0.2s ease-out;
     backdrop-filter: blur(4px);
+    /* Ensure it's on top of everything */
+    isolation: isolate;
 }
 
 .split-modal-content {
+    position: relative;
+    /* Establish stacking context */
     background: var(--card-bg);
     border-radius: var(--radius-xl);
     width: 100%;
     max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    /* Stronger shadow */
     animation: slideUp 0.3s ease-out;
+    z-index: 10000;
+    /* Even higher than overlay */
 }
 
 .split-modal-header {
@@ -481,4 +489,17 @@
     .use-case-examples {
         font-size: 0.75rem;
     }
+}
+
+/* CRITICAL: Ensure modal portal renders above everything */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Fix for Recharts and other third-party components */
+.recharts-wrapper,
+.recharts-surface {
+    position: relative;
+    z-index: 1;
+    /* Keep charts low */
 }

@@ -1,79 +1,134 @@
-﻿// client/src/components/BudgetTemplates.tsx
-import React, { useState } from 'react';
+﻿// client/src/components/BudgetTemplates.tsx - FIXED VERSION
+import React, { useState, useMemo } from 'react';
 import { useFinancialRecords } from '../contexts/financial-record-context';
 import { Layers, CheckCircle, AlertTriangle } from 'lucide-react';
-import './BudgetTemplates.css'; // Create this CSS file
+import './BudgetTemplates.css';
 
 interface Template {
     name: string;
     description: string;
-    calculate: (salary: number) => Record<string, number>;
+    calculate: (salary: number, categories: string[]) => Record<string, number>;
 }
 
 const templates: Template[] = [
     {
         name: "50/30/20 Rule",
         description: "50% Needs, 30% Wants, 20% Savings/Debt",
-        calculate: (salary) => {
-            // Note: This is a simplified allocation. Needs/Wants/Savings aren't direct categories.
-            // We'll allocate roughly to existing categories for demonstration.
+        calculate: (salary, categories) => {
             const needs = salary * 0.5;
             const wants = salary * 0.3;
-            // Savings (20%) isn't a direct expense category here.
-            return {
-                Rent: needs * 0.6, // Example allocation within Needs
-                Food: needs * 0.2,
-                Utilities: needs * 0.2,
-                Entertainment: wants, // Example allocation for Wants
-                Other: 0, // Allocate remaining if necessary, or leave for user
-            };
+            const result: Record<string, number> = {};
+
+            // Distribute needs among essential categories
+            const essentialCategories = categories.filter(c =>
+                ['Rent', 'Utilities', 'Food'].some(e => c.toLowerCase().includes(e.toLowerCase()))
+            );
+            const otherCategories = categories.filter(c =>
+                !essentialCategories.includes(c) && c !== 'Salary'
+            );
+
+            if (essentialCategories.length > 0) {
+                const needsPerCategory = needs / essentialCategories.length;
+                essentialCategories.forEach(cat => result[cat] = needsPerCategory);
+            }
+
+            if (otherCategories.length > 0) {
+                const wantsPerCategory = wants / otherCategories.length;
+                otherCategories.forEach(cat => result[cat] = wantsPerCategory);
+            }
+
+            return result;
         }
     },
     {
         name: "Zero-Based Budget",
-        description: "Allocate every dollar to a category (Needs manual input after applying)",
-        calculate: (salary) => {
-            // Provides structure, user fills amounts
-            return { Food: 0, Rent: 0, Utilities: 0, Entertainment: 0, Other: 0 };
+        description: "Allocate every dollar to a category (Needs manual adjustment after applying)",
+        calculate: (salary, categories) => {
+            const result: Record<string, number> = {};
+            categories.forEach(cat => {
+                if (cat !== 'Salary') result[cat] = 0;
+            });
+            return result;
         }
     },
-     {
+    {
         name: "Basic Needs First",
         description: "Prioritizes Rent, Food, Utilities, then allocates remainder.",
-        calculate: (salary) => {
-            // Example fixed amounts/percentages - adjust as needed
-            const rent = Math.min(salary * 0.4, 15000); // Max rent budget example
-            const food = Math.min(salary * 0.15, 5000);
-            const utilities = Math.min(salary * 0.1, 3000);
-            const remaining = salary - rent - food - utilities;
-            return {
-                Rent: rent > 0 ? rent : 0,
-                Food: food > 0 ? food : 0,
-                Utilities: utilities > 0 ? utilities : 0,
-                Entertainment: Math.max(0, remaining * 0.5), // Allocate half of remainder to Entertainment
-                Other: Math.max(0, remaining * 0.5),      // Allocate other half to Other
-            };
+        calculate: (salary, categories) => {
+            const result: Record<string, number> = {};
+            let remaining = salary;
+
+            // Allocate fixed percentages to essential categories
+            const allocations = [
+                { pattern: 'rent', percentage: 0.4 },
+                { pattern: 'food', percentage: 0.15 },
+                { pattern: 'utilities', percentage: 0.1 }
+            ];
+
+            allocations.forEach(({ pattern, percentage }) => {
+                const cat = categories.find(c => c.toLowerCase().includes(pattern));
+                if (cat) {
+                    const amount = Math.min(salary * percentage, remaining);
+                    result[cat] = amount;
+                    remaining -= amount;
+                }
+            });
+
+            // Distribute remaining among other categories
+            const otherCategories = categories.filter(c =>
+                !Object.keys(result).includes(c) && c !== 'Salary'
+            );
+
+            if (otherCategories.length > 0 && remaining > 0) {
+                const amountPerCategory = remaining / otherCategories.length;
+                otherCategories.forEach(cat => result[cat] = amountPerCategory);
+            }
+
+            return result;
         }
     },
-    // Add more templates as needed
+    {
+        name: "Equal Distribution",
+        description: "Distribute salary equally across all categories",
+        calculate: (salary, categories) => {
+            const result: Record<string, number> = {};
+            const expenseCategories = categories.filter(c => c !== 'Salary');
+
+            if (expenseCategories.length > 0) {
+                const amountPerCategory = salary / expenseCategories.length;
+                expenseCategories.forEach(cat => result[cat] = amountPerCategory);
+            }
+
+            return result;
+        }
+    }
 ];
 
 export const BudgetTemplates: React.FC = () => {
-    const { budget, updateBudget, isLoading } = useFinancialRecords();
+    const { budget, updateBudget, categories, isLoading } = useFinancialRecords();
     const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
     const [confirmation, setConfirmation] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
+    // Get all available categories (default + custom)
+    const allCategories = useMemo(() => {
+        const defaultCategories = ["Food", "Rent", "Utilities", "Entertainment", "Other"];
+        const customCategoryNames = categories.map(c => c.name);
+        return [...new Set([...defaultCategories, ...customCategoryNames])].sort();
+    }, [categories]);
+
     const handleApplyTemplate = () => {
         setError(null);
         setConfirmation(null);
+
         if (!selectedTemplate || !budget) {
             setError("Please select a template and ensure a budget exists.");
             return;
         }
+
         if (budget.monthlySalary <= 0) {
-             setError("Please set your Monthly Salary in the Budget Manager before applying a template.");
-             return;
+            setError("Please set your Monthly Salary in the Budget Manager before applying a template.");
+            return;
         }
 
         if (!window.confirm(`Applying "${selectedTemplate.name}" will overwrite your current category budgets based on your salary of ₹${budget.monthlySalary.toFixed(2)}. Are you sure?`)) {
@@ -81,43 +136,41 @@ export const BudgetTemplates: React.FC = () => {
         }
 
         try {
-            const newCategoryBudgets = selectedTemplate.calculate(budget.monthlySalary);
+            // Calculate new budgets using all available categories
+            const newCategoryBudgets = selectedTemplate.calculate(budget.monthlySalary, allCategories);
 
-             // Ensure all default categories exist in the new budgets, even if zero
-            const fullNewBudgets = {
-                Food: 0,
-                Rent: 0,
-                Utilities: 0,
-                Entertainment: 0,
-                Other: 0,
-                ...newCategoryBudgets // Overwrite with calculated values
-            };
-
+            // Ensure all categories have a budget entry (even if 0)
+            const fullNewBudgets: Record<string, number> = {};
+            allCategories.forEach(cat => {
+                if (cat !== 'Salary') {
+                    fullNewBudgets[cat] = newCategoryBudgets[cat] || 0;
+                }
+            });
 
             updateBudget({
                 ...budget,
                 categoryBudgets: fullNewBudgets,
             });
+
             setConfirmation(`Successfully applied "${selectedTemplate.name}" template!`);
-            setSelectedTemplate(null); // Deselect after applying
+            setSelectedTemplate(null);
         } catch (err) {
             console.error("Error applying template:", err);
             setError("Failed to apply the template.");
         }
     };
 
-     if (isLoading) {
-         return null; // Don't show while main budget is loading
-     }
-     if (!budget) {
-         // Optionally show a message prompting user to set up budget first
-         return (
-              <div className="budget-templates-container disabled-overlay">
-                 <p>Set up your main budget first to use templates.</p>
-             </div>
-         );
-     }
+    if (isLoading) {
+        return null;
+    }
 
+    if (!budget) {
+        return (
+            <div className="budget-templates-container disabled-overlay">
+                <p>Set up your main budget first to use templates.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="budget-templates-container">
@@ -130,8 +183,8 @@ export const BudgetTemplates: React.FC = () => {
                 </div>
             </div>
 
-            {error && <div className="template-message error"><AlertTriangle size={16}/> {error}</div>}
-            {confirmation && <div className="template-message success"><CheckCircle size={16}/> {confirmation}</div>}
+            {error && <div className="template-message error"><AlertTriangle size={16} /> {error}</div>}
+            {confirmation && <div className="template-message success"><CheckCircle size={16} /> {confirmation}</div>}
 
             <div className="template-selector">
                 <select
@@ -139,8 +192,8 @@ export const BudgetTemplates: React.FC = () => {
                     onChange={(e) => {
                         const template = templates.find(t => t.name === e.target.value) || null;
                         setSelectedTemplate(template);
-                         setError(null); // Clear errors on selection change
-                         setConfirmation(null);
+                        setError(null);
+                        setConfirmation(null);
                     }}
                     className='form-input form-input-animated'
                     disabled={budget.monthlySalary <= 0}
@@ -163,8 +216,10 @@ export const BudgetTemplates: React.FC = () => {
             >
                 Apply Template
             </button>
-             {budget.monthlySalary <= 0 && <p className='template-warning'>Set Monthly Salary above to enable templates.</p>}
 
+            {budget.monthlySalary <= 0 && (
+                <p className='template-warning'>Set Monthly Salary above to enable templates.</p>
+            )}
         </div>
     );
 };

@@ -1,6 +1,8 @@
 ﻿/* client/src/components/FinancialHealth.css - Mobile First */
 
 .financial-health-container {
+
+
     background: var(--card-bg);
     border-radius: var(--radius-xl);
     padding: 1rem;
@@ -62,6 +64,7 @@
 
 .score-visual {
     position: relative;
+    z-index: 0;
     width: 120px; /* Smaller circle for mobile */
     height: 120px;
     display: flex;
