@@ -1,4 +1,4 @@
-﻿// client/src/components/SharedExpenses.tsx
+﻿// client/src/components/SharedExpenses.tsx - 
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { Users, Plus, Check, X, TrendingUp, TrendingDown, Loader } from 'lucide-react';
@@ -26,6 +26,7 @@ interface SharedExpense {
     description: string;
     totalAmount: number;
     category: string;
+    paymentMethod: string;
     paidBy: string;
     paidByName: string;
     splitType: 'equal' | 'custom' | 'percentage';
@@ -49,6 +50,7 @@ export const SharedExpenses: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState('default');
+    const [error, setError] = useState<string | null>(null);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -79,12 +81,23 @@ export const SharedExpenses: React.FC = () => {
         if (!user) return;
         try {
             setIsLoading(true);
+            setError(null);
             const response = await fetch(`${API_BASE_URL}/shared-expenses/group/${selectedGroup}`);
-            if (!response.ok) throw new Error('Failed to fetch expenses');
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    setExpenses([]);
+                    return;
+                }
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
             setExpenses(data);
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error loading expenses:', err);
+            setError(err.message || 'Failed to load shared expenses');
+            setExpenses([]);
         } finally {
             setIsLoading(false);
         }
@@ -94,11 +107,20 @@ export const SharedExpenses: React.FC = () => {
         if (!user) return;
         try {
             const response = await fetch(`${API_BASE_URL}/shared-expenses/balance/${selectedGroup}/${user.id}`);
-            if (!response.ok) throw new Error('Failed to fetch balance');
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    setBalance({ totalOwed: 0, totalOwedToUser: 0, netBalance: 0 });
+                    return;
+                }
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
             setBalance(data);
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error loading balance:', err);
+            setBalance({ totalOwed: 0, totalOwedToUser: 0, netBalance: 0 });
         }
     };
 
@@ -107,13 +129,19 @@ export const SharedExpenses: React.FC = () => {
 
         // Validation
         if (!formData.description || !formData.totalAmount) {
-            alert('Please fill in all required fields');
+            setError('Please fill in all required fields');
+            return;
+        }
+
+        const totalAmount = parseFloat(formData.totalAmount);
+        if (isNaN(totalAmount) || totalAmount <= 0) {
+            setError('Please enter a valid amount');
             return;
         }
 
         // Validate participants
         if (formData.participants.some(p => !p.userName)) {
-            alert('Please fill in all participant names');
+            setError('Please fill in all participant names');
             return;
         }
 
@@ -121,12 +149,26 @@ export const SharedExpenses: React.FC = () => {
         if (formData.splitType === 'percentage') {
             const totalPercentage = formData.participants.reduce((sum, p) => sum + (p.percentage || 0), 0);
             if (Math.abs(totalPercentage - 100) > 0.01) {
-                alert('Percentages must add up to 100%');
+                setError('Percentages must add up to 100%');
+                return;
+            }
+        }
+
+        // Validate custom amounts
+        if (formData.splitType === 'custom') {
+            const customTotal = formData.participants.reduce((sum, p) => {
+                const amount = parseFloat(p.customAmount || '0');
+                return sum + (isNaN(amount) ? 0 : amount);
+            }, 0);
+
+            if (Math.abs(customTotal - totalAmount) > 0.01) {
+                setError(`Custom amounts (₹${customTotal.toFixed(2)}) must equal total (₹${totalAmount.toFixed(2)})`);
                 return;
             }
         }
 
         try {
+            setError(null);
             const newExpense = {
                 groupId: selectedGroup,
                 groupName: formData.groupName,
@@ -134,18 +176,18 @@ export const SharedExpenses: React.FC = () => {
                 createdByName: user.firstName || 'User',
                 date: new Date(),
                 description: formData.description,
-                totalAmount: parseFloat(formData.totalAmount),
+                totalAmount: totalAmount,
                 category: formData.category,
                 paymentMethod: formData.paymentMethod,
                 paidBy: user.id,
                 paidByName: user.firstName || 'User',
                 splitType: formData.splitType,
                 participants: formData.participants.map(p => ({
-                    userId: p.userId || `guest_${Date.now()}`,
+                    userId: p.userId || `guest_${Date.now()}_${Math.random()}`,
                     userName: p.userName,
                     amountOwed: formData.splitType === 'custom'
                         ? parseFloat(p.customAmount || '0')
-                        : 0,
+                        : 0, // Backend will calculate for equal/percentage
                     percentage: formData.splitType === 'percentage' ? p.percentage : undefined,
                     hasPaid: p.userId === user.id
                 }))
@@ -158,8 +200,8 @@ export const SharedExpenses: React.FC = () => {
             });
 
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error || 'Failed to create expense');
+                const errorData = await response.json();
+                throw new Error(errorData.error || errorData || 'Failed to create expense');
             }
 
             await loadExpenses();
@@ -168,22 +210,27 @@ export const SharedExpenses: React.FC = () => {
             resetForm();
         } catch (err: any) {
             console.error('Error creating expense:', err);
-            alert(`Failed to create shared expense: ${err.message}`);
+            setError(`Failed to create shared expense: ${err.message}`);
         }
     };
 
     const markAsPaid = async (expenseId: string, userId: string) => {
         try {
+            setError(null);
             const response = await fetch(
                 `${API_BASE_URL}/shared-expenses/${expenseId}/mark-paid/${userId}`,
                 { method: 'PUT' }
             );
-            if (!response.ok) throw new Error('Failed to mark as paid');
+
+            if (!response.ok) {
+                throw new Error('Failed to mark as paid');
+            }
+
             await loadExpenses();
             await loadBalance();
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error marking as paid:', err);
-            alert('Failed to mark as paid');
+            setError('Failed to mark as paid');
         }
     };
 
@@ -250,6 +297,21 @@ export const SharedExpenses: React.FC = () => {
                     {showForm ? 'Cancel' : 'Add Expense'}
                 </button>
             </div>
+
+            {/* Error Display */}
+            {error && (
+                <div className="error-banner" style={{
+                    padding: '0.75rem 1rem',
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    borderRadius: 'var(--radius-md)',
+                    color: 'var(--danger-color)',
+                    marginBottom: '1rem',
+                    fontSize: '0.875rem'
+                }}>
+                    ⚠️ {error}
+                </div>
+            )}
 
             {/* Balance Summary */}
             <div className="balance-summary">
@@ -340,6 +402,8 @@ export const SharedExpenses: React.FC = () => {
                                             placeholder="%"
                                             value={p.percentage}
                                             onChange={(e) => updateParticipant(index, 'percentage', parseFloat(e.target.value) || 0)}
+                                            min="0"
+                                            max="100"
                                         />
                                     )}
                                     {formData.splitType === 'custom' && (
@@ -349,6 +413,7 @@ export const SharedExpenses: React.FC = () => {
                                             value={p.customAmount}
                                             onChange={(e) => updateParticipant(index, 'customAmount', e.target.value)}
                                             step="0.01"
+                                            min="0"
                                         />
                                     )}
                                     {formData.participants.length > 1 && (

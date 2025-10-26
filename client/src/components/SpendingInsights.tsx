@@ -1,28 +1,28 @@
-﻿// client/src/components/SpendingInsights.tsx
-import React, { useMemo } from 'react';
+﻿// client/src/components/SpendingInsights.tsx 
+import React, { useMemo, useEffect, useState } from 'react';
 import {
-    LineChart,
-    Line,
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer
+    LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { useFinancialRecords } from '../contexts/financial-record-context';
-import { TrendingUp, TrendingDown, Calendar, DollarSign } from 'lucide-react';
+import { TrendingUp, TrendingDown, Calendar, DollarSign, Loader } from 'lucide-react';
 import './SpendingInsights.css';
 
 export const SpendingInsights: React.FC = () => {
-    const { records } = useFinancialRecords();
+    const { records, isLoading } = useFinancialRecords();
+    const [dataReady, setDataReady] = useState(false);
 
     // Filter out income records
     const expenseRecords = useMemo(() => {
         return records.filter(r => r.category !== 'Salary');
     }, [records]);
+
+    useEffect(() => {
+        // Simulate data processing delay
+        if (expenseRecords.length > 0 && !isLoading) {
+            const timer = setTimeout(() => setDataReady(true), 300);
+            return () => clearTimeout(timer);
+        }
+    }, [expenseRecords, isLoading]);
 
     // Week-over-week comparison (last 8 weeks)
     const weeklyComparison = useMemo(() => {
@@ -78,7 +78,8 @@ export const SpendingInsights: React.FC = () => {
 
         return Object.entries(categoryData)
             .map(([category, amount]) => ({ category, amount }))
-            .sort((a, b) => b.amount - a.amount);
+            .sort((a, b) => b.amount - a.amount)
+            .slice(0, 8); // Top 8 categories
     }, [expenseRecords]);
 
     // Best/Worst spending days (last 30 days)
@@ -125,6 +126,19 @@ export const SpendingInsights: React.FC = () => {
             average: dayCounts[i] > 0 ? dayTotals[i] / dayCounts[i] : 0
         }));
     }, [expenseRecords]);
+
+    if (isLoading || !dataReady) {
+        return (
+            <div className="insights-container">
+                <div className="insights-header">
+                    <div className="header-icon">
+                        <Loader size={22} className="spinner" />
+                    </div>
+                    <h2 className="insights-title">Loading Insights...</h2>
+                </div>
+            </div>
+        );
+    }
 
     if (expenseRecords.length === 0) {
         return (
@@ -175,15 +189,8 @@ export const SpendingInsights: React.FC = () => {
                 <ResponsiveContainer width="100%" height={250}>
                     <LineChart data={weeklyComparison}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                        <XAxis
-                            dataKey="week"
-                            tick={{ fontSize: 12 }}
-                            stroke="#6b7280"
-                        />
-                        <YAxis
-                            tick={{ fontSize: 12 }}
-                            stroke="#6b7280"
-                        />
+                        <XAxis dataKey="week" tick={{ fontSize: 12 }} stroke="#6b7280" />
+                        <YAxis tick={{ fontSize: 12 }} stroke="#6b7280" />
                         <Tooltip
                             formatter={(value: number) => `₹${value.toFixed(2)}`}
                             contentStyle={{
@@ -207,19 +214,12 @@ export const SpendingInsights: React.FC = () => {
 
             {/* Category Trends */}
             <div className="insight-card">
-                <h3 className="card-title">Category Breakdown (Last 30 Days)</h3>
+                <h3 className="card-title">Top Categories (Last 30 Days)</h3>
                 <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={categoryTrends}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                        <XAxis
-                            dataKey="category"
-                            tick={{ fontSize: 12 }}
-                            stroke="#6b7280"
-                        />
-                        <YAxis
-                            tick={{ fontSize: 12 }}
-                            stroke="#6b7280"
-                        />
+                        <XAxis dataKey="category" tick={{ fontSize: 12 }} stroke="#6b7280" />
+                        <YAxis tick={{ fontSize: 12 }} stroke="#6b7280" />
                         <Tooltip
                             formatter={(value: number) => `₹${value.toFixed(2)}`}
                             contentStyle={{
@@ -229,11 +229,7 @@ export const SpendingInsights: React.FC = () => {
                                 color: '#f9fafb'
                             }}
                         />
-                        <Bar
-                            dataKey="amount"
-                            fill="#8b5cf6"
-                            radius={[8, 8, 0, 0]}
-                        />
+                        <Bar dataKey="amount" fill="#8b5cf6" radius={[8, 8, 0, 0]} />
                     </BarChart>
                 </ResponsiveContainer>
             </div>
@@ -244,15 +240,8 @@ export const SpendingInsights: React.FC = () => {
                 <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={dayOfWeekSpending}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                        <XAxis
-                            dataKey="day"
-                            tick={{ fontSize: 12 }}
-                            stroke="#6b7280"
-                        />
-                        <YAxis
-                            tick={{ fontSize: 12 }}
-                            stroke="#6b7280"
-                        />
+                        <XAxis dataKey="day" tick={{ fontSize: 12 }} stroke="#6b7280" />
+                        <YAxis tick={{ fontSize: 12 }} stroke="#6b7280" />
                         <Tooltip
                             formatter={(value: number) => `₹${value.toFixed(2)}`}
                             contentStyle={{
@@ -262,11 +251,7 @@ export const SpendingInsights: React.FC = () => {
                                 color: '#f9fafb'
                             }}
                         />
-                        <Bar
-                            dataKey="average"
-                            fill="#10b981"
-                            radius={[8, 8, 0, 0]}
-                        />
+                        <Bar dataKey="average" fill="#10b981" radius={[8, 8, 0, 0]} />
                     </BarChart>
                 </ResponsiveContainer>
             </div>

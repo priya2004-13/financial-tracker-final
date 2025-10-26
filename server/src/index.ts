@@ -1,4 +1,4 @@
-// server/src/index.ts
+// server/src/index.ts 
 import express, { Express } from "express";
 import mongoose from "mongoose";
 import financialRecordRouter from "./routes/financial-records";
@@ -7,8 +7,9 @@ import savingsGoalRouter from "./routes/savings-goals";
 import recurringPaymentRouter from "./routes/recurring-payments";
 import notificationRouter from "./routes/notifications";
 import aiInsightsRouter from "./routes/ai-insights";
-import categoryRouter from "./routes/category"; // Import category router
-import transactionTemplateRouter from "./routes/transaction-template"; // Import template router
+import categoryRouter from "./routes/category";
+import transactionTemplateRouter from "./routes/transaction-template";
+import sharedExpenseRouter from "./routes/shared-expense"; // ✅ ADDED
 import cors from "cors";
 import 'dotenv/config'
 
@@ -22,8 +23,13 @@ const mongoURI: string = process.env.MONGO_URI || 'mongodb://localhost:27017/fin
 
 mongoose
   .connect(mongoURI)
-  .then(() => console.log("CONNECTED TO MONGODB!"))
-  .catch((err) => console.error("Failed to Connect to MongoDB:", err));
+  .then(() => console.log("✅ CONNECTED TO MONGODB!"))
+  .catch((err) => console.error("❌ Failed to Connect to MongoDB:", err));
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.status(200).send({ status: "OK", timestamp: new Date().toISOString() });
+});
 
 // Routes
 app.use("/financial-records", financialRecordRouter);
@@ -32,10 +38,31 @@ app.use("/savings-goals", savingsGoalRouter);
 app.use("/recurring-payments", recurringPaymentRouter);
 app.use("/notifications", notificationRouter);
 app.use("/ai", aiInsightsRouter);
-app.use("/categories", categoryRouter); 
-app.use("/transaction-templates", transactionTemplateRouter); 
+app.use("/categories", categoryRouter);
+app.use("/transaction-templates", transactionTemplateRouter);
+app.use("/shared-expenses", sharedExpenseRouter); // ✅ ADDED
 
+// 404 handler
+app.use((req, res) => {
+  res.status(404).send({ error: "Route not found" });
+});
+
+// Error handler
+app.use((err: any, req: any, res: any, next: any) => {
+  console.error("Server Error:", err);
+  res.status(500).send({ error: "Internal server error" });
+});
 
 app.listen(port, () => {
-  console.log(`Server Running on Port ${port}`);
+  console.log(`🚀 Server Running on Port ${port}`);
+  console.log(`📊 API Endpoints:`);
+  console.log(`   - Financial Records: /financial-records`);
+  console.log(`   - Budget: /budget`);
+  console.log(`   - Savings Goals: /savings-goals`);
+  console.log(`   - Recurring Payments: /recurring-payments`);
+  console.log(`   - Notifications: /notifications`);
+  console.log(`   - AI Insights: /ai`);
+  console.log(`   - Categories: /categories`);
+  console.log(`   - Templates: /transaction-templates`);
+  console.log(`   - Shared Expenses: /shared-expenses ✅ NEW`);
 });
