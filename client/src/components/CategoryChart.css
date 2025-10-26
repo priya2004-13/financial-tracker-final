@@ -1,5 +1,37 @@
 ﻿/* client/src/pages/dashboard/CategoryChart.css */
 
+.chart-container,
+.pie-chart-container {
+    position: relative;
+    z-index: 1; /* Keep low - normal document flow */
+}
+
+.recharts-wrapper,
+.recharts-surface {
+    position: relative;
+    z-index: 1 !important; /* Force low z-index */
+}
+
+/* Prevent charts from creating stacking contexts that interfere */
+.recharts-wrapper * {
+    position: relative;
+    z-index: auto !important;
+}
+
+/* Ensure ResponsiveContainer doesn't interfere */
+.recharts-responsive-container {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Fix for tooltips - they should be high but not as high as modals */
+.recharts-tooltip-wrapper {
+    z-index: 100 !important; /* High enough for tooltips, but way below modals */
+}
+
+.recharts-legend-wrapper {
+    z-index: 10 !important;
+}
 .pie-chart-container {
     /* Inherits chart-container styles */
     display: flex;

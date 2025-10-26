@@ -66,3 +66,18 @@ input:focus, select:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
+
+/* Utility Classes */
+/* Ensure modals always overlay charts */
+.recharts-wrapper,
+.recharts-surface,
+.recharts-responsive-container {
+    z-index: 1 !important;
+    position: relative;
+}
+
+/* Modal portal should be at root level */
+body > #modal-root {
+    z-index: 99999;
+    position: relative;
+}

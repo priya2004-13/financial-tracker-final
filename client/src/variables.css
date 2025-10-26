@@ -83,6 +83,7 @@
 
   /* Z-index layers */
   --z-base: 1;
+  --z-chart: 1;
   --z-dropdown: 1000;
   --z-sticky: 1020;
   --z-fixed: 1030;

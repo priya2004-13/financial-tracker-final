@@ -34,6 +34,23 @@ export const SplitTransactionModal: React.FC<SplitTransactionModalProps> = ({
     const [autoDistribute, setAutoDistribute] = useState(false);
 
     useEffect(() => {
+        if (isOpen) {
+            // Lock body scroll
+            document.body.classList.add('modal-open');
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Unlock body scroll
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+        }
+
+        // Cleanup on unmount
+        return () => {
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+        };
+    }, [isOpen]);
+    useEffect(() => {
         if (isOpen && originalDescription && originalAmount) {
             // Pre-fill first item with original data
             setSplits([{

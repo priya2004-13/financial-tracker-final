@@ -4,8 +4,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 9999;
-    /* CRITICAL: Very high z-index to overlay everything */
+    z-index: 9999; /* CRITICAL: Very high z-index to overlay everything */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -252,7 +251,39 @@
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
+.split-modal-content select {
+    position: relative;
+    z-index: 100001; /* Above modal content to show dropdown */
+}
 
+/* Ensure select dropdown options appear */
+.split-modal-content select option {
+    position: relative;
+    z-index: 100002;
+}
+
+/* Fix modal header and footer to stay on top within modal */
+.split-modal-header,
+.split-modal-footer {
+    position: sticky;
+    background: var(--card-bg);
+    z-index: 100010; /* Above modal content but below overlay */
+}
+
+.split-modal-header {
+    top: 0;
+}
+
+.split-modal-footer {
+    bottom: 0;
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
 .input-with-icon {
     position: relative;
     display: flex;

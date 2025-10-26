@@ -1,5 +1,13 @@
-// client/src/pages/dashboard/index.tsx - 
+// client/src/pages/dashboard/index.tsx - Updated with Scroll Detection
 import { useUser } from "@clerk/clerk-react";
+import { useMemo } from "react";
+import { useFinancialRecords } from "../../contexts/financial-record-context";
+import { DollarSign, TrendingDown, Wallet, Target, ArrowUp } from "lucide-react";
+
+// Import the scroll detection hook
+import { useScrollDetection } from "../../hooks/useScrollDetection";
+
+// Import components
 import { FinancialRecordForm } from "./financial-record-form";
 import { FinancialRecordList } from "./financial-record-list";
 import { BudgetManager } from "../../components/BudgetManager";
@@ -14,19 +22,20 @@ import { BudgetTemplates } from "../../components/BudgetTemplates";
 import { CategoryChart } from "./CategoryChart";
 import { FinancialRecordChart as SpendingBarChart } from "./financial-record-chart";
 import { SpendingInsights } from "../../components/SpendingInsights";
-import { SharedExpenses } from "../../components/SharedExpenses"; 
+import { SharedExpenses } from "../../components/SharedExpenses";
+import { StatCard } from "../../components/StatCard";
 
 import "./dashboard.css";
-import { useFinancialRecords } from "../../contexts/financial-record-context";
-import { useMemo } from "react";
-import { StatCard } from "../../components/StatCard";
-import { DollarSign, TrendingDown, Wallet, Target } from "lucide-react";
 
 export const Dashboard = () => {
   const { user } = useUser();
   const { records, budget, isLoading } = useFinancialRecords();
 
-  // Calculate current month income
+  // Scroll detection for sidebar and main content
+  const sidebar = useScrollDetection();
+  const mainContent = useScrollDetection();
+
+  // Calculate stats (existing code)
   const currentMonthIncome = useMemo(() => {
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -44,7 +53,6 @@ export const Dashboard = () => {
     return (budget?.monthlySalary || 0) + additionalIncome;
   }, [records, budget]);
 
-  // Calculate current month expenses
   const currentMonthExpenses = useMemo(() => {
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -61,24 +69,20 @@ export const Dashboard = () => {
       .reduce((total, record) => total + record.amount, 0);
   }, [records]);
 
-  // Calculate total income
   const totalIncome = useMemo(() => {
     return records
       .filter((record) => record.category === "Salary")
       .reduce((total, record) => total + record.amount, 0);
   }, [records]);
 
-  // Calculate total expenses
   const totalExpenses = useMemo(() => {
     return records
       .filter((record) => record.category !== "Salary")
       .reduce((total, record) => total + record.amount, 0);
   }, [records]);
 
-  // Calculate balance
   const balance = useMemo(() => totalIncome - totalExpenses, [totalIncome, totalExpenses]);
 
-  // Calculate budget adherence
   const budgetAdherence = useMemo(() => {
     if (!budget || !budget.categoryBudgets) return 0;
     const totalBudgeted = Object.values(budget.categoryBudgets).reduce((sum, val) => sum + (val || 0), 0);
@@ -100,12 +104,13 @@ export const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
+      {/* Header - Fixed */}
       <div className="dashboard-header">
         <h1 className="dashboard-welcome">Welcome back, {user?.firstName}! 👋</h1>
         <p className="dashboard-subtitle">Here's your financial overview</p>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Grid - Fixed */}
       <div className="stats-grid">
         <StatCard
           title="Total Balance"
@@ -140,10 +145,13 @@ export const Dashboard = () => {
         )}
       </div>
 
-      {/* Main Dashboard Grid */}
+      {/* Main Dashboard Grid - Scrollable sections */}
       <div className="dashboard-grid">
-        {/* Sidebar */}
-        <div className="dashboard-sidebar">
+        {/* Sidebar - Independently Scrollable */}
+        <div
+          ref={sidebar.scrollRef}
+          className={`dashboard-sidebar ${sidebar.isScrollable ? 'has-scroll' : ''} ${sidebar.isAtBottom ? 'scroll-bottom' : ''}`}
+        >
           <FinancialRecordForm />
           <TransactionTemplates />
           <BudgetManager />
@@ -151,21 +159,43 @@ export const Dashboard = () => {
           <CategoryManager />
           <SavingsGoals />
           <Subscriptions />
+
+          {/* Scroll to top button for sidebar */}
+          {sidebar.isScrollable && !sidebar.isAtTop && (
+            <button
+              className="scroll-to-top visible"
+              onClick={sidebar.scrollToTop}
+              title="Scroll to top"
+            >
+              <ArrowUp size={20} />
+            </button>
+          )}
         </div>
 
-        {/* Main Content */}
-        <div className="dashboard-main">
+        {/* Main Content - Independently Scrollable */}
+        <div
+          ref={mainContent.scrollRef}
+          className={`dashboard-main ${mainContent.isScrollable ? 'has-scroll' : ''} ${mainContent.isAtBottom ? 'scroll-bottom' : ''}`}
+        >
           <FinancialSummary />
           <FinancialHealth />
-
-        
           <SharedExpenses />
-
           <SpendingInsights />
           {budget && <BudgetTracking />}
           <CategoryChart />
           <SpendingBarChart />
           <FinancialRecordList />
+
+          {/* Scroll to top button for main content */}
+          {mainContent.isScrollable && !mainContent.isAtTop && (
+            <button
+              className="scroll-to-top visible"
+              onClick={mainContent.scrollToTop}
+              title="Scroll to top"
+            >
+              <ArrowUp size={20} />
+            </button>
+          )}
         </div>
       </div>
     </div>

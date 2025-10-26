@@ -1,6 +1,6 @@
 ﻿import { useMemo } from "react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
-
+import "./dashboard.css";
 const CATEGORY_COLORS: Record<string, string> = {
   Salary: '#10b981',
   Food: '#f97316',

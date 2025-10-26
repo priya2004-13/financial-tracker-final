@@ -1,19 +1,415 @@
 ﻿/* dashboard.css - Mobile First Responsive Design */
 @import '../../enhanced-mobile.css';
 @import "../../microInteractions.css";
-/* Dashboard Container - Mobile First */
+
+
+/* Dashboard Container - Fixed height viewport */
 .dashboard-container {
-  max-width: 100%; /* Mobile पर full width / Full width on mobile */
+  max-width: 100%;
   margin: 0 auto;
-  padding: 1rem; /* Mobile के लिए कम padding / Less padding for mobile */
+  padding: 1rem;
   display: flex;
   flex-direction: column;
+  height: 100vh; /* Full viewport height */
+  overflow: hidden; /* Prevent body scroll */
 }
 
-/* Dashboard Header */
+/* Dashboard Header - Fixed at top */
 .dashboard-header {
+  flex-shrink: 0; /* Don't shrink */
   margin-bottom: 1.5rem;
 }
+
+/* Stats Grid - Fixed, no scroll */
+.stats-grid {
+  flex-shrink: 0; /* Don't shrink */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Main Grid Layout - Takes remaining height */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  flex: 1; /* Take all remaining space */
+  min-height: 0; /* Critical for proper scrolling */
+  overflow: hidden; /* Prevent overflow */
+}
+
+/* Sidebar - Independently Scrollable */
+.dashboard-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto; /* Enable vertical scroll */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  padding-right: 0.5rem; /* Space for scrollbar */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  height: 100%; /* Full height of grid cell */
+}
+
+/* Main Content - Independently Scrollable */
+.dashboard-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto; /* Enable vertical scroll */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  padding-right: 0.5rem; /* Space for scrollbar */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  height: 100%; /* Full height of grid cell */
+}
+
+/* Custom Scrollbar for Sidebar */
+.dashboard-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-track {
+  background: var(--background-light);
+  border-radius: 3px;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+  transition: background 0.3s;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* Custom Scrollbar for Main Content */
+.dashboard-main::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dashboard-main::-webkit-scrollbar-track {
+  background: var(--background-light);
+  border-radius: 3px;
+}
+
+.dashboard-main::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+  transition: background 0.3s;
+}
+
+.dashboard-main::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* Prevent child elements from breaking scroll */
+.dashboard-sidebar > *,
+.dashboard-main > * {
+  flex-shrink: 0; /* Don't shrink components */
+}
+
+/* ============================================ */
+/* RESPONSIVE BREAKPOINTS */
+/* ============================================ */
+
+/* Small devices (640px and up) */
+@media (min-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+/* Medium devices (768px and up) */
+@media (min-width: 768px) {
+  .dashboard-container {
+    padding: 1.5rem;
+  }
+  
+  .dashboard-header {
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .dashboard-grid {
+    gap: 1.5rem;
+  }
+}
+
+/* Large devices (1024px and up) - Side-by-side layout */
+@media (min-width: 1024px) {
+  .dashboard-container {
+    padding: var(--spacing-2xl) var(--spacing-xl);
+    max-width: 1400px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-xl);
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 400px 1fr; /* Sidebar + Main content */
+    gap: var(--spacing-xl);
+  }
+  
+  /* Both sidebar and main scroll independently on desktop */
+  .dashboard-sidebar,
+  .dashboard-main {
+    padding-right: 0.75rem; /* More space for scrollbar on desktop */
+  }
+}
+
+/* Extra large devices (1280px and up) */
+@media (min-width: 1280px) {
+  .dashboard-container {
+    max-width: 1600px;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 450px 1fr; /* Wider sidebar on larger screens */
+  }
+}
+
+/* Smooth scroll behavior */
+.dashboard-sidebar,
+.dashboard-main {
+  scroll-behavior: smooth;
+}
+
+/* Scroll shadows (optional visual enhancement) */
+.dashboard-sidebar::before,
+.dashboard-main::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, var(--card-bg), transparent);
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.dashboard-sidebar:not(:hover)::before,
+.dashboard-main:not(:hover)::before {
+  opacity: 0;
+}
+
+/* Loading State - Centered in viewport */
+.loading-dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px); /* Account for navbar */
+  gap: var(--spacing-lg);
+}
+
+/* Firefox scrollbar styling */
+@supports (scrollbar-width: thin) {
+  .dashboard-sidebar,
+  .dashboard-main {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--background-light);
+  }
+}
+
+/* Mobile optimization - single column stacked */
+@media (max-width: 1023px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr; /* Single column on mobile/tablet */
+  }
+  
+  /* On mobile, sidebar comes first, then main */
+  .dashboard-sidebar,
+  .dashboard-main {
+    max-height: none; /* Remove height restriction */
+    overflow: visible; /* Allow natural scrolling */
+  }
+  
+  /* Container scrolls instead */
+  .dashboard-container {
+    height: auto;
+    overflow: visible;
+  }
+}
+Scroll Indicators & Enhancements */
+
+/* Scroll Indicator - Shows when content is scrollable */
+.scroll-indicator {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.95), transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 10;
+}
+
+.scroll-indicator::before {
+  content: '↓';
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  animation: bounce 2s ease-in-out infinite;
+}
+
+/* Show indicator when content is scrollable and not at bottom */
+.dashboard-sidebar.has-scroll:not(.scroll-bottom) .scroll-indicator,
+.dashboard-main.has-scroll:not(.scroll-bottom) .scroll-indicator {
+  opacity: 1;
+}
+
+/* Scroll shadow effects */
+.scroll-shadow-top {
+  box-shadow: inset 0 10px 10px -10px rgba(0, 0, 0, 0.1);
+}
+
+.scroll-shadow-bottom {
+  box-shadow: inset 0 -10px 10px -10px rgba(0, 0, 0, 0.1);
+}
+
+.scroll-shadow-both {
+  box-shadow: 
+    inset 0 10px 10px -10px rgba(0, 0, 0, 0.1),
+    inset 0 -10px 10px -10px rgba(0, 0, 0, 0.1);
+}
+
+/* Smooth fade in for components */
+.dashboard-sidebar > *,
+.dashboard-main > * {
+  animation: fadeInComponent 0.4s ease-out backwards;
+}
+
+.dashboard-sidebar > *:nth-child(1) { animation-delay: 0.05s; }
+.dashboard-sidebar > *:nth-child(2) { animation-delay: 0.1s; }
+.dashboard-sidebar > *:nth-child(3) { animation-delay: 0.15s; }
+.dashboard-sidebar > *:nth-child(4) { animation-delay: 0.2s; }
+.dashboard-sidebar > *:nth-child(5) { animation-delay: 0.25s; }
+.dashboard-sidebar > *:nth-child(6) { animation-delay: 0.3s; }
+.dashboard-sidebar > *:nth-child(7) { animation-delay: 0.35s; }
+
+.dashboard-main > *:nth-child(1) { animation-delay: 0.1s; }
+.dashboard-main > *:nth-child(2) { animation-delay: 0.15s; }
+.dashboard-main > *:nth-child(3) { animation-delay: 0.2s; }
+.dashboard-main > *:nth-child(4) { animation-delay: 0.25s; }
+.dashboard-main > *:nth-child(5) { animation-delay: 0.3s; }
+.dashboard-main > *:nth-child(6) { animation-delay: 0.35s; }
+.dashboard-main > *:nth-child(7) { animation-delay: 0.4s; }
+.dashboard-main > *:nth-child(8) { animation-delay: 0.45s; }
+
+@keyframes fadeInComponent {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Sticky header for sections (optional) */
+.section-sticky-header {
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  z-index: 10;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* Scroll to top button (optional) */
+.scroll-to-top {
+  position: sticky;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 100;
+}
+
+.scroll-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scroll-to-top:hover {
+  transform: translateX(-50%) translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.scroll-to-top:active {
+  transform: translateX(-50%) translateY(-2px);
+}
+
+/* Better mobile scrolling */
+@media (max-width: 1023px) {
+  .dashboard-sidebar,
+  .dashboard-main {
+    /* Remove scroll on mobile - use natural page scroll */
+    overflow: visible;
+    height: auto;
+  }
+  
+  .scroll-indicator {
+    display: none; /* Hide scroll indicators on mobile */
+  }
+}
+
+/* Prevent scroll bounce on iOS when at limits */
+@supports (-webkit-overflow-scrolling: touch) {
+  .dashboard-sidebar,
+  .dashboard-main {
+    overscroll-behavior: contain;
+  }
+}
+
+/* Accessibility - Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-sidebar,
+  .dashboard-main {
+    scroll-behavior: auto;
+  }
+  
+  .dashboard-sidebar > *,
+  .dashboard-main > * {
+    animation: none;
+  }
+  
+  .scroll-indicator::before {
+    animation: none;
+  }
+}
+
 
 .dashboard-welcome {
   font-size: 1.5rem; /* Mobile के लिए छोटा / Smaller for mobile */
