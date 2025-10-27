@@ -1,6 +1,6 @@
 // client/src/pages/dashboard/index.tsx - Updated with Scroll Detection
 import { useUser } from "@clerk/clerk-react";
-import { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import { DollarSign, TrendingDown, Wallet, Target, ArrowUp } from "lucide-react";
 
@@ -32,7 +32,11 @@ import SpendingHeatmap from "../../components/SpendingHeatmap";
 export const Dashboard = () => {
   const { user } = useUser();
   const { records, budget, isLoading } = useFinancialRecords();
+  const [showHeader, setShowHeader] = React.useState(true);
+  useEffect(() => {
+    setTimeout(() => setShowHeader(false), 1000);
 
+  }, []);
   // Scroll detection for sidebar and main content
   const sidebar = useScrollDetection();
   const mainContent = useScrollDetection();
@@ -107,10 +111,10 @@ export const Dashboard = () => {
   return (
     <div className="dashboard-container">
       {/* Header - Fixed */}
-      <div className="dashboard-header">
+    { showHeader && <div className="dashboard-header">
         <h1 className="dashboard-welcome">Welcome back, {user?.firstName}! 👋</h1>
         <p className="dashboard-subtitle">Here's your financial overview</p>
-      </div>
+      </div>}
 
       {/* Stats Grid - Fixed */}
       <div className="stats-grid">

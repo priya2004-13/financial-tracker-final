@@ -1,4 +1,4 @@
-// client/src/pages/dashboard/financial-record-form.tsx - FIXED WITH SPLIT INTEGRATION
+// client/src/pages/dashboard/financial-record-form.tsx - FIXED WITH ATTACHMENTS
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
@@ -16,7 +16,6 @@ import {
   FileText,
   Save,
   Loader,
-  Copy,
   PlusCircle,
   Split,
 } from "lucide-react";
@@ -34,6 +33,7 @@ export const FinancialRecordForm = () => {
   const [isSplitModalOpen, setIsSplitModalOpen] = useState<boolean>(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [notes, setNotes] = useState<string>("");
+
   const { addRecord, categories } = useFinancialRecords();
   const { user } = useUser();
 
@@ -101,6 +101,8 @@ export const FinancialRecordForm = () => {
     setAnomalyWarning(null);
     setShowTemplateNameInput(false);
     setTemplateName("");
+    setAttachments([]); // ✅ Reset attachments
+    setNotes(""); // ✅ Reset notes
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -114,6 +116,8 @@ export const FinancialRecordForm = () => {
       amount: parseFloat(amount),
       category: category,
       paymentMethod: paymentMethod,
+      attachments: attachments, // ✅ Include attachments
+      notes: notes, // ✅ Include notes
     };
 
     addRecord(newRecord);
@@ -131,6 +135,8 @@ export const FinancialRecordForm = () => {
       category: item.category || "Other",
       paymentMethod: paymentMethod || "Cash",
       isSplit: true,
+      attachments: [], // Split transactions don't carry over attachments
+      notes: notes || "",
     }));
 
     addRecord(recordsToSave);
@@ -197,10 +203,7 @@ export const FinancialRecordForm = () => {
             min="0.01"
           />
         </div>
-<AttachmentUpload
-  attachments={attachments}
-  onChange={setAttachments}
-/>
+
         <div className="form-field">
           <label className="form-label">
             <Tag size={16} /> Category {isSuggesting && <Loader size={14} className="spinner" />}
@@ -236,6 +239,27 @@ export const FinancialRecordForm = () => {
             <option value="UPI">UPI</option>
             <option value="Other">Other</option>
           </select>
+        </div>
+
+        {/* ✅ ATTACHMENT UPLOAD COMPONENT */}
+        <AttachmentUpload
+          attachments={attachments}
+          onChange={setAttachments}
+        />
+
+        {/* ✅ NOTES FIELD */}
+        <div className="form-field">
+          <label className="form-label">
+            <FileText size={16} /> Notes (Optional)
+          </label>
+          <textarea
+            className="form-input form-input-animated"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Add any additional notes..."
+            rows={3}
+            style={{ resize: 'vertical', minHeight: '60px' }}
+          />
         </div>
 
         {anomalyWarning && !isSplitModalOpen && (
@@ -287,7 +311,7 @@ export const FinancialRecordForm = () => {
         )}
       </form>
 
-      {/* Split Modal - Rendered at root level to avoid z-index issues */}
+      {/* Split Modal */}
       {isSplitModalOpen && (
         <SplitTransactionModal
           isOpen={isSplitModalOpen}

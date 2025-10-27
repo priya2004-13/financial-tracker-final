@@ -1,4 +1,4 @@
-﻿// client/services/api.ts - REFACTORED WITH UTILITIES
+﻿// client/services/api.ts - FIXED ATTACHMENT HANDLING
 import { apiGet, apiPost, apiPut, apiDelete, apiBatchPost, ApiError } from './api-utils';
 
 // ============================================
@@ -22,48 +22,51 @@ export interface FinancialRecord {
   paymentMethod: string;
   isSplit?: boolean;
   parentRecordId?: string;
-  attachments?: Attachment[]; // NEW
-  notes?: string; // NEW
+  attachments?: Attachment[];
+  notes?: string;
 }
 
-// Image upload helper functions
+// ============================================
+// IMAGE UPLOAD HELPERS
+// ============================================
+
 export const compressImage = (file: File, maxWidth: number = 800): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
         let width = img.width;
         let height = img.height;
-        
+
         // Calculate new dimensions
         if (width > maxWidth) {
           height = (height * maxWidth) / width;
           width = maxWidth;
         }
-        
+
         canvas.width = width;
         canvas.height = height;
-        
+
         const ctx = canvas.getContext('2d');
         if (!ctx) {
           reject(new Error('Failed to get canvas context'));
           return;
         }
-        
+
         ctx.drawImage(img, 0, 0, width, height);
-        
+
         // Convert to base64 with compression (0.7 quality for JPEG)
         const base64 = canvas.toDataURL('image/jpeg', 0.7);
         resolve(base64);
       };
-      
+
       img.onerror = () => reject(new Error('Failed to load image'));
       img.src = e.target?.result as string;
     };
-    
+
     reader.onerror = () => reject(new Error('Failed to read file'));
     reader.readAsDataURL(file);
   });
@@ -72,15 +75,15 @@ export const compressImage = (file: File, maxWidth: number = 800): Promise<strin
 export const validateImageFile = (file: File): { valid: boolean; error?: string } => {
   const maxSize = 5 * 1024 * 1024; // 5MB original file limit
   const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-  
+
   if (!allowedTypes.includes(file.type)) {
     return { valid: false, error: 'Only JPEG, PNG, GIF, and WebP images are allowed' };
   }
-  
+
   if (file.size > maxSize) {
     return { valid: false, error: 'File size must be less than 5MB' };
   }
-  
+
   return { valid: true };
 };
 
@@ -89,108 +92,6 @@ export const getImageSize = (base64: string): number => {
   const padding = (base64.match(/=/g) || []).length;
   return Math.floor((base64.length * 0.75) - padding);
 };
-
-// Enhanced API functions with attachment support
-export const addFinancialRecordWithAttachments = async (
-  record: FinancialRecord | FinancialRecord[]
-): Promise<FinancialRecord | FinancialRecord[]> => {
-  // Validate attachments before sending
-  const records = Array.isArray(record) ? record : [record];
-  
-  for (const rec of records) {
-    if (rec.attachments && rec.attachments.length > 0) {
-      const totalSize = rec.attachments.reduce((sum, att) => sum + att.size, 0);
-      if (totalSize > 2 * 1024 * 1024) {
-        throw new Error('Total attachments size exceeds 2MB limit');
-      }
-    }
-  }
-  
-  return addFinancialRecord(record);
-};
-// ============================================
-// BUDGET API
-// ============================================
-
-export interface UserBudget {
-  _id?: string;
-  userId: string;
-  monthlySalary: number;
-  categoryBudgets: {
-    [key: string]: number;
-  };
-}
-
-export interface SavingsGoal {
-  _id?: string;
-  userId: string;
-  goalName: string;
-  targetAmount: number;
-  currentAmount: number;
-  targetDate: Date;
-}
-
-export interface RecurringPayment {
-  _id?: string;
-  userId: string;
-  name: string;
-  amount: number;
-  billingCycle: 'monthly' | 'yearly';
-  nextPaymentDate: Date;
-  category: string;
-  isActive: boolean;
-}
-
-export interface Notification {
-  _id?: string;
-  userId: string;
-  type: 'anomaly' | 'budget_warning' | 'recurring_payment' | 'goal_achieved';
-  title: string;
-  message: string;
-  isRead: boolean;
-  severity: 'info' | 'warning' | 'error' | 'success';
-  metadata?: any;
-  createdAt?: Date;
-}
-
-export interface Category {
-  _id?: string;
-  userId: string;
-  name: string;
-  icon: string;
-}
-
-export interface TransactionTemplate {
-  _id?: string;
-  userId: string;
-  templateName: string;
-  description: string;
-  amount: number;
-  category: string;
-  paymentMethod: string;
-}
-
-export interface SharedExpense {
-  _id?: string;
-  groupId: string;
-  groupName: string;
-  createdBy: string;
-  createdByName: string;
-  date: Date;
-  description: string;
-  totalAmount: number;
-  category: string;
-  paymentMethod: string;
-  paidBy: string;
-  paidByName: string;
-  splitType: 'equal' | 'custom' | 'percentage';
-  participants: Array<{
-    userId: string;
-    userName: string;
-    amountOwed: number;
-    hasPaid: boolean;
-  }>;
-}
 
 // ============================================
 // FINANCIAL RECORDS API
@@ -207,9 +108,40 @@ export const fetchFinancialRecords = async (userId: string): Promise<FinancialRe
   }
 };
 
+// ✅ ENHANCED: Validate attachments before sending
 export const addFinancialRecord = async (
   record: FinancialRecord | FinancialRecord[]
 ): Promise<FinancialRecord | FinancialRecord[]> => {
+  // Validate attachments
+  const records = Array.isArray(record) ? record : [record];
+
+  for (const rec of records) {
+    if (rec.attachments && rec.attachments.length > 0) {
+      // Validate total size
+      const totalSize = rec.attachments.reduce((sum, att) => sum + att.size, 0);
+      const maxTotalSize = 2 * 1024 * 1024; // 2MB
+
+      if (totalSize > maxTotalSize) {
+        throw new Error(`Total attachments size (${(totalSize / 1024 / 1024).toFixed(2)}MB) exceeds 2MB limit`);
+      }
+
+      // Validate individual file sizes
+      for (const att of rec.attachments) {
+        const maxSingleSize = 500 * 1024; // 500KB
+        if (att.size > maxSingleSize) {
+          throw new Error(`Attachment ${att.filename} (${(att.size / 1024).toFixed(0)}KB) exceeds 500KB limit`);
+        }
+
+        // Validate MIME type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(att.mimeType)) {
+          throw new Error(`Attachment ${att.filename} has invalid type: ${att.mimeType}`);
+        }
+      }
+    }
+  }
+
+  // Send to API
   if (Array.isArray(record)) {
     return await apiBatchPost<FinancialRecord>('/financial-records', record);
   }
@@ -220,6 +152,14 @@ export const updateFinancialRecord = async (
   id: string,
   newRecord: Partial<FinancialRecord>
 ): Promise<FinancialRecord> => {
+  // Validate attachments if being updated
+  if (newRecord.attachments && newRecord.attachments.length > 0) {
+    const totalSize = newRecord.attachments.reduce((sum, att) => sum + att.size, 0);
+    if (totalSize > 2 * 1024 * 1024) {
+      throw new Error('Total attachments size exceeds 2MB limit');
+    }
+  }
+
   return await apiPut<FinancialRecord>(`/financial-records/${id}`, newRecord);
 };
 
@@ -234,6 +174,15 @@ export const suggestCategory = async (description: string): Promise<{ category: 
 // ============================================
 // BUDGET API
 // ============================================
+
+export interface UserBudget {
+  _id?: string;
+  userId: string;
+  monthlySalary: number;
+  categoryBudgets: {
+    [key: string]: number;
+  };
+}
 
 export const fetchBudget = async (userId: string): Promise<UserBudget> => {
   try {
@@ -262,6 +211,13 @@ export const deleteBudget = async (userId: string): Promise<UserBudget> => {
 // CATEGORIES API
 // ============================================
 
+export interface Category {
+  _id?: string;
+  userId: string;
+  name: string;
+  icon: string;
+}
+
 export const fetchCategories = async (userId: string): Promise<Category[]> => {
   return await apiGet<Category[]>(`/categories/${userId}`);
 };
@@ -278,6 +234,16 @@ export const deleteCategory = async (categoryId: string): Promise<Category> => {
 // TRANSACTION TEMPLATES API
 // ============================================
 
+export interface TransactionTemplate {
+  _id?: string;
+  userId: string;
+  templateName: string;
+  description: string;
+  amount: number;
+  category: string;
+  paymentMethod: string;
+}
+
 export const fetchTransactionTemplates = async (userId: string): Promise<TransactionTemplate[]> => {
   return await apiGet<TransactionTemplate[]>(`/transaction-templates/${userId}`);
 };
@@ -293,6 +259,15 @@ export const deleteTransactionTemplate = async (templateId: string): Promise<Tra
 // ============================================
 // SAVINGS GOALS API
 // ============================================
+
+export interface SavingsGoal {
+  _id?: string;
+  userId: string;
+  goalName: string;
+  targetAmount: number;
+  currentAmount: number;
+  targetDate: Date;
+}
 
 export const fetchSavingsGoals = async (userId: string): Promise<SavingsGoal[]> => {
   return await apiGet<SavingsGoal[]>(`/savings-goals/${userId}`);
@@ -313,6 +288,17 @@ export const deleteSavingsGoal = async (goalId: string): Promise<SavingsGoal> =>
 // ============================================
 // RECURRING PAYMENTS API
 // ============================================
+
+export interface RecurringPayment {
+  _id?: string;
+  userId: string;
+  name: string;
+  amount: number;
+  billingCycle: 'monthly' | 'yearly';
+  nextPaymentDate: Date;
+  category: string;
+  isActive: boolean;
+}
 
 export const fetchRecurringPayments = async (userId: string): Promise<RecurringPayment[]> => {
   return await apiGet<RecurringPayment[]>(`/recurring-payments/${userId}`);
@@ -336,6 +322,18 @@ export const deleteRecurringPayment = async (paymentId: string): Promise<Recurri
 // ============================================
 // NOTIFICATIONS API
 // ============================================
+
+export interface Notification {
+  _id?: string;
+  userId: string;
+  type: 'anomaly' | 'budget_warning' | 'recurring_payment' | 'goal_achieved';
+  title: string;
+  message: string;
+  isRead: boolean;
+  severity: 'info' | 'warning' | 'error' | 'success';
+  metadata?: any;
+  createdAt?: Date;
+}
 
 export const fetchNotifications = async (userId: string): Promise<Notification[]> => {
   return await apiGet<Notification[]>(`/notifications/${userId}`);
@@ -378,8 +376,30 @@ export const detectSpendingAnomaly = async (
 };
 
 // ============================================
-// SHARED EXPENSES API (NEW)
+// SHARED EXPENSES API
 // ============================================
+
+export interface SharedExpense {
+  _id?: string;
+  groupId: string;
+  groupName: string;
+  createdBy: string;
+  createdByName: string;
+  date: Date;
+  description: string;
+  totalAmount: number;
+  category: string;
+  paymentMethod: string;
+  paidBy: string;
+  paidByName: string;
+  splitType: 'equal' | 'custom' | 'percentage';
+  participants: Array<{
+    userId: string;
+    userName: string;
+    amountOwed: number;
+    hasPaid: boolean;
+  }>;
+}
 
 export const fetchSharedExpensesByGroup = async (groupId: string): Promise<SharedExpense[]> => {
   return await apiGet<SharedExpense[]>(`/shared-expenses/group/${groupId}`);
@@ -409,7 +429,7 @@ export const deleteSharedExpense = async (expenseId: string): Promise<SharedExpe
 };
 
 // ============================================
-// OFFLINE SYNC (Keep existing implementation)
+// OFFLINE SYNC
 // ============================================
 
 const OFFLINE_RECORDS_KEY = 'offline_financial_records';
@@ -428,6 +448,4 @@ export const clearOfflineRecords = () => {
   localStorage.removeItem(OFFLINE_RECORDS_KEY);
 };
 
-// Export ApiError for use in components
-export * from './api';
 export { ApiError };
