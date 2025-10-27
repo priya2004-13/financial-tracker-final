@@ -83,3 +83,18 @@ body > #modal-root {
     z-index: 99999;
     position: relative;
 }
+
+/* .desktop-view {
+  display: none;
+} */
+
+.mobile-view {
+  display: block; /* Or flex, if MobileLayout needs it */
+}
+@media (min-width: 768px) {
+  .mobile-view {
+    display: none;
+  }
+
+ 
+}

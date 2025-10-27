@@ -109,7 +109,7 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container desktop-view">
       {/* Header - Fixed */}
     { showHeader && <div className="dashboard-header">
         <h1 className="dashboard-welcome">Welcome back, {user?.firstName}! 👋</h1>

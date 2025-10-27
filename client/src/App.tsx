@@ -35,10 +35,12 @@ import {
   LogOut
 } from "lucide-react";
 import logo from "./assets/brand_logo.png";
+import MobileLayout from "./pages/MobileLayout";
+import { useScreenSize } from "./hooks/useScreenSize";
 
 const ProtectedDashboardRoute = () => {
   const { isLoaded, isSignedIn } = useUser();
-
+  const screenSize = useScreenSize();
   if (!isLoaded) {
     return (
       <div className="dashboard-container">
@@ -56,7 +58,7 @@ const ProtectedDashboardRoute = () => {
 
   return (
     <FinancialRecordsProvider>
-      <Dashboard />
+      {screenSize === "xs" ? <MobileLayout /> : <Dashboard />}     
     </FinancialRecordsProvider>
   );
 }
@@ -186,12 +188,12 @@ function App() {
 
               <SignedIn>
                 {/* Help Button */}
-                <button className="icon-action-btn" title="Help & Support">
+                {/* <button className="icon-action-btn" title="Help & Support">
                   <HelpCircle size={20} />
-                </button>
+                </button> */}
 
                 {/* Notifications */}
-                <Notifications />
+                {/* <Notifications /> */}
 
                 {/* User Profile Section */}
                 <div className="user-profile-section">

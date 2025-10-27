@@ -28,7 +28,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             {prefix}{value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </h3>
         </div>
-        <div className="stat-card-icon" style={{ backgroundColor: `₹{color}20` }}>
+        <div className="stat-card-icon" style={{ backgroundColor: `${color}20` }}>
           <Icon size={24} style={{ color }} />
         </div>
       </div>

@@ -213,7 +213,7 @@
 }
 
 /* Enhanced Stat Cards */
-.stat-card {
+/* .stat-card {
     background-color: var(--card-bg);
     border-radius: var(--radius-xl);
     padding: 1rem;
@@ -223,7 +223,7 @@
     position: relative;
     overflow: hidden;
     cursor: pointer;
-}
+} */
 
 .stat-card::before {
     content: '';

@@ -3,7 +3,8 @@
 .stat-card {
   background-color: var(--card-bg);
   border-radius: var(--radius-xl);
-  padding: 1rem; /* Mobile के लिए कम padding / Less padding for mobile */
+  padding: 1rem;
+  /* Mobile के लिए कम padding / Less padding for mobile */
   box-shadow: var(--shadow-lg);
   border-left: 4px solid;
   transition: all var(--transition-base);
@@ -42,11 +43,13 @@
 
 .stat-card-text {
   flex: 1;
-  min-width: 0; /* Text truncation के लिए / For text truncation */
+  min-width: 0;
+  /* Text truncation के लिए / For text truncation */
 }
 
 .stat-card-title {
-  font-size: 0.75rem; /* Mobile के लिए छोटा / Smaller for mobile */
+  font-size: 0.75rem;
+  /* Mobile के लिए छोटा / Smaller for mobile */
   font-weight: 500;
   color: var(--text-secondary);
   margin-bottom: var(--spacing-xs);
@@ -55,16 +58,19 @@
 }
 
 .stat-card-value {
-  font-size: 1.5rem; /* Mobile के लिए छोटा / Smaller for mobile */
+  font-size: 1.5rem;
+  /* Mobile के लिए छोटा / Smaller for mobile */
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
   line-height: 1.2;
-  word-break: break-word; /* Long numbers को wrap करें / Wrap long numbers */
+  word-break: break-word;
+  /* Long numbers को wrap करें / Wrap long numbers */
 }
 
 .stat-card-icon {
-  width: 40px; /* Mobile के लिए छोटा / Smaller for mobile */
+  width: 40px;
+  /* Mobile के लिए छोटा / Smaller for mobile */
   height: 40px;
   border-radius: var(--radius-lg);
   display: flex;
@@ -85,45 +91,75 @@
 /* RESPONSIVE BREAKPOINTS */
 /* ============================================ */
 
-/* Small devices (640px and up) */
-@media (min-width: 640px) {
+/* Small devices (375px and up) */
+@media (min-width: 375px) {
   .stat-card {
-    padding: 1.25rem;
+    width: unset;
+    padding: 1.2rem;
+    /* background-color: aquamarine !important; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: start; 
+
   }
-  
+
+  .stat-card-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 0.65rem;
+  }
+
   .stat-card-title {
-    font-size: 0.875rem;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.775rem;
   }
-  
+
   .stat-card-value {
+    /* background: #000; */
     font-size: 1.75rem;
   }
-  
+
   .stat-card-icon {
     width: 44px;
     height: 44px;
+  }
+  .stat-card-trend {
+    font-size: 0.8rem;
+    justify-self: start;
   }
 }
 
 /* Medium devices (768px and up) */
 @media (min-width: 768px) {
   .stat-card {
-    padding: 1.5rem;
+    padding: 1rem;
+
   }
-  
+  .stat-card-content {
+    display: grid;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 0.5rem;
+  }
   .stat-card-content {
     margin-bottom: var(--spacing-md);
   }
-  
+
   .stat-card-value {
     font-size: 2rem;
   }
-  
+
   .stat-card-icon {
     width: 48px;
     height: 48px;
   }
-  
+
   .stat-card-trend {
     font-size: 0.875rem;
   }

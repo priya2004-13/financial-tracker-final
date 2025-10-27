@@ -74,7 +74,7 @@
 }
 
 .navbar-content {
-  max-width: 1600px;
+  max-width: 100vw;
   margin: 0 auto;
   padding: 0.75rem 1rem;
   display: flex;
@@ -196,33 +196,6 @@
 .navbar-stat:hover {
   background: var(--navbar-button-hover);
   transform: translateY(-2px);
-}
-
-.stat-icon {
-  color: var(--navbar-text);
-  flex-shrink: 0;
-}
-
-.stat-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
-
-.stat-label {
-  font-size: 0.7rem;
-  color: var(--navbar-text-secondary);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  line-height: 1;
-}
-
-.stat-value {
-  font-size: 0.875rem;
-  color: var(--navbar-text);
-  font-weight: 700;
-  line-height: 1;
 }
 
 /* ==================== */
