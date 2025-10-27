@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from "rea
 import {
   FinancialRecord as FinancialRecordType,
   UserBudget,
-  suggestCategory as Category, // Import Category type
+  // Import Category type
   fetchFinancialRecords,
   addFinancialRecord,
   updateFinancialRecord,
@@ -17,11 +17,15 @@ import {
   saveOfflineRecord, // Import offline functions
   getOfflineRecords,
   clearOfflineRecords,
+  Category,
+  Attachment,
 } from "../../services/api";
 
-export interface FinancialRecord extends FinancialRecordType {}
+export interface FinancialRecord extends FinancialRecordType { }
 
 interface FinancialRecordsContextType {
+  attachments?: Attachment[];
+  notes?: string;
   records: FinancialRecord[];
   budget: UserBudget | null;
   categories: Category[]; // Add categories state
@@ -51,8 +55,8 @@ export const FinancialRecordsProvider = ({
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const { user } = useUser();
 
-   // Sync offline records
-   const syncOfflineRecords = useCallback(async () => {
+  // Sync offline records
+  const syncOfflineRecords = useCallback(async () => {
     if (!navigator.onLine || !user) return; // Only sync if online and user exists
     const offlineRecords = getOfflineRecords();
     if (offlineRecords.length === 0) return;
@@ -64,8 +68,8 @@ export const FinancialRecordsProvider = ({
       for (const record of offlineRecords) {
         // Assuming addFinancialRecord can handle single record submission
         // If you have a bulk endpoint, use that instead.
-         // Assign the correct userId before sending
-         record.userId = user.id;
+        // Assign the correct userId before sending
+        record.userId = user.id;
         await addFinancialRecord(record);
       }
       clearOfflineRecords(); // Clear local storage after successful sync
@@ -90,9 +94,9 @@ export const FinancialRecordsProvider = ({
       ]);
       await syncOfflineRecords(); // Attempt sync after fetching initial data
     } catch (error) {
-        console.error("Error fetching initial data:", error);
+      console.error("Error fetching initial data:", error);
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   }, [user, syncOfflineRecords]); // Added syncOfflineRecords dependency
 
@@ -103,13 +107,13 @@ export const FinancialRecordsProvider = ({
 
     // Online/Offline event listeners
     const handleOnline = () => {
-        console.log("App is online.");
-        setIsOnline(true);
-        syncOfflineRecords(); // Sync when coming online
+      console.log("App is online.");
+      setIsOnline(true);
+      syncOfflineRecords(); // Sync when coming online
     };
     const handleOffline = () => {
-        console.log("App is offline.");
-        setIsOnline(false);
+      console.log("App is offline.");
+      setIsOnline(false);
     };
 
     window.addEventListener('online', handleOnline);
@@ -122,12 +126,12 @@ export const FinancialRecordsProvider = ({
     };
   }, [user, fetchAllData, syncOfflineRecords]); // Added fetchAllData and syncOfflineRecords
 
-   const addRecord = async (recordData: FinancialRecord | FinancialRecord[]) => {
+  const addRecord = async (recordData: FinancialRecord | FinancialRecord[]) => {
     // Ensure userId is set for all records being added
     const recordsToAdd = (Array.isArray(recordData) ? recordData : [recordData]).map(r => ({
-        ...r,
-        userId: user?.id ?? "", // Ensure userId is present
-      }));
+      ...r,
+      userId: user?.id ?? "", // Ensure userId is present
+    }));
 
     if (!isOnline) {
       console.log("Offline: Saving record locally.");
@@ -151,15 +155,15 @@ export const FinancialRecordsProvider = ({
 
 
   const updateRecord = async (id: string, newRecord: FinancialRecord) => {
-     if (!isOnline) {
-        // Basic offline update - update local storage and state
-        console.warn("Offline: Update functionality limited.");
-        // Find and update in local storage if necessary (more complex)
-        setRecords((prev) =>
-          prev.map((r) => (r._id === id ? { ...newRecord, _id: id } : r))
-        );
-        return;
-      }
+    if (!isOnline) {
+      // Basic offline update - update local storage and state
+      console.warn("Offline: Update functionality limited.");
+      // Find and update in local storage if necessary (more complex)
+      setRecords((prev) =>
+        prev.map((r) => (r._id === id ? { ...newRecord, _id: id } : r))
+      );
+      return;
+    }
     try {
       const updatedRecord = await updateFinancialRecord(id, newRecord);
       setRecords((prev) =>
@@ -172,21 +176,21 @@ export const FinancialRecordsProvider = ({
 
   const deleteRecord = async (id: string) => {
     if (id.startsWith('offline_')) {
-        // Handle deletion of offline-only record
-        const offlineRecords = getOfflineRecords().filter(r => r._id !== id);
-        localStorage.setItem('offline_financial_records', JSON.stringify(offlineRecords));
-        setRecords((prev) => prev.filter((record) => record._id !== id));
-        console.log("Deleted offline record locally.");
-        return;
+      // Handle deletion of offline-only record
+      const offlineRecords = getOfflineRecords().filter(r => r._id !== id);
+      localStorage.setItem('offline_financial_records', JSON.stringify(offlineRecords));
+      setRecords((prev) => prev.filter((record) => record._id !== id));
+      console.log("Deleted offline record locally.");
+      return;
     }
 
     if (!isOnline) {
-       console.warn("Offline: Deletion will sync when back online.");
-       // Mark for deletion in local storage (more complex) or simply remove from UI
-       setRecords((prev) => prev.filter((record) => record._id !== id));
-       // Add logic here to store deletion request locally if needed
-       return;
-     }
+      console.warn("Offline: Deletion will sync when back online.");
+      // Mark for deletion in local storage (more complex) or simply remove from UI
+      setRecords((prev) => prev.filter((record) => record._id !== id));
+      // Add logic here to store deletion request locally if needed
+      return;
+    }
 
     try {
       await deleteFinancialRecord(id);
@@ -206,30 +210,30 @@ export const FinancialRecordsProvider = ({
     }
   };
 
-   // Category Management Functions
-   const addCategory = async (category: Category) => {
+  // Category Management Functions
+  const addCategory = async (category: Category) => {
     if (!user || !isOnline) return; // Add online check
     try {
-        // Ensure userId is set
-        const categoryToAdd = { ...category, userId: user.id };
-        const newCategory = await apiAddCategory(categoryToAdd);
-        setCategories((prev) => [...prev, newCategory].sort((a, b) => a.name.localeCompare(b.name))); // Keep sorted
+      // Ensure userId is set
+      const categoryToAdd = { ...category, userId: user.id };
+      const newCategory = await apiAddCategory(categoryToAdd);
+      setCategories((prev) => [...prev, newCategory].sort((a, b) => a.name.localeCompare(b.name))); // Keep sorted
     } catch (err) {
-        console.error("Error adding category:", err);
-        // Rethrow or handle error (e.g., show notification)
-        throw err;
+      console.error("Error adding category:", err);
+      // Rethrow or handle error (e.g., show notification)
+      throw err;
     }
-};
+  };
 
-const deleteCategory = async (id: string) => {
+  const deleteCategory = async (id: string) => {
     if (!isOnline) return; // Add online check
     try {
-        await apiDeleteCategory(id);
-        setCategories((prev) => prev.filter((category) => category._id !== id));
+      await apiDeleteCategory(id);
+      setCategories((prev) => prev.filter((category) => category._id !== id));
     } catch (err) {
-        console.error("Error deleting category:", err);
+      console.error("Error deleting category:", err);
     }
-};
+  };
 
 
   return (

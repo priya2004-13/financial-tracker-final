@@ -6,6 +6,7 @@ import {
   suggestCategory as apiSuggestCategory,
   detectSpendingAnomaly,
   addTransactionTemplate,
+  Attachment,
 } from "../../../services/api";
 import {
   AlertTriangle,
@@ -21,6 +22,7 @@ import {
 } from "lucide-react";
 import { SplitTransactionModal } from "../../components/SplitTransactionModal";
 import "./RecordForm.css";
+import { AttachmentUpload } from "../../components/AttachmentUpload";
 
 export const FinancialRecordForm = () => {
   const [description, setDescription] = useState<string>("");
@@ -30,7 +32,8 @@ export const FinancialRecordForm = () => {
   const [templateName, setTemplateName] = useState<string>("");
   const [showTemplateNameInput, setShowTemplateNameInput] = useState<boolean>(false);
   const [isSplitModalOpen, setIsSplitModalOpen] = useState<boolean>(false);
-
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [notes, setNotes] = useState<string>("");
   const { addRecord, categories } = useFinancialRecords();
   const { user } = useUser();
 
@@ -194,7 +197,10 @@ export const FinancialRecordForm = () => {
             min="0.01"
           />
         </div>
-
+<AttachmentUpload
+  attachments={attachments}
+  onChange={setAttachments}
+/>
         <div className="form-field">
           <label className="form-label">
             <Tag size={16} /> Category {isSuggesting && <Loader size={14} className="spinner" />}

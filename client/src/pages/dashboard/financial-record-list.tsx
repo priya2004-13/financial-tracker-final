@@ -1,8 +1,6 @@
-// client/src/pages/dashboard/financial-record-list.tsx - Updated for Split Transactions Display
+// client/src/pages/dashboard/financial-record-list.tsx - WITH ATTACHMENT DISPLAY
 import { useMemo, useState } from "react";
-import {
-  useFinancialRecords,
-} from "../../contexts/financial-record-context";
+import { useFinancialRecords } from "../../contexts/financial-record-context";
 import {
   Trash2,
   Edit2,
@@ -17,12 +15,14 @@ import {
   TrendingUp,
   TrendingDown,
   IndianRupee,
-  GitCommit // Icon for split transactions
+  GitCommit,
+  Image as ImageIcon,
+  Eye,
+  StickyNote
 } from "lucide-react";
 import "./recordList.css";
-import { FinancialRecord } from "../../../services/api"
+import { FinancialRecord, Attachment } from "../../../services/api";
 
-// Existing CATEGORY_COLORS definition...
 const CATEGORY_COLORS: Record<string, string> = {
   Salary: '#10b981',
   Food: '#f97316',
@@ -30,11 +30,10 @@ const CATEGORY_COLORS: Record<string, string> = {
   Utilities: '#3b82f6',
   Entertainment: '#ec4899',
   Other: '#a855f7',
-  // Add colors for custom categories if needed, or fallback
 };
 
 export const FinancialRecordList = () => {
-  const { records, updateRecord, deleteRecord, categories } = useFinancialRecords(); // Get categories
+  const { records, updateRecord, deleteRecord, categories } = useFinancialRecords();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<FinancialRecord>>({});
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,14 +41,16 @@ export const FinancialRecordList = () => {
   const [sortBy, setSortBy] = useState<"date" | "amount">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  // Combine default and custom categories for filtering
+  // Image preview state
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [expandedRecordId, setExpandedRecordId] = useState<string | null>(null);
+
   const allCategories = useMemo(() => {
     const defaultCategories = ["All", "Food", "Rent", "Salary", "Utilities", "Entertainment", "Other"];
     const customCategoryNames = categories.map(c => c.name);
     return [...new Set([...defaultCategories, ...customCategoryNames])].sort();
   }, [categories]);
 
-  // Filter and sort records
   const filteredAndSortedRecords = useMemo(() => {
     let filtered = records.filter((record) => {
       const matchesSearch = record.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -57,7 +58,6 @@ export const FinancialRecordList = () => {
       return matchesSearch && matchesCategory;
     });
 
-    // Simple sorting - complex split grouping might require more logic if needed later
     filtered.sort((a, b) => {
       if (sortBy === "date") {
         const dateA = new Date(a.date).getTime();
@@ -70,11 +70,21 @@ export const FinancialRecordList = () => {
     return filtered;
   }, [records, searchTerm, filterCategory, sortBy, sortOrder]);
 
+  const getCategoryColor = (categoryName: string) => {
+    return CATEGORY_COLORS[categoryName] || CATEGORY_COLORS['Other'];
+  };
 
-    // Function to get category color, falling back to 'Other'
-    const getCategoryColor = (categoryName: string) => {
-        return CATEGORY_COLORS[categoryName] || CATEGORY_COLORS['Other'];
-      };
+  const openPreview = (base64Data: string) => {
+    setPreviewImage(base64Data);
+  };
+
+  const closePreview = () => {
+    setPreviewImage(null);
+  };
+
+  const toggleExpanded = (recordId: string) => {
+    setExpandedRecordId(expandedRecordId === recordId ? null : recordId);
+  };
 
   const startEdit = (record: FinancialRecord) => {
     setEditingId(record._id || null);
@@ -83,12 +93,15 @@ export const FinancialRecordList = () => {
       amount: record.amount,
       category: record.category,
       paymentMethod: record.paymentMethod,
+      notes: record.notes
     });
   };
+
   const cancelEdit = () => {
     setEditingId(null);
     setEditForm({});
   };
+
   const saveEdit = (id: string) => {
     if (!editForm.description || !editForm.amount || !editForm.category || !editForm.paymentMethod) {
       return;
@@ -101,25 +114,26 @@ export const FinancialRecordList = () => {
         amount: editForm.amount,
         category: editForm.category,
         paymentMethod: editForm.paymentMethod,
+        notes: editForm.notes || ""
       });
     }
     cancelEdit();
   };
-  const formatDate = (date: Date | string) => { // Accept string for offline potentially
+
+  const formatDate = (date: Date | string) => {
     try {
-        return new Date(date).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        });
+      return new Date(date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
     } catch {
-        return "Invalid Date"; // Fallback for invalid date strings
+      return "Invalid Date";
     }
   };
 
-
   return (
-    <div className=" records-container">
+    <div className="records-container">
       {/* Header */}
       <div className="records-header-section">
         <div className="records-header-top">
@@ -131,6 +145,7 @@ export const FinancialRecordList = () => {
             {filteredAndSortedRecords.length} {filteredAndSortedRecords.length === 1 ? 'record' : 'records'}
           </div>
         </div>
+
         {/* Search and Filter Bar */}
         <div className="records-filter-bar">
           <div className="search-box">
@@ -151,29 +166,29 @@ export const FinancialRecordList = () => {
                 onChange={(e) => setFilterCategory(e.target.value)}
                 className="filter-select"
               >
-                 {allCategories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                {allCategories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>
             </div>
 
             <div className="sort-group">
               <button
-                className={`sort-btn ${sortBy === 'date' ? 'active' : ''} btn-primary  ripple-button`}
+                className={`sort-btn ${sortBy === 'date' ? 'active' : ''} btn-primary ripple-button`}
                 onClick={() => setSortBy('date')}
               >
                 <Calendar size={16} />
                 Date
               </button>
               <button
-                className={`sort-btn ${sortBy === 'amount' ? 'active' : ''}  btn-primary ripple-button`}
+                className={`sort-btn ${sortBy === 'amount' ? 'active' : ''} btn-primary ripple-button`}
                 onClick={() => setSortBy('amount')}
               >
                 <IndianRupee size={16} />
                 Amount
               </button>
               <button
-                className="sort-order-btn  btn-primary ripple-button"
+                className="sort-order-btn btn-primary ripple-button"
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
               >
                 {sortOrder === 'asc' ? <TrendingUp size={21} /> : <TrendingDown size={21} />}
@@ -195,19 +210,21 @@ export const FinancialRecordList = () => {
           filteredAndSortedRecords.map((record) => {
             const isEditing = editingId === record._id;
             const isIncome = record.category === 'Salary';
-             const categoryColor = getCategoryColor(record.category); // Get color safely
+            const categoryColor = getCategoryColor(record.category);
+            const isExpanded = expandedRecordId === record._id;
+            const hasAttachments = record.attachments && record.attachments.length > 0;
+            const hasNotes = record.notes && record.notes.trim().length > 0;
 
             return (
               <div key={record._id} className={`record-card ${isIncome ? 'income-card' : 'expense-card'} ${record.isSplit ? 'split-indicator' : ''}`}>
-               {/* Optional: Add a visual indicator for split transactions */}
-               {record.isSplit && <GitCommit size={14} className="split-icon" title="Part of a split transaction"/>}
+                {record.isSplit && <GitCommit size={14} className="split-icon" title="Part of a split transaction" />}
 
                 <div className="record-card-left">
                   <div
                     className="record-category-badge"
                     style={{
-                      backgroundColor: `${categoryColor}20`, // Use safe color
-                      color: categoryColor // Use safe color
+                      backgroundColor: `${categoryColor}20`,
+                      color: categoryColor
                     }}
                   >
                     <Tag size={14} />
@@ -217,8 +234,8 @@ export const FinancialRecordList = () => {
                         onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
                         className="edit-select-inline"
                       >
-                         {allCategories.filter(c => c !== 'All').map(cat => ( // Exclude 'All' from edit options
-                            <option key={cat} value={cat}>{cat}</option>
+                        {allCategories.filter(c => c !== 'All').map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
                         ))}
                       </select>
                     ) : (
@@ -265,7 +282,78 @@ export const FinancialRecordList = () => {
                           record.paymentMethod
                         )}
                       </span>
+                      {(hasAttachments || hasNotes) && !isEditing && (
+                        <span className="meta-item">
+                          <button
+                            className="btn-expand-details"
+                            onClick={() => toggleExpanded(record._id!)}
+                            title={isExpanded ? "Hide details" : "Show details"}
+                          >
+                            {hasAttachments && <ImageIcon size={14} />}
+                            {hasNotes && <StickyNote size={14} />}
+                            {isExpanded ? 'Hide' : 'Show'}
+                          </button>
+                        </span>
+                      )}
                     </div>
+
+                    {/* Expanded Details: Notes and Attachments */}
+                    {isExpanded && !isEditing && (
+                      <div className="record-expanded-details">
+                        {hasNotes && (
+                          <div className="record-notes">
+                            <div className="notes-label">
+                              <StickyNote size={14} />
+                              Notes:
+                            </div>
+                            <p className="notes-text">{record.notes}</p>
+                          </div>
+                        )}
+
+                        {hasAttachments && (
+                          <div className="record-attachments">
+                            <div className="attachments-label">
+                              <ImageIcon size={14} />
+                              Receipts ({record.attachments!.length}):
+                            </div>
+                            <div className="attachments-grid">
+                              {record.attachments!.map((att, index) => (
+                                <div key={index} className="attachment-thumbnail-wrapper">
+                                  <img
+                                    src={att.base64Data}
+                                    alt={att.filename}
+                                    className="attachment-thumbnail-small"
+                                    onClick={() => openPreview(att.base64Data)}
+                                    title={`${att.filename} (${(att.size / 1024).toFixed(1)}KB)`}
+                                  />
+                                  <button
+                                    className="btn-preview-small"
+                                    onClick={() => openPreview(att.base64Data)}
+                                    title="View full size"
+                                  >
+                                    <Eye size={12} />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Edit Notes */}
+                    {isEditing && (
+                      <div className="edit-notes-field">
+                        <label>Notes:</label>
+                        <textarea
+                          value={editForm.notes || ''}
+                          onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                          className="edit-input"
+                          placeholder="Add notes..."
+                          rows={2}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -283,8 +371,7 @@ export const FinancialRecordList = () => {
                     ) : (
                       <>
                         <span className="amount-sign">{isIncome ? '+' : '-'}</span>
-                         {/* Handle potential NaN amount for offline/corrupt data */}
-                         {typeof record.amount === 'number' ? `₹${record.amount.toFixed(2)}` : 'Invalid Amt'}
+                        {typeof record.amount === 'number' ? `₹${record.amount.toFixed(2)}` : 'Invalid Amt'}
                       </>
                     )}
                   </div>
@@ -313,7 +400,7 @@ export const FinancialRecordList = () => {
                           className="action-btn edit-btn ripple-button"
                           onClick={() => startEdit(record)}
                           title="Edit"
-                           disabled={record._id?.startsWith('offline_')} // Disable edit for offline records for simplicity
+                          disabled={record._id?.startsWith('offline_')}
                         >
                           <Edit2 size={16} />
                         </button>
@@ -337,6 +424,18 @@ export const FinancialRecordList = () => {
           })
         )}
       </div>
+
+      {/* Image Preview Modal */}
+      {previewImage && (
+        <div className="preview-modal" onClick={closePreview}>
+          <div className="preview-content" onClick={(e) => e.stopPropagation()}>
+            <button className="btn-close-preview" onClick={closePreview}>
+              <X size={24} />
+            </button>
+            <img src={previewImage} alt="Receipt Preview"  />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

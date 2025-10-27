@@ -4,6 +4,13 @@ import { apiGet, apiPost, apiPut, apiDelete, apiBatchPost, ApiError } from './ap
 // ============================================
 // TYPE DEFINITIONS
 // ============================================
+export interface Attachment {
+  filename: string;
+  mimeType: string;
+  size: number;
+  base64Data: string;
+  uploadedAt: Date;
+}
 
 export interface FinancialRecord {
   _id?: string;
@@ -15,7 +22,95 @@ export interface FinancialRecord {
   paymentMethod: string;
   isSplit?: boolean;
   parentRecordId?: string;
+  attachments?: Attachment[]; // NEW
+  notes?: string; // NEW
 }
+
+// Image upload helper functions
+export const compressImage = (file: File, maxWidth: number = 800): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        // Calculate new dimensions
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Failed to get canvas context'));
+          return;
+        }
+        
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Convert to base64 with compression (0.7 quality for JPEG)
+        const base64 = canvas.toDataURL('image/jpeg', 0.7);
+        resolve(base64);
+      };
+      
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = e.target?.result as string;
+    };
+    
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsDataURL(file);
+  });
+};
+
+export const validateImageFile = (file: File): { valid: boolean; error?: string } => {
+  const maxSize = 5 * 1024 * 1024; // 5MB original file limit
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  
+  if (!allowedTypes.includes(file.type)) {
+    return { valid: false, error: 'Only JPEG, PNG, GIF, and WebP images are allowed' };
+  }
+  
+  if (file.size > maxSize) {
+    return { valid: false, error: 'File size must be less than 5MB' };
+  }
+  
+  return { valid: true };
+};
+
+export const getImageSize = (base64: string): number => {
+  // Calculate approximate size from base64 string
+  const padding = (base64.match(/=/g) || []).length;
+  return Math.floor((base64.length * 0.75) - padding);
+};
+
+// Enhanced API functions with attachment support
+export const addFinancialRecordWithAttachments = async (
+  record: FinancialRecord | FinancialRecord[]
+): Promise<FinancialRecord | FinancialRecord[]> => {
+  // Validate attachments before sending
+  const records = Array.isArray(record) ? record : [record];
+  
+  for (const rec of records) {
+    if (rec.attachments && rec.attachments.length > 0) {
+      const totalSize = rec.attachments.reduce((sum, att) => sum + att.size, 0);
+      if (totalSize > 2 * 1024 * 1024) {
+        throw new Error('Total attachments size exceeds 2MB limit');
+      }
+    }
+  }
+  
+  return addFinancialRecord(record);
+};
+// ============================================
+// BUDGET API
+// ============================================
 
 export interface UserBudget {
   _id?: string;
@@ -334,4 +429,5 @@ export const clearOfflineRecords = () => {
 };
 
 // Export ApiError for use in components
+export * from './api';
 export { ApiError };

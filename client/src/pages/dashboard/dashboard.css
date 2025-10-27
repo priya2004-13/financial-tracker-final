@@ -7,7 +7,7 @@
 .dashboard-container {
   max-width: 100%;
   margin: 0 auto;
-  padding: 1rem;
+  padding: .5rem 1rem;
   display: flex;
   flex-direction: column;
   height: 100vh; /* Full viewport height */
@@ -338,7 +338,7 @@ Scroll Indicators & Enhancements */
 /* Scroll to top button (optional) */
 .scroll-to-top {
   position: sticky;
-  bottom: 1rem;
+  bottom: 3rem;
   left: 50%;
   transform: translateX(-50%);
   width: 40px;
@@ -354,7 +354,7 @@ Scroll Indicators & Enhancements */
   opacity: 0;
   pointer-events: none;
   transition: all 0.3s;
-  z-index: 100;
+  z-index: 100111;
 }
 
 .scroll-to-top.visible {

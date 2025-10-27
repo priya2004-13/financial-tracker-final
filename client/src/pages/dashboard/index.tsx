@@ -26,6 +26,8 @@ import { SharedExpenses } from "../../components/SharedExpenses";
 import { StatCard } from "../../components/StatCard";
 
 import "./dashboard.css";
+import TrendAnalysisChart from "../../components/TrendAnalysisChart";
+import SpendingHeatmap from "../../components/SpendingHeatmap";
 
 export const Dashboard = () => {
   const { user } = useUser();
@@ -185,6 +187,8 @@ export const Dashboard = () => {
           <CategoryChart />
           <SpendingBarChart />
           <FinancialRecordList />
+          <SpendingHeatmap />
+          <TrendAnalysisChart />
 
           {/* Scroll to top button for main content */}
           {mainContent.isScrollable && !mainContent.isAtTop && (
