@@ -1,21 +1,182 @@
-﻿/* Use variables defined in src/variables.css */
+﻿/* MobileLayout.css - Enhanced with Page Styles */
 @import '../variables.css';
 
 .mobile-layout-container {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Full viewport height */
-  background-color: var(--background-medium); /* Use theme background */
-  overflow: hidden; /* Prevent body scroll */
+  height: 100vh;
+  background-color: var(--background-medium);
+  overflow: hidden;
 }
 
 /* Main content area */
 .mobile-content-area {
-  flex-grow: 1; /* Take remaining space */
-  overflow-y: auto; /* Allow content scrolling */
-  -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+  flex-grow: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: var(--spacing-lg);
-  padding-bottom: calc(65px + var(--spacing-lg)); /* Add space at the bottom equal to nav bar height + padding */
+  padding-bottom: calc(80px + var(--spacing-lg));
+  margin-bottom: 70px;
+  /* Space for nav bar */
+}
+
+/* Page Content Wrapper */
+.mobile-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Stats Grid Override for Mobile */
+.mobile-page-content .stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: var(--spacing-md);
+}
+
+/* Profile Page Styles */
+.profile-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  border: 1px solid var(--border-color);
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--spacing-md);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.profile-info h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.profile-info p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.member-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+}
+
+/* Settings Section */
+.settings-section {
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.settings-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--background-light);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.settings-item:hover:not(:disabled) {
+  background: var(--hover-bg);
+  transform: translateX(4px);
+}
+
+.settings-item:active:not(:disabled) {
+  transform: scale(0.98) translateX(4px);
+}
+
+.settings-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.settings-item svg {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.settings-item span:first-of-type {
+  flex: 1;
+}
+
+.settings-value {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Sign Out Button */
+.btn-signout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-lg);
+  color: var(--danger-color);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-signout:hover {
+  background: var(--danger-color);
+  color: white;
+  border-color: var(--danger-color);
+  transform: translateY(-2px);
 }
 
 /* Bottom Navigation Bar */
@@ -24,17 +185,17 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 65px; /* Standard mobile nav height */
-  background-color: var(--card-bg); /* Use theme card background */
+  height: 65px;
+  background-color: var(--card-bg);
   display: flex;
   justify-content: space-around;
-  align-items: stretch; /* Stretch buttons vertically */
+  align-items: stretch;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   border-top: 1px solid var(--border-color);
-  z-index: var(--z-fixed); /* Ensure it's above content */
+  z-index: var(--z-fixed);
 }
 
-/* Individual Navigation Buttons */
+/* Navigation Buttons */
 .mobile-nav-button {
   display: flex;
   flex-direction: column;
@@ -42,30 +203,29 @@
   justify-content: center;
   background: none;
   border: none;
-  color: var(--text-tertiary); /* Use theme tertiary text color */
-  flex: 1; /* Distribute space equally */
+  color: var(--text-tertiary);
+  flex: 1;
   padding: var(--spacing-xs) 0;
   cursor: pointer;
   transition: color 0.2s ease-in-out, transform 0.1s ease;
-  position: relative; /* For potential active indicator */
+  position: relative;
 }
 
 .mobile-nav-button svg {
-  margin-bottom: 2px; /* Small space between icon and label */
+  margin-bottom: 2px;
 }
 
 .nav-button-label {
-  font-size: 0.65rem; /* Small label size */
+  font-size: 0.65rem;
   font-weight: 500;
   line-height: 1.2;
 }
 
 /* Active Button State */
 .mobile-nav-button.active {
-  color: var(--primary-color); /* Use theme primary color */
+  color: var(--primary-color);
 }
 
-/* Optional: Add a subtle indicator for the active tab */
 .mobile-nav-button.active::before {
   content: '';
   position: absolute;
@@ -78,68 +238,87 @@
   border-radius: 1.5px;
 }
 
-/* Button Feedback */
 .mobile-nav-button:active {
   transform: scale(0.95);
 }
 
-/* Placeholder Page Styling (Optional) */
-.page-placeholder {
-  padding: var(--spacing-xl);
-  text-align: center;
-  color: var(--text-secondary);
-}
-.page-placeholder h2 {
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-md);
-}
-
-/* Safe Area Insets (for notched devices) */
+/* Safe Area Insets */
 .safe-area-inset-top {
   padding-top: max(var(--spacing-lg), env(safe-area-inset-top));
 }
+
 .safe-area-inset-bottom {
-  
-  padding-bottom: max(0px, env(safe-area-inset-bottom)); /* Adjust only padding if needed */
+  padding-bottom: max(0px, env(safe-area-inset-bottom));
 }
-/* Adjust bottom nav height if needed for safe area */
+
 .mobile-bottom-nav.safe-area-inset-bottom {
-  position: fixed;
-    bottom: 0;
-   height: calc(65px + env(safe-area-inset-bottom));
-   padding-bottom: env(safe-area-inset-bottom);
+  height: calc(65px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* Loading State */
+.loading-dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: var(--spacing-lg);
+}
 
-/* ============================================ */
-/* RESPONSIVE BREAKPOINTS */
-/* ============================================ */
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
 
-/* Small devices (640px and up) */
-@media (min-width: 640px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-/* Medium devices (768px and up) */
+.loading-dashboard p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Adjustments */
+@media (min-width: 340px) {
+  .mobile-page-content .stats-grid {
+    display: flex;
+    flex-direction: column;
+    /* grid-template-columns: repeat(2, 1fr); */
+    gap: 1rem;
+  }
+}
+
 @media (min-width: 768px) {
-  .dashboard-container {
+  .mobile-content-area {
     padding: 1.5rem;
   }
-  
-  .dashboard-header {
-    margin-bottom: var(--spacing-2xl);
-  }
-  
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+
+  .mobile-page-content {
     gap: 1.5rem;
-    margin-bottom: var(--spacing-2xl);
   }
-  
-  .dashboard-grid {
-    gap: 1.5rem;
+
+  .page-title {
+    font-size: 1.75rem;
   }
 }
