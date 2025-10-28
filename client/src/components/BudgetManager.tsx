@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from "react";
 import { useFinancialRecords } from '../contexts/financial-record-context'
-import { DollarSign, Target, TrendingUp, AlertCircle, IndianRupee } from "lucide-react";
+import { Target, TrendingUp, AlertCircle, IndianRupee } from "lucide-react";
 import "./BudgetManager.css";
 
 export const BudgetManager = () => {
@@ -21,7 +21,13 @@ export const BudgetManager = () => {
     if (budget) {
       setFormData({
         monthlySalary: budget.monthlySalary,
-        categoryBudgets: budget.categoryBudgets,
+        categoryBudgets: {
+          Food: budget.categoryBudgets['Food'] ?? 0,
+          Rent: budget.categoryBudgets['Rent'] ?? 0,
+          Utilities: budget.categoryBudgets['Utilities'] ?? 0,
+          Entertainment: budget.categoryBudgets['Entertainment'] ?? 0,
+          Other: budget.categoryBudgets['Other'] ?? 0,
+        },
       });
     }
   }, [budget]);

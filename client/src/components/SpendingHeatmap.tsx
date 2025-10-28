@@ -54,17 +54,17 @@ const SpendingHeatmap: React.FC = () => {
 
     // Organize days into weeks
     const weeks = useMemo(() => {
-        const days = Object.entries(heatmapData.dailySpending)
+        const days: Array<{ date: string; amount: number }> = Object.entries(heatmapData.dailySpending)
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([date, amount]) => ({ date, amount }));
 
-        const organized: typeof days[][] = [];
+        const organized: Array<typeof days> = [];
         let currentWeek: typeof days = [];
 
         days.forEach((day, index) => {
             currentWeek.push(day);
             if (currentWeek.length === 7 || index === days.length - 1) {
-                organized.push([...currentWeek]);
+                organized.push(currentWeek);
                 currentWeek = [];
             }
         });
@@ -134,7 +134,7 @@ const SpendingHeatmap: React.FC = () => {
                     }}>
                         {week.map((day) => {
                             const date = new Date(day.date);
-                            const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                            // const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
                             const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
                             return (

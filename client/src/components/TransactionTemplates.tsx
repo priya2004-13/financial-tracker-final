@@ -5,10 +5,10 @@ import {
     TransactionTemplate as TemplateType,
     fetchTransactionTemplates,
     deleteTransactionTemplate,
-    addFinancialRecord, // To add record from template
+   
 } from '../../services/api';
 import { useFinancialRecords } from '../contexts/financial-record-context'; // To trigger UI update
-import { Copy, PlusCircle, Trash2, LayoutTemplate, X, Loader } from 'lucide-react';
+import { PlusCircle, Trash2, LayoutTemplate,   Loader } from 'lucide-react';
 import './TransactionTemplates.css';
 
 export const TransactionTemplates: React.FC = () => {

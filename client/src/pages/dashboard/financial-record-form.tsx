@@ -1,5 +1,5 @@
 // client/src/pages/dashboard/financial-record-form.tsx - FIXED WITH ATTACHMENTS
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect,  useMemo } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import {

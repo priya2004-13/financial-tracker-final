@@ -21,7 +21,7 @@ import {
   StickyNote
 } from "lucide-react";
 import "./recordList.css";
-import { FinancialRecord, Attachment } from "../../../services/api";
+import { FinancialRecord  } from "../../../services/api";
 
 const CATEGORY_COLORS: Record<string, string> = {
   Salary: '#10b981',
@@ -217,7 +217,7 @@ export const FinancialRecordList = () => {
 
             return (
               <div key={record._id} className={`record-card ${isIncome ? 'income-card' : 'expense-card'} ${record.isSplit ? 'split-indicator' : ''}`}>
-                {record.isSplit && <GitCommit size={14} className="split-icon" title="Part of a split transaction" />}
+                {record.isSplit && <GitCommit size={14} className="split-icon"   />}
 
                 <div className="record-card-left">
                   <div

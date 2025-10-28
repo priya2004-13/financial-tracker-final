@@ -1,5 +1,5 @@
 ﻿// client/src/components/Subscriptions.tsx - Enhanced for Bill Reminders & Paid Status
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useUser } from '@clerk/clerk-react';
 import {
     RecurringPayment,
@@ -282,7 +282,7 @@ export const Subscriptions = () => {
                                 key={payment._id}
                                 className={`subscription-card ${!payment.isActive ? 'inactive' : ''} ${dueSoon ? 'due-soon' : ''}`}
                             >
-                                 {dueSoon && <Bell size={14} className="due-soon-icon" title="Due soon!" />}
+                                 {dueSoon && <Bell size={14} className="due-soon-icon"  />}
                                 <div className="subscription-info">
                                     <h3>{payment.name} {!payment.isActive && '(Inactive)'}</h3>
                                     <div className="subscription-meta">

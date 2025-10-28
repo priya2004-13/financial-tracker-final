@@ -1,5 +1,5 @@
 ﻿// client/src/pages/dashboard/CategoryChart.tsx - Now using Pie Chart
-import React, { useMemo } from "react";
+import   { useMemo } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { useFinancialRecords } from "../contexts/financial-record-context";
 import './CategoryChart.css'; // Add a CSS file for styling if needed
@@ -35,7 +35,7 @@ const generateColorShades = (baseColor: string, count: number): string[] => {
 
 
 export const CategoryChart = () => {
-  const { records, categories: customCategories } = useFinancialRecords();
+  const { records } = useFinancialRecords();
 
   const chartData = useMemo(() => {
     const expenseData = records.reduce((acc, record) => {
@@ -72,7 +72,7 @@ export const CategoryChart = () => {
 
 
   const RADIAN = Math.PI / 180;
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }: any) => {
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
       const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
       const x = cx + radius * Math.cos(-midAngle * RADIAN);
       const y = cy + radius * Math.sin(-midAngle * RADIAN);

@@ -43,7 +43,7 @@ const templates: Template[] = [
     {
         name: "Zero-Based Budget",
         description: "Allocate every dollar to a category (Needs manual adjustment after applying)",
-        calculate: (salary, categories) => {
+        calculate: (_salary: number, categories: string[]) => {
             const result: Record<string, number> = {};
             categories.forEach(cat => {
                 if (cat !== 'Salary') result[cat] = 0;

@@ -1,6 +1,5 @@
 ﻿// client/src/components/SplitTransactionModal.tsx
 import React, { useState, useEffect } from 'react';
-import { useFinancialRecords } from '../contexts/financial-record-context';
 import { Split, Plus, Trash2, X, AlertCircle, CheckCircle, DollarSign } from 'lucide-react';
 import './SplitTransactionModal.css';
 
@@ -32,7 +31,7 @@ export const SplitTransactionModal: React.FC<SplitTransactionModalProps> = ({
         { id: 1, description: '', amount: '', category: '' },
     ]);
     const [autoDistribute, setAutoDistribute] = useState(false);
-
+console.log(autoDistribute)
     useEffect(() => {
         if (isOpen) {
             // Lock body scroll

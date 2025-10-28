@@ -1,4 +1,4 @@
-﻿./* BudgetManager.css - Mobile First Responsive */
+﻿/* BudgetManager.css - Mobile First Responsive */
 
 .budget-container {
   background: var(--card-bg);
@@ -349,9 +349,8 @@
   .budget-container {
     padding: var(--spacing-xl);
   }
-}(--transition-base);
-  white-space: nowrap;
-}
+} 
+
 
 .btn-edit:hover {
   background: var(--primary-color);

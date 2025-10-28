@@ -1,10 +1,10 @@
 ﻿import React, { useMemo, useState } from 'react';
 import {
-    LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid,
+ AreaChart, Area, XAxis, YAxis, CartesianGrid,
     Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import { useFinancialRecords } from '../contexts/financial-record-context';
-import { TrendingUp, TrendingDown, Calendar } from 'lucide-react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 type TimeFrame = 'week' | 'month' | 'year';
 

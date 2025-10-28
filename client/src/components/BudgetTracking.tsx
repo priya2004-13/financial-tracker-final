@@ -58,9 +58,9 @@ export const BudgetTracking = () => {
     };
   });
 
-  const totalBudget = Object.values(budget.categoryBudgets).reduce((sum, val) => sum + val, 0);
+  // const totalBudget = Object.values(budget.categoryBudgets).reduce((sum, val) => sum + val, 0);
   const totalSpent = Object.values(currentMonthSpending).reduce((sum, val) => sum + val, 0);
-  const totalRemaining = totalBudget - totalSpent;
+  // const totalRemaining = totalBudget - totalSpent;
   const monthlySalary = budget.monthlySalary;
   const savingsAfterExpenses = monthlySalary - totalSpent;
 
