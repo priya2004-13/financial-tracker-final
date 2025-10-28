@@ -1,6 +1,6 @@
 ﻿import { useMemo } from "react";
-import { useFinancialRecords } from "../../contexts/financial-record-context";
-import "./dashboard.css";
+import { useFinancialRecords } from "../contexts/financial-record-context";
+import "./Spending-by-Category.css";
 const CATEGORY_COLORS: Record<string, string> = {
   Salary: '#10b981',
   Food: '#f97316',
@@ -10,7 +10,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   Other: '#a855f7',
 };
 
-export const CategoryChart = () => {
+export const SpendingCategory = () => {
   const { records } = useFinancialRecords();
 
   const categoryData = useMemo(() => {

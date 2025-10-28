@@ -1,0 +1,133 @@
+﻿/* dashboard.css - Mobile First Responsive Design */
+@import "../variables.css";
+@import "../theme-variables.css";
+/* ============================================ */
+
+/* Category Chart */
+.chart-container {
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  padding: 1rem;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden; /* Overflow को prevent करें / Prevent overflow */
+}
+
+.chart-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.chart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chart-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+  gap: 0.5rem;
+  flex-wrap: wrap; /* Mobile पर wrap हो सके / Can wrap on mobile */
+}
+
+.chart-item-category {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.chart-item-value {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.chart-progress-bar {
+  width: 100%;
+  height: 12px;
+  background: var(--background-light);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.chart-progress-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+ 
+
+
+/* ============================================ */
+/* RESPONSIVE BREAKPOINTS */
+/* ============================================ */
+
+/* Small devices (landscape phones, 640px and up) */
+@media (min-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on small tablets */
+    gap: 1.25rem;
+  }
+  
+  .form-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .form-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+ 
+}
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+ 
+  
+ 
+ 
+  .chart-container {
+    padding: var(--spacing-xl);
+  }
+  
+  .chart-title {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .chart-items {
+    gap: var(--spacing-lg);
+  }
+  
+ 
+}
+
+ 

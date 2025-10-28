@@ -19,7 +19,7 @@ import { CategoryManager } from "../../components/CategoryManager";
 import { FinancialHealth } from "../../components/FinancialHealth";
 import { TransactionTemplates } from "../../components/TransactionTemplates";
 import { BudgetTemplates } from "../../components/BudgetTemplates";
-import { CategoryChart } from "./CategoryChart";
+
 import { FinancialRecordChart as SpendingBarChart } from "./financial-record-chart";
 import { SpendingInsights } from "../../components/SpendingInsights";
 import { SharedExpenses } from "../../components/SharedExpenses";
@@ -28,6 +28,7 @@ import { StatCard } from "../../components/StatCard";
 import "./dashboard.css";
 import TrendAnalysisChart from "../../components/TrendAnalysisChart";
 import SpendingHeatmap from "../../components/SpendingHeatmap";
+import { CategoryChart } from "../../components/CategoryChart";
 
 export const Dashboard = () => {
   const { user } = useUser();

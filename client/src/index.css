@@ -1,6 +1,7 @@
-@import './variables.css';
+/* client/src/index.css - Updated with Theme Variables */
+@import './theme-variables.css';
 @import './enhanced-mobile.css';
-/* @import "./microInteractions.css"; */
+
 * {
   margin: 0;
   padding: 0;
@@ -9,9 +10,10 @@
   scrollbar-width: thin;
 }
 
-body, html {
+body,
+html {
   font-family: var(--font-family);
-  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  background: var(--body-bg);
   background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.6;
@@ -32,16 +34,16 @@ body, html {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background-light);
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-tertiary);
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* Global Button Styles */
@@ -58,43 +60,48 @@ button:focus {
 }
 
 /* Input Styles */
-input, select {
+input,
+select,
+textarea {
   font-family: var(--font-family);
   transition: all var(--transition-base);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border-color: var(--input-border);
 }
 
-input:focus, select:focus {
+input::placeholder,
+textarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 0 3px var(--input-focus-shadow);
 }
 
-/* Utility Classes */
 /* Ensure modals always overlay charts */
 .recharts-wrapper,
 .recharts-surface,
 .recharts-responsive-container {
-    z-index: 1 !important;
-    position: relative;
+  z-index: 1 !important;
+  position: relative;
 }
 
-/* Modal portal should be at root level */
-body > #modal-root {
-    z-index: 99999;
-    position: relative;
+body>#modal-root {
+  z-index: 99999;
+  position: relative;
 }
-
-/* .desktop-view {
-  display: none;
-} */
 
 .mobile-view {
-  display: block; /* Or flex, if MobileLayout needs it */
+  display: block;
 }
+
 @media (min-width: 768px) {
   .mobile-view {
     display: none;
   }
-
- 
 }
