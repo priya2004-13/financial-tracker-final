@@ -1,4 +1,5 @@
-﻿// client/services/api-utils.ts - ENHANCED API UTILITIES
+﻿/// <reference types="vite/client" />
+// client/services/api-utils.ts  
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
 // Retry configuration
