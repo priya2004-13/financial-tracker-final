@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "exclude": ["src", "../server/src/ai"],
+    "exclude": ["src", "./src/**/*.ts", "./src/**/*.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
