@@ -21,6 +21,7 @@
     "mongoose": "^8.3.2",
     "nodemon": "^3.1.0",
     "pdfkit": "^0.17.2",
+    "svix": "^1.81.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }

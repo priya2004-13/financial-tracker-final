@@ -6,7 +6,7 @@ import {
   SignUpButton,
 } from "@clerk/clerk-react";
 import { Navigate } from "react-router-dom";
-import { AuthCard } from "./AuthCard"; // New import
+import { AuthCard } from "./AuthCard";  
 
 export const Auth = () => {
   return (

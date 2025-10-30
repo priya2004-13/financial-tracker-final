@@ -11,9 +11,18 @@ import categoryRouter from "./routes/category";
 import transactionTemplateRouter from "./routes/transaction-template";
 import sharedExpenseRouter from "./routes/shared-expense"; // ✅ ADDED
 import cors from "cors";
+import webhookRouter from "./routes/webhooks";
+import { webhookMiddleware } from "./middleware/webhooks";
+import usersRouter from "./routes/users";
 import 'dotenv/config'
+const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
+if (!WEBHOOK_SECRET) {
+  console.error("❌ CLERK_WEBHOOK_SECRET is not set in environment variables");
+  process.exit(1);
+}
 const app: Express = express();
+webhookMiddleware(app);
 const port = process.env.PORT || 3001;
 
 app.use(express.json());
@@ -32,6 +41,8 @@ app.get("/health", (req, res) => {
 });
 
 // Routes
+app.use("/webhooks", webhookRouter);
+app.use("/users", usersRouter);
 app.use("/financial-records", financialRecordRouter);
 app.use("/budget", budgetRouter);
 app.use("/savings-goals", savingsGoalRouter);
