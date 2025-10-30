@@ -29,7 +29,7 @@ import "./dashboard.css";
 import TrendAnalysisChart from "../../components/TrendAnalysisChart";
 import SpendingHeatmap from "../../components/SpendingHeatmap";
 import { CategoryChart } from "../../components/CategoryChart";
-
+import { RingLoader } from "react-spinners";
 export const Dashboard = () => {
   const { user } = useUser();
   const { records, budget, isLoading } = useFinancialRecords();
@@ -102,17 +102,22 @@ export const Dashboard = () => {
     return (
       <div className="dashboard-container">
         <div className="loading-dashboard">
-          <div className="loading-spinner"></div>
-          <p>Loading your financial data...</p>
+          <RingLoader
+            color="#652aa8"
+            loading
+            size={100}
+            speedMultiplier={1}
+          />
         </div>
       </div>
+
     );
   }
 
   return (
     <div className="dashboard-container desktop-view">
       {/* Header - Fixed */}
-    { showHeader && <div className="dashboard-header">
+      {showHeader && <div className="dashboard-header">
         <h1 className="dashboard-welcome">Welcome back, {user?.firstName}! 👋</h1>
         <p className="dashboard-subtitle">Here's your financial overview</p>
       </div>}

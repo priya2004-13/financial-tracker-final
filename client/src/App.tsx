@@ -158,7 +158,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<ProtectedDashboardRoute />} />
         <Route path="/auth" element={<Auth />} />
-        {/* Catch-all route for 404 - redirect to home or auth based on sign-in state */}
+        
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
