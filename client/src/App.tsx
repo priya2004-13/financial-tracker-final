@@ -1,6 +1,6 @@
-// client/src/App.tsx - Updated with Theme Context
+// client/src/App.tsx
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Dashboard } from "./pages/dashboard";
 import { Auth } from "./pages/auth";
 import { FinancialRecordsProvider } from "./contexts/financial-record-context";
@@ -93,9 +93,13 @@ const Navbar = () => {
                       afterSignOutUrl="/auth"
                       appearance={{
                         elements: {
-                          avatarBox: "w-10 h-10"
+                          avatarBox: "w-10 h-10",
+                          userButtonPopoverCard: "shadow-xl",
+                          userButtonPopoverActionButton: "hover:bg-gray-100"
                         }
                       }}
+                      userProfileMode="navigation"
+                      userProfileUrl="/auth"
                     />
                   </div>
                 </div>
@@ -149,15 +153,15 @@ function AppContent() {
   const { theme } = useTheme();
 
   return (
-    <Router>
-      <div className={`app-container ${theme}`}>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<ProtectedDashboardRoute />} />
-          <Route path="/auth" element={<Auth />} />
-        </Routes>
-      </div>
-    </Router>
+    <div className={`app-container ${theme}`}>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<ProtectedDashboardRoute />} />
+        <Route path="/auth" element={<Auth />} />
+        {/* Catch-all route for 404 - redirect to home or auth based on sign-in state */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
   );
 }
 

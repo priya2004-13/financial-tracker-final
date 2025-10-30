@@ -1,5 +1,6 @@
-﻿// client/src/pages/MobileLayout.tsx - Updated with Theme Context
+﻿// client/src/pages/MobileLayout.tsx - 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';  
 import {
     DollarSign,
     LayoutGrid,
@@ -23,7 +24,6 @@ import { useUser, useClerk } from '@clerk/clerk-react';
 import { StatCard } from '../components/StatCard';
 import { FinancialRecordForm } from './dashboard/financial-record-form';
 import { FinancialRecordList } from './dashboard/financial-record-list';
- 
 import { FinancialRecordChart as SpendingBarChart } from './dashboard/financial-record-chart';
 import { SpendingInsights } from '../components/SpendingInsights';
 import { BudgetManager } from '../components/BudgetManager';
@@ -142,15 +142,24 @@ const BudgetsPage = () => (
     </div>
 );
 
-// --- PROFILE PAGE ---
+// --- PROFILE PAGE (FIXED SIGN OUT) ---
 const ProfilePage = () => {
     const { user } = useUser();
     const { signOut } = useClerk();
+    const navigate = useNavigate(); // Add navigation
     const { theme, toggleTheme } = useTheme();
+    const [isSigningOut, setIsSigningOut] = useState(false);
 
-    const handleSignOut = () => {
+    const handleSignOut = async () => {
         if (window.confirm('Are you sure you want to sign out?')) {
-            signOut();
+            try {
+                setIsSigningOut(true);
+                // Sign out and redirect to auth page
+                await signOut(() => navigate('/auth'));
+            } catch (error) {
+                console.error('Sign out error:', error);
+                setIsSigningOut(false);
+            }
         }
     };
 
@@ -196,9 +205,33 @@ const ProfilePage = () => {
                 <CategoryManager />
             </div>
 
-            <button className="btn-signout" onClick={handleSignOut}>
-                <LogOut size={20} />
-                Sign Out
+            <button
+                className="btn-signout"
+                onClick={handleSignOut}
+                disabled={isSigningOut}
+                style={{
+                    opacity: isSigningOut ? 0.6 : 1,
+                    cursor: isSigningOut ? 'not-allowed' : 'pointer'
+                }}
+            >
+                {isSigningOut ? (
+                    <>
+                        <div style={{
+                            width: '20px',
+                            height: '20px',
+                            border: '2px solid white',
+                            borderTopColor: 'transparent',
+                            borderRadius: '50%',
+                            animation: 'spin 1s linear infinite'
+                        }} />
+                        Signing Out...
+                    </>
+                ) : (
+                    <>
+                        <LogOut size={20} />
+                        Sign Out
+                    </>
+                )}
             </button>
         </div>
     );
