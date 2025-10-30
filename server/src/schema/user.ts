@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 
 interface User {
-    clerkId: string;               // Clerk's unique ID
+    clerkId: string;               
     email: string;
     firstName: string;
     lastName: string;

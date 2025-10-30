@@ -1,5 +1,4 @@
-﻿// server/src/routes/webhooks.ts
-// ============================================
+﻿// server/src/routes/webhooks.ts - ENHANCED VERSION
 import express, { Request, Response } from "express";
 import { Webhook } from "svix";
 import UserModel from "../schema/user";
@@ -11,7 +10,6 @@ if (!WEBHOOK_SECRET) {
     throw new Error("CLERK_WEBHOOK_SECRET is not set!");
 }
 
-// Type for Clerk webhook event
 interface ClerkWebhookEvent {
     type: string;
     data: ClerkUserData;
@@ -34,23 +32,19 @@ interface ClerkUserData {
 // POST webhook endpoint
 router.post("/", express.raw({ type: "application/json" }), async (req: Request, res: Response) => {
     try {
-        console.log("🔔 Webhook received");
+        console.log("🔔 Webhook received at:", new Date().toISOString());
 
-        // Get Svix headers
         const svixId = req.headers["svix-id"] as string;
         const svixTimestamp = req.headers["svix-timestamp"] as string;
         const svixSignature = req.headers["svix-signature"] as string;
 
-        // Verify all headers are present
         if (!svixId || !svixTimestamp || !svixSignature) {
             console.error("❌ Missing Svix headers");
             return res.status(400).json({ error: "Missing required headers" });
         }
 
-        // Get body as string for verification
         const body = req.body instanceof Buffer ? req.body.toString() : JSON.stringify(req.body);
 
-        // Verify webhook using Svix
         const webhook = new Webhook(WEBHOOK_SECRET);
         let event: ClerkWebhookEvent;
 
@@ -65,9 +59,9 @@ router.post("/", express.raw({ type: "application/json" }), async (req: Request,
             return res.status(400).json({ error: "Webhook verification failed" });
         }
 
-        console.log(`✅ Webhook verified - Event Type: ${event.type}`);
+        console.log(`✅ Webhook verified - Event: ${event.type}, User: ${event.data.id}`);
 
-        // Handle different event types
+        // Handle events
         switch (event.type) {
             case "user.created":
                 await handleUserCreated(event.data);
@@ -82,10 +76,62 @@ router.post("/", express.raw({ type: "application/json" }), async (req: Request,
                 console.log(`ℹ️ Unhandled event type: ${event.type}`);
         }
 
-        return res.status(200).json({ status: "success", event: event.type });
+        return res.status(200).json({
+            status: "success",
+            event: event.type,
+            userId: event.data.id,
+            timestamp: new Date().toISOString()
+        });
     } catch (err) {
         console.error("❌ Webhook processing error:", err);
         return res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// NEW: Fallback manual user creation endpoint
+router.post("/create-fallback", express.json(), async (req: Request, res: Response) => {
+    try {
+        const { clerkId, email, firstName, lastName, phoneNumber, avatar, username } = req.body;
+
+        if (!clerkId || !email) {
+            return res.status(400).json({ error: "clerkId and email are required" });
+        }
+
+        console.log(`⚠️ Manual fallback creation for user: ${clerkId}`);
+
+        // Check if user already exists
+        const existingUser = await UserModel.findOne({ clerkId });
+        if (existingUser) {
+            console.log(`✅ User already exists: ${clerkId}`);
+            return res.status(200).json({
+                status: "exists",
+                user: existingUser
+            });
+        }
+
+        // Create new user
+        const newUser = new UserModel({
+            clerkId,
+            email,
+            firstName: firstName || "User",
+            lastName: lastName || "",
+            phoneNumber,
+            avatar,
+            username,
+            isOnboarded: false
+        });
+
+        await newUser.save();
+
+        console.log(`✅ Manual user creation successful: ${clerkId} (${email})`);
+
+        return res.status(201).json({
+            status: "created",
+            user: newUser
+        });
+    } catch (err) {
+        console.error("❌ Manual creation error:", err);
+        return res.status(500).json({ error: "Failed to create user" });
     }
 });
 
@@ -95,7 +141,17 @@ async function handleUserCreated(data: ClerkUserData) {
         const email = data.email_addresses?.[0]?.email_address;
         if (!email) {
             console.warn("⚠️ No email found for user", data.id);
-            return;
+            throw new Error("No email address found");
+        }
+
+        // Check for duplicate
+        const existingUser = await UserModel.findOne({
+            $or: [{ clerkId: data.id }, { email: email }]
+        });
+
+        if (existingUser) {
+            console.log(`ℹ️ User already exists: ${data.id}`);
+            return existingUser;
         }
 
         const user = new UserModel({
@@ -106,10 +162,13 @@ async function handleUserCreated(data: ClerkUserData) {
             phoneNumber: data.phone_numbers?.[0]?.phone_number,
             avatar: data.image_url,
             username: data.username,
+            isOnboarded: false,
+            lastSignInAt: data.last_sign_in_at ? new Date(data.last_sign_in_at) : undefined
         });
 
         await user.save();
         console.log(`✅ User created in database: ${data.id} (${email})`);
+        return user;
     } catch (err) {
         console.error("❌ Error in handleUserCreated:", err);
         throw err;
@@ -143,10 +202,10 @@ async function handleUserUpdated(data: ClerkUserData) {
         const result = await UserModel.findOneAndUpdate(
             { clerkId: data.id },
             updateData,
-            { new: true, upsert: true }
+            { new: true, upsert: true } // Create if doesn't exist
         );
 
-        console.log(`✅ User updated in database: ${data.id}`);
+        console.log(`✅ User updated/created: ${data.id}`);
         return result;
     } catch (err) {
         console.error("❌ Error in handleUserUpdated:", err);
