@@ -1,5 +1,5 @@
-
-import { useEffect, useState } from 'react';
+// client/src/hooks/useClerkSync.ts  
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useUser } from '@clerk/clerk-react';
 
 interface SyncStatus {
@@ -8,6 +8,10 @@ interface SyncStatus {
     error: string | null;
 }
 
+const MAX_RETRIES = 5;
+const BASE_DELAY = 1000; // 1 second
+const MAX_DELAY = 16000; // 16 seconds
+
 export const useClerkSync = () => {
     const { user, isLoaded } = useUser();
     const [status, setStatus] = useState<SyncStatus>({
@@ -15,43 +19,94 @@ export const useClerkSync = () => {
         isSynced: false,
         error: null
     });
-    const [retryCount, setRetryCount] = useState(0);
+
+    const retryCount = useRef(0);
+    const timeoutRef = useRef<NodeJS.Timeout>();
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
-    useEffect(() => {
-        if (!isLoaded || !user?.id) return;
+    // Calculate exponential backoff delay
+    const getRetryDelay = (attempt: number): number => {
+        const delay = Math.min(BASE_DELAY * Math.pow(2, attempt), MAX_DELAY);
+        // Add jitter to prevent thundering herd
+        return delay + Math.random() * 1000;
+    };
 
-        const checkSync = async () => {
-            try {
-                setStatus(prev => ({ ...prev, isSyncing: true }));
+    const checkSync = useCallback(async () => {
+        if (!user?.id) return;
 
-                const response = await fetch(`${API_BASE_URL}/users/${user.id}`);
+        try {
+            setStatus(prev => ({ ...prev, isSyncing: true, error: null }));
 
-                if (response.ok) {
-                    setStatus({
-                        isSyncing: false,
-                        isSynced: true,
-                        error: null
-                    });
-                } else if (retryCount < 10) {
-                    // Retry after 1 second
-                    setTimeout(() => setRetryCount(prev => prev + 1), 1000);
+            const response = await fetch(`${API_BASE_URL}/users/${user.id}`);
+
+            if (response.ok) {
+                setStatus({
+                    isSyncing: false,
+                    isSynced: true,
+                    error: null
+                });
+                retryCount.current = 0; // Reset on success
+                return;
+            }
+
+            // User not found - webhook might still be processing
+            if (response.status === 404) {
+                if (retryCount.current < MAX_RETRIES) {
+                    const delay = getRetryDelay(retryCount.current);
+                    console.log(`User not found, retrying in ${delay}ms (attempt ${retryCount.current + 1}/${MAX_RETRIES})`);
+
+                    retryCount.current++;
+
+                    timeoutRef.current = setTimeout(() => {
+                        checkSync();
+                    }, delay);
                 } else {
                     setStatus({
                         isSyncing: false,
                         isSynced: false,
-                        error: 'User sync timeout'
+                        error: 'User sync timeout - please refresh the page'
                     });
                 }
-            } catch (err) {
-                if (retryCount < 10) {
-                    setTimeout(() => setRetryCount(prev => prev + 1), 1000);
-                }
+                return;
             }
-        };
 
+            // Other errors
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+
+        } catch (err) {
+            console.error('Sync check failed:', err);
+
+            if (retryCount.current < MAX_RETRIES) {
+                const delay = getRetryDelay(retryCount.current);
+                retryCount.current++;
+
+                timeoutRef.current = setTimeout(() => {
+                    checkSync();
+                }, delay);
+            } else {
+                setStatus({
+                    isSyncing: false,
+                    isSynced: false,
+                    error: err instanceof Error ? err.message : 'Sync failed'
+                });
+            }
+        }
+    }, [user?.id, API_BASE_URL]);
+
+    useEffect(() => {
+        if (!isLoaded || !user?.id) return;
+
+        // Start sync check
         checkSync();
-    }, [user?.id, isLoaded, retryCount]);
+
+        // Cleanup function
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+            retryCount.current = 0;
+        };
+    }, [user?.id, isLoaded, checkSync]);
 
     return status;
 };
