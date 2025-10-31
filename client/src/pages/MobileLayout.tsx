@@ -164,11 +164,11 @@ const ProfilePage = () => {
             await new Promise(resolve => setTimeout(resolve, 100));
 
             // Force navigation to auth page
-            navigate('/auth', { replace: true });
+            navigate('/', { replace: true });
         } catch (error) {
             console.error('Sign out error:', error);
             // Even on error, try to redirect
-            navigate('/auth', { replace: true });
+            navigate('/', { replace: true });
         } finally {
             // Reset state after a delay
             setTimeout(() => setIsSigningOut(false), 500);
