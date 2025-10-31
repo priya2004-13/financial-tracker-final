@@ -97,6 +97,7 @@ const Navbar = () => {
                           userButtonPopoverActionButton: "hover:bg-gray-100"
                         }
                       }}
+                      
                       userProfileMode="navigation"
                       userProfileUrl="/auth"
                     />

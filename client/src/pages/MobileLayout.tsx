@@ -158,7 +158,7 @@ const ProfilePage = () => {
 
         try {
             // Sign out from Clerk
-            await signOut();
+            await signOut({redirectUrl: '/'});
 
             // Wait a moment for Clerk to process
             await new Promise(resolve => setTimeout(resolve, 100));
