@@ -18,10 +18,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <ClerkProvider
         publishableKey={PUBLISHABLE_KEY}
-        afterSignOutUrl="/"
-        signInUrl="/auth"
-        signUpUrl="/auth"
-      >
+        afterSignOutUrl="/">
         <App />
       </ClerkProvider>
     </BrowserRouter>

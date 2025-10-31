@@ -6,7 +6,7 @@
   align-items: center;
   min-height: calc(100vh - 80px); /* Full height minus navbar height */
   padding: var(--spacing-xl);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+  /* background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05)); */
 }
 
 .auth-card {
