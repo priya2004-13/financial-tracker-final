@@ -100,14 +100,10 @@ export const Dashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="dashboard-container">
+     <div className="dashboard-container">
         <div className="loading-dashboard">
-          <RingLoader
-            color="#652aa8"
-            loading
-            size={100}
-            speedMultiplier={1}
-          />
+          <div className="loading-spinner"></div>
+          <p>Loading your financial data...</p>
         </div>
       </div>
 
