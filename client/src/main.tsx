@@ -1,7 +1,8 @@
-// client/src/main.tsx - ENHANCED VERSION
+//CLIENT/SRC/MAIN.TSX 
+// ============================================
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom"; // Import BrowserRouter here
+import { BrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
 import "./index.css";
 import { ClerkProvider } from "@clerk/clerk-react";

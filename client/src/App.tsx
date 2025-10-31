@@ -89,8 +89,7 @@ const Navbar = () => {
                         {user?.primaryEmailAddress?.emailAddress}
                       </span>
                     </div>
-                    <UserButton
-                      afterSignOutUrl="/auth"
+                    <UserButton 
                       appearance={{
                         elements: {
                           avatarBox: "w-10 h-10",

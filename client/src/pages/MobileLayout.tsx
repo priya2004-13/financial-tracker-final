@@ -1,6 +1,6 @@
 ﻿// client/src/pages/MobileLayout.tsx - 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';  
+import { useNavigate } from 'react-router-dom';
 import {
     DollarSign,
     LayoutGrid,
@@ -142,24 +142,36 @@ const BudgetsPage = () => (
     </div>
 );
 
-// --- PROFILE PAGE (FIXED SIGN OUT) ---
 const ProfilePage = () => {
     const { user } = useUser();
     const { signOut } = useClerk();
-    const navigate = useNavigate(); // Add navigation
+    const navigate = useNavigate();
     const { theme, toggleTheme } = useTheme();
     const [isSigningOut, setIsSigningOut] = useState(false);
 
     const handleSignOut = async () => {
-        if (window.confirm('Are you sure you want to sign out?')) {
-            try {
-                setIsSigningOut(true);
-                // Sign out and redirect to auth page
-                await signOut(() => navigate('/auth'));
-            } catch (error) {
-                console.error('Sign out error:', error);
-                setIsSigningOut(false);
-            }
+        if (!window.confirm('Are you sure you want to sign out?')) {
+            return;
+        }
+
+        setIsSigningOut(true);
+
+        try {
+            // Sign out from Clerk
+            await signOut();
+
+            // Wait a moment for Clerk to process
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            // Force navigation to auth page
+            navigate('/auth', { replace: true });
+        } catch (error) {
+            console.error('Sign out error:', error);
+            // Even on error, try to redirect
+            navigate('/auth', { replace: true });
+        } finally {
+            // Reset state after a delay
+            setTimeout(() => setIsSigningOut(false), 500);
         }
     };
 
@@ -236,7 +248,6 @@ const ProfilePage = () => {
         </div>
     );
 };
-
 // --- MAIN MOBILE LAYOUT COMPONENT ---
 const TABS = [
     { id: 'home', icon: LayoutGrid, label: 'Home' },
