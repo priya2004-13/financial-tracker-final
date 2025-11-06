@@ -30,6 +30,7 @@ import TrendAnalysisChart from "../../components/TrendAnalysisChart";
 import SpendingHeatmap from "../../components/SpendingHeatmap";
 import { CategoryChart } from "../../components/CategoryChart";
 import { RingLoader } from "react-spinners";
+import { PageLoader } from "../../components/PageLoader";
 export const Dashboard = () => {
   const { user } = useUser();
   const { records, budget, isLoading } = useFinancialRecords();
@@ -100,12 +101,7 @@ export const Dashboard = () => {
 
   if (isLoading) {
     return (
-     <div className="dashboard-container">
-        <div className="loading-dashboard">
-          <div className="loading-spinner"></div>
-          <p>Loading your financial data...</p>
-        </div>
-      </div>
+      <PageLoader message="Loading your financial data..." variant='minimal' />
 
     );
   }

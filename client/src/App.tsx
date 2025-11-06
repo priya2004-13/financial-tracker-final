@@ -18,20 +18,14 @@ import { Sun, Moon } from "lucide-react";
 import logo from "./assets/brand_logo.png";
 import MobileLayout from "./pages/MobileLayout";
 import { useScreenSize } from "./hooks/useScreenSize";
+import { PageLoader } from "./components/PageLoader";
 
 const ProtectedDashboardRoute = () => {
   const { isLoaded, isSignedIn } = useUser();
   const screenSize = useScreenSize();
 
   if (!isLoaded) {
-    return (
-      <div className="dashboard-container">
-        <div className="loading-dashboard">
-          <div className="loading-spinner"></div>
-          <p>Authenticating user...</p>
-        </div>
-      </div>
-    );
+    return <PageLoader message="Authenticating user..." variant="fullscreen" />;
   }
 
   if (!isSignedIn) {

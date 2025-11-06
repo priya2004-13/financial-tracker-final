@@ -293,9 +293,11 @@
         color var(--transition-base);
 }
 
-/* Exclude specific elements from transition */
+/* Exclude specific elements from theme transition but keep their own transitions */
 *:is(input, textarea, select, button, svg, img) {
-    transition: none;
+    transition: transform var(--transition-base),
+        opacity var(--transition-base),
+        box-shadow var(--transition-base);
 }
 
 /* Re-enable specific transitions for interactive elements */
