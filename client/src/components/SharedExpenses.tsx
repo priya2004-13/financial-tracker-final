@@ -1,10 +1,16 @@
-﻿// client/src/components/SharedExpenses.tsx - Improved with Group Management
+﻿// client/src/components/SharedExpenses.tsx - Improved with API utilities
 import React, { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { Users, Plus, Check, X, TrendingUp, TrendingDown, Loader } from 'lucide-react';
 import './SharedExpenses.css';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+import {
+    fetchSharedExpensesByGroup,
+    getSharedExpenseBalance,
+    createSharedExpense,
+    markSharedExpensePaid,
+    deleteSharedExpense,
+    SharedExpense as SharedExpenseType
+} from '../../services/api';
 
 // Types
 interface Participant {
@@ -16,22 +22,8 @@ interface Participant {
     customAmount?: string;
 }
 
-interface SharedExpense {
-    _id: string;
-    groupId: string;
-    groupName: string;
-    createdBy: string;
-    createdByName: string;
-    date: Date;
-    description: string;
-    totalAmount: number;
-    category: string;
-    paymentMethod: string;
-    paidBy: string;
-    paidByName: string;
-    splitType: 'equal' | 'custom' | 'percentage';
-    participants: Participant[];
-}
+// Use the SharedExpense type from API
+type SharedExpense = SharedExpenseType;
 
 interface BalanceSummary {
     totalOwed: number;
@@ -88,17 +80,7 @@ export const SharedExpenses: React.FC = () => {
     const loadExpenses = useCallback(async () => {
         if (!user) return;
         try {
-            const response = await fetch(`${API_BASE_URL}/shared-expenses/group/${selectedGroup}`);
-
-            if (!response.ok) {
-                if (response.status === 404) {
-                    setExpenses([]);
-                    return;
-                }
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
+            const data = await fetchSharedExpensesByGroup(selectedGroup);
             setExpenses(data);
         } catch (err: any) {
             console.error('Error loading expenses:', err);
@@ -110,17 +92,7 @@ export const SharedExpenses: React.FC = () => {
     const loadBalance = useCallback(async () => {
         if (!user) return;
         try {
-            const response = await fetch(`${API_BASE_URL}/shared-expenses/balance/${selectedGroup}/${user.id}`);
-
-            if (!response.ok) {
-                if (response.status === 404) {
-                    setBalance({ totalOwed: 0, totalOwedToUser: 0, netBalance: 0 });
-                    return;
-                }
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
+            const data = await getSharedExpenseBalance(selectedGroup, user.id);
             setBalance(data);
         } catch (err: any) {
             console.error('Error loading balance:', err);
@@ -247,16 +219,7 @@ export const SharedExpenses: React.FC = () => {
                 }))
             };
 
-            const response = await fetch(`${API_BASE_URL}/shared-expenses`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newExpense)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to create expense');
-            }
+            await createSharedExpense(newExpense);
 
             // Refresh data after successful creation
             await refreshData(true);
@@ -271,14 +234,7 @@ export const SharedExpenses: React.FC = () => {
     const markAsPaid = async (expenseId: string, userId: string) => {
         try {
             setError(null);
-            const response = await fetch(
-                `${API_BASE_URL}/shared-expenses/${expenseId}/mark-paid/${userId}`,
-                { method: 'PUT' }
-            );
-
-            if (!response.ok) {
-                throw new Error('Failed to mark as paid');
-            }
+            await markSharedExpensePaid(expenseId, userId);
 
             // Refresh data after marking as paid
             await refreshData(true);
@@ -600,9 +556,9 @@ export const SharedExpenses: React.FC = () => {
                                                     </span>
                                                 ) : p.userId === user.id ? (
                                                     <button
-                                                        onClick={() => markAsPaid(expense._id, p.userId)}
+                                                        onClick={() => expense._id && markAsPaid(expense._id, p.userId)}
                                                         className="btn-mark-paid"
-                                                        disabled={isRefreshing}
+                                                        disabled={isRefreshing || !expense._id}
                                                     >
                                                         Mark Paid
                                                     </button>

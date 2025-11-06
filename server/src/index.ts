@@ -36,6 +36,7 @@ mongoose
   .catch((err) => console.error("❌ Failed to Connect to MongoDB:", err));
 
 // Health check endpoint
+
 app.get("/health", (req, res) => {
   res.status(200).send({ status: "OK", timestamp: new Date().toISOString() });
 });
@@ -51,7 +52,7 @@ app.use("/notifications", notificationRouter);
 app.use("/ai", aiInsightsRouter);
 app.use("/categories", categoryRouter);
 app.use("/transaction-templates", transactionTemplateRouter);
-app.use("/shared-expenses", sharedExpenseRouter); // ✅ ADDED
+app.use("/shared-expenses", sharedExpenseRouter); 
 
 // 404 handler
 app.use((req, res) => {

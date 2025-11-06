@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^4.19.2",
+    "express-rate-limit": "^8.2.1",
     "json2csv": "^6.0.0-alpha.2",
     "mongoose": "^8.3.2",
     "nodemon": "^3.1.0",
@@ -24,5 +25,12 @@
     "svix": "^1.81.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^6.0.3",
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5"
   }
 }

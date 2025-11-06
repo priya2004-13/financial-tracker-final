@@ -5,6 +5,7 @@ import { Dashboard } from "./pages/dashboard";
 import { Auth } from "./pages/auth";
 import { FinancialRecordsProvider } from "./contexts/financial-record-context";
 import { ThemeProvider, useTheme } from "./contexts/themeContext";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import {
   SignedIn,
   SignedOut,
@@ -38,9 +39,11 @@ const ProtectedDashboardRoute = () => {
   }
 
   return (
-    <FinancialRecordsProvider>
-      {screenSize === "xs" ? <MobileLayout /> : <Dashboard />}
-    </FinancialRecordsProvider>
+    <ErrorBoundary level="section">
+      <FinancialRecordsProvider>
+        {screenSize === "xs" ? <MobileLayout /> : <Dashboard />}
+      </FinancialRecordsProvider>
+    </ErrorBoundary>
   );
 }
 
@@ -89,7 +92,7 @@ const Navbar = () => {
                         {user?.primaryEmailAddress?.emailAddress}
                       </span>
                     </div>
-                    <UserButton 
+                    <UserButton
                       appearance={{
                         elements: {
                           avatarBox: "w-10 h-10",
@@ -97,7 +100,7 @@ const Navbar = () => {
                           userButtonPopoverActionButton: "hover:bg-gray-100"
                         }
                       }}
-                      
+
                       userProfileMode="navigation"
                       userProfileUrl="/auth"
                     />
@@ -158,7 +161,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<ProtectedDashboardRoute />} />
         <Route path="/auth" element={<Auth />} />
-        
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
@@ -167,9 +170,11 @@ function AppContent() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
+    <ErrorBoundary level="page">
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

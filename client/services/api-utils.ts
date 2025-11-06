@@ -1,6 +1,8 @@
 ﻿/// <reference types="vite/client" />
 // client/services/api-utils.ts  
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+// Remove trailing slash from API_BASE_URL to prevent double slashes
+console.log(import.meta.env.VITE_API_BASE_URL)
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://localhost:3001").replace(/\/$/, '');
 
 // Retry configuration
 const MAX_RETRIES = 3;
