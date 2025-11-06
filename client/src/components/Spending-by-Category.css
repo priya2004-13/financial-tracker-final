@@ -1,6 +1,5 @@
 ﻿/* dashboard.css - Mobile First Responsive Design */
-@import "../variables.css";
-@import "../theme-variables.css";
+/* Variables imported globally via index.css */
 /* ============================================ */
 
 /* Category Chart */
@@ -9,7 +8,8 @@
   border-radius: var(--radius-xl);
   padding: 1rem;
   box-shadow: var(--shadow-lg);
-  overflow: hidden; /* Overflow को prevent करें / Prevent overflow */
+  overflow: hidden;
+  /* Overflow को prevent करें / Prevent overflow */
 }
 
 .chart-title {
@@ -36,7 +36,8 @@
   align-items: center;
   margin-bottom: var(--spacing-xs);
   gap: 0.5rem;
-  flex-wrap: wrap; /* Mobile पर wrap हो सके / Can wrap on mobile */
+  flex-wrap: wrap;
+  /* Mobile पर wrap हो सके / Can wrap on mobile */
 }
 
 .chart-item-category {
@@ -75,11 +76,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   animation: shimmer 2s infinite;
 }
 
- 
+
 
 
 /* ============================================ */
@@ -89,45 +90,42 @@
 /* Small devices (landscape phones, 640px and up) */
 @media (min-width: 640px) {
   .stats-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns on small tablets */
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columns on small tablets */
     gap: 1.25rem;
   }
-  
+
   .form-icon {
     width: 40px;
     height: 40px;
   }
-  
+
   .form-title {
     font-size: 1.25rem;
   }
 }
 
 /* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) {
- 
-}
+@media (min-width: 768px) {}
 
 /* Large devices (desktops, 1024px and up) */
 @media (min-width: 1024px) {
- 
-  
- 
- 
+
+
+
+
   .chart-container {
     padding: var(--spacing-xl);
   }
-  
+
   .chart-title {
     font-size: 1.25rem;
     margin-bottom: var(--spacing-xl);
   }
-  
+
   .chart-items {
     gap: var(--spacing-lg);
   }
-  
- 
-}
 
- 
+
+}

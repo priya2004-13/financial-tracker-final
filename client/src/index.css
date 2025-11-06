@@ -1,3 +1,33 @@
+/* ============================================================================
+   GLOBAL STYLES - index.css
+   
+   This file sets up the global styling foundation for the entire application.
+   
+   📦 Imports:
+   1. theme-variables.css - Centralized CSS variables with light/dark themes
+   2. enhanced-mobile.css - Mobile-responsive enhancements
+   
+   ⚙️ Global Setup:
+   - CSS Reset with box-sizing
+   - Smooth scrolling
+   - Custom scrollbar styling
+   - Base typography and colors from theme variables
+   - Focus and input states
+   
+   🎨 Theme Variables Available:
+   All CSS variables are imported globally from theme-variables.css.
+   No need to import in individual component CSS files.
+   
+   Variables include:
+   - Colors: --primary-color, --success-color, --danger-color, etc.
+   - Backgrounds: --bg-primary, --bg-secondary, --card-bg, etc.
+   - Text: --text-primary, --text-secondary, --text-tertiary
+   - Spacing: --spacing-xs to --spacing-3xl
+   - Shadows: --shadow-sm to --shadow-xl
+   - Animations: fadeIn, slideUp, pulse, shimmer, etc.
+   - Utilities: .glass-effect, .skeleton, .btn-*, .card, etc.
+   ============================================================================ */
+
 /* client/src/index.css - Updated with Theme Variables */
 @import './theme-variables.css';
 @import './enhanced-mobile.css';

@@ -1,4 +1,19 @@
-﻿/* client/variables.css - Enhanced Mobile-First Design System */
+﻿/* ============================================================================
+   ⚠️ DEPRECATED - Use theme-variables.css instead
+   
+   This file is kept for reference only. All CSS variables have been
+   consolidated into theme-variables.css which includes:
+   - Full light/dark theme support via data-theme attribute
+   - All animations (fadeIn, slideUp, shimmer, pulse, etc.)
+   - All utility classes (.glass-effect, .skeleton, .btn-*, etc.)
+   - Hover state variables (--primary-hover, --success-hover, etc.)
+   - Background aliases (--bg-primary, --bg-secondary, etc.)
+   
+   DO NOT import this file in new components.
+   Use the global theme-variables.css imported via index.css
+   ============================================================================ */
+
+/* client/variables.css - Enhanced Mobile-First Design System */
 
 :root {
   /* Colors - Enhanced Palette */

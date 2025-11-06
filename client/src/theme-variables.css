@@ -1,4 +1,37 @@
-﻿/* client/src/theme-variables.css - Centralized Theme Variables */
+﻿/* ============================================================================
+   CENTRALIZED THEME SYSTEM - theme-variables.css
+   
+   This is the single source of truth for all CSS variables in the application.
+   Imported globally via index.css - no need to import in individual components.
+   
+   ✅ Features:
+   - Light/Dark theme switching via data-theme attribute
+   - 80+ semantic CSS variables for colors, spacing, typography
+   - Hover state variables (--primary-hover, --success-hover, etc.)
+   - Background aliases (--bg-primary, --bg-secondary, --bg-elevated)
+   - Complete animation keyframes (@keyframes fadeIn, slideUp, etc.)
+   - Utility classes (.glass-effect, .skeleton, .btn-*, .card, etc.)
+   - Responsive design tokens
+   
+   📖 Usage:
+   - Theme toggle: document.documentElement.setAttribute('data-theme', 'dark')
+   - In CSS: background: var(--primary-color);
+   - Utility classes: <div className="card animate-fade-in">
+   
+   🎨 Color System:
+   - Primary: Brand colors (indigo/purple)
+   - Secondary: Accent colors
+   - Semantic: Success (green), Danger (red), Warning (orange), Info (blue)
+   - Text: Primary, secondary, tertiary hierarchy
+   - Backgrounds: Light, medium, dark + card, hover, overlay
+   
+   ⚡ Performance:
+   - Smooth transitions on theme change (0.2s)
+   - GPU-accelerated animations
+   - Optimized z-index layering
+   ============================================================================ */
+
+/* client/src/theme-variables.css - Centralized Theme Variables */
 
 /* ========================================== */
 /* LIGHT THEME (DEFAULT)                     */
@@ -8,19 +41,25 @@
     --primary-color: #6366f1;
     --primary-dark: #4f46e5;
     --primary-light: #818cf8;
+    --primary-hover: #4f46e5;
     --secondary-color: #8b5cf6;
     --secondary-dark: #7c3aed;
     --secondary-light: #a78bfa;
+    --secondary-hover: #7c3aed;
 
     /* Semantic Colors */
     --success-color: #10b981;
     --success-light: #34d399;
+    --success-hover: #059669;
     --danger-color: #ef4444;
     --danger-light: #f87171;
+    --danger-hover: #dc2626;
     --warning-color: #f59e0b;
     --warning-light: #fbbf24;
+    --warning-hover: #d97706;
     --info-color: #3b82f6;
     --info-light: #60a5fa;
+    --info-hover: #2563eb;
 
     /* Text Colors */
     --text-primary: #1f2937;
@@ -36,6 +75,13 @@
     --hover-bg: #f3f4f6;
     --overlay-bg: rgba(0, 0, 0, 0.5);
     --body-bg: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 50%, #fce7f3 100%);
+
+    /* Alternative naming for compatibility */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+    --bg-elevated: #ffffff;
+    --bg-hover: #f3f4f6;
 
     /* Border & Dividers */
     --border-color: #e5e7eb;
@@ -66,6 +112,8 @@
     --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
 
     /* Navbar */
     --navbar-bg: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
@@ -86,19 +134,25 @@
     --primary-color: #818cf8;
     --primary-dark: #6366f1;
     --primary-light: #a5b4fc;
+    --primary-hover: #6366f1;
     --secondary-color: #a78bfa;
     --secondary-dark: #8b5cf6;
     --secondary-light: #c4b5fd;
+    --secondary-hover: #8b5cf6;
 
     /* Semantic Colors */
     --success-color: #34d399;
     --success-light: #6ee7b7;
+    --success-hover: #10b981;
     --danger-color: #f87171;
     --danger-light: #fca5a5;
+    --danger-hover: #ef4444;
     --warning-color: #fbbf24;
     --warning-light: #fcd34d;
+    --warning-hover: #f59e0b;
     --info-color: #60a5fa;
     --info-light: #93c5fd;
+    --info-hover: #3b82f6;
 
     /* Text Colors */
     --text-primary: #f9fafb;
@@ -114,6 +168,13 @@
     --hover-bg: #374151;
     --overlay-bg: rgba(0, 0, 0, 0.7);
     --body-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #312e81 100%);
+
+    /* Alternative naming for compatibility */
+    --bg-primary: #1f2937;
+    --bg-secondary: #111827;
+    --bg-tertiary: #374151;
+    --bg-elevated: #374151;
+    --bg-hover: #4b5563;
 
     /* Border & Dividers */
     --border-color: #374151;
@@ -144,6 +205,8 @@
     --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
     --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 20px rgba(129, 140, 248, 0.5);
 
     /* Navbar */
     --navbar-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
@@ -189,6 +252,7 @@
 
     /* Z-index layers */
     --z-base: 1;
+    --z-chart: 1;
     --z-dropdown: 1000;
     --z-sticky: 1020;
     --z-fixed: 1030;
@@ -226,4 +290,351 @@ button,
 a,
 .card-interactive {
     transition: all var(--transition-base);
+}
+
+/* ========================================== */
+/* KEYFRAME ANIMATIONS                        */
+/* ========================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+/* ========================================== */
+/* UTILITY CLASSES                            */
+/* ========================================== */
+
+/* Glass Morphism Effect */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Gradient Backgrounds */
+.gradient-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+.gradient-success {
+    background: linear-gradient(135deg, var(--success-color), var(--success-light));
+}
+
+.gradient-danger {
+    background: linear-gradient(135deg, var(--danger-color), var(--danger-light));
+}
+
+.gradient-warning {
+    background: linear-gradient(135deg, var(--warning-color), var(--warning-light));
+}
+
+/* Skeleton Loading */
+.skeleton {
+    background: linear-gradient(90deg,
+            var(--bg-secondary) 0%,
+            var(--bg-elevated) 50%,
+            var(--bg-secondary) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-md);
+}
+
+/* Button Base Styles */
+.btn-base {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--text-inverse);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--text-inverse);
+}
+
+.btn-secondary:hover {
+    background: var(--secondary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: var(--text-inverse);
+}
+
+.btn-success:hover {
+    background: var(--success-hover);
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: var(--text-inverse);
+}
+
+.btn-danger:hover {
+    background: var(--danger-hover);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-outline:hover {
+    background: var(--bg-hover);
+    border-color: var(--primary-color);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-primary);
+}
+
+.btn-ghost:hover {
+    background: var(--bg-hover);
+}
+
+/* Card Styles */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-base);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.card-elevated {
+    box-shadow: var(--shadow-lg);
+}
+
+/* Animation Utility Classes */
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+}
+
+.animate-slide-down {
+    animation: slideDown 0.4s ease-out;
+}
+
+.animate-slide-left {
+    animation: slideInLeft 0.4s ease-out;
+}
+
+.animate-slide-right {
+    animation: slideInRight 0.4s ease-out;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+.animate-bounce {
+    animation: bounce 1s ease-in-out infinite;
+}
+
+.animate-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Text Utilities */
+.text-primary {
+    color: var(--text-primary);
+}
+
+.text-secondary {
+    color: var(--text-secondary);
+}
+
+.text-tertiary {
+    color: var(--text-tertiary);
+}
+
+.text-success {
+    color: var(--success-color);
+}
+
+.text-danger {
+    color: var(--danger-color);
+}
+
+.text-warning {
+    color: var(--warning-color);
+}
+
+.text-info {
+    color: var(--info-color);
+}
+
+/* Truncate Text */
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

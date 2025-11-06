@@ -1,5 +1,6 @@
 ﻿/* MobileLayout.css - Enhanced with Page Styles */
-@import '../variables.css';
+/* Variables imported globally via index.css -> theme-variables.css */
+@import '../theme-variables.css';
 
 .mobile-layout-container {
   display: flex;
