@@ -1,10 +1,11 @@
 ﻿/* client/src/components/SplitTransactionModal.css - UPDATED WITH PROPER Z-INDEX */
- 
+
 .split-modal-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 9999; /* CRITICAL: Very high z-index to overlay everything */
+    z-index: 9999;
+    /* CRITICAL: Very high z-index to overlay everything */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -147,7 +148,7 @@
 
 .btn-quick-split:hover {
     background: var(--primary-color);
-    color: white;
+    color: var(--text-inverse);
     border-color: var(--primary-color);
     transform: translateY(-2px);
 }
@@ -204,7 +205,7 @@
 
 .btn-remove-split:hover {
     background: var(--danger-color);
-    color: white;
+    color: var(--text-inverse);
     transform: scale(1.05);
 }
 
@@ -242,18 +243,20 @@
     border-radius: var(--radius-md);
     font-size: 0.875rem;
     color: var(--text-primary);
-    background: white;
+    background: var(--card-bg);
     transition: all var(--transition-base);
 }
 
 .split-input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 10%, transparent);
 }
+
 .split-modal-content select {
     position: relative;
-    z-index: 100001; /* Above modal content to show dropdown */
+    z-index: 100001;
+    /* Above modal content to show dropdown */
 }
 
 /* Ensure select dropdown options appear */
@@ -267,7 +270,8 @@
 .split-modal-footer {
     position: sticky;
     background: var(--card-bg);
-    z-index: 100010; /* Above modal content but below overlay */
+    z-index: 100010;
+    /* Above modal content but below overlay */
 }
 
 .split-modal-header {
@@ -284,6 +288,7 @@ body.modal-open {
     position: fixed;
     width: 100%;
 }
+
 .input-with-icon {
     position: relative;
     display: flex;
@@ -321,7 +326,7 @@ body.modal-open {
 
 .btn-add-split:hover {
     background: var(--primary-color);
-    color: white;
+    color: var(--text-inverse);
     border-color: var(--primary-color);
     border-style: solid;
 }
@@ -423,14 +428,14 @@ body.modal-open {
     border-radius: var(--radius-md);
     font-size: 0.875rem;
     font-weight: 600;
-    color: white;
+    color: var(--text-inverse);
     cursor: pointer;
     transition: all var(--transition-base);
 }
 
 .btn-submit-split:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--primary-color) 30%, transparent);
 }
 
 .btn-submit-split:disabled {

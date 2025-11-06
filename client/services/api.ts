@@ -97,12 +97,41 @@ export const getImageSize = (base64: string): number => {
 // FINANCIAL RECORDS API
 // ============================================
 
-export const fetchFinancialRecords = async (userId: string): Promise<FinancialRecord[]> => {
+export interface PaginatedRecordsResponse {
+  records: FinancialRecord[];
+  pagination: {
+    currentPage: number;
+    limit: number;
+    totalRecords: number;
+    totalPages: number;
+    hasMore: boolean;
+    hasPrevious: boolean;
+  };
+}
+
+export const fetchFinancialRecords = async (
+  userId: string,
+  page: number = 1,
+  limit: number = 50
+): Promise<PaginatedRecordsResponse> => {
   try {
-    return await apiGet<FinancialRecord[]>(`/financial-records/getAllByUserID/${userId}`);
+    const response = await apiGet<PaginatedRecordsResponse>(
+      `/financial-records/getAllByUserID/${userId}?page=${page}&limit=${limit}`
+    );
+    return response;
   } catch (error) {
     if (error instanceof ApiError && error.statusCode === 404) {
-      return [];
+      return {
+        records: [],
+        pagination: {
+          currentPage: 1,
+          limit,
+          totalRecords: 0,
+          totalPages: 0,
+          hasMore: false,
+          hasPrevious: false
+        }
+      };
     }
     throw error;
   }

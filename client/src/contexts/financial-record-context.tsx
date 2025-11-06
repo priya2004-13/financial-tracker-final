@@ -88,7 +88,7 @@ export const FinancialRecordsProvider = ({
     setIsLoading(true);
     try {
       await Promise.all([
-        fetchFinancialRecords(user.id).then(setRecords).catch(console.error),
+        fetchFinancialRecords(user.id, 1, 50).then(response => setRecords(response.records)).catch(console.error),
         fetchBudget(user.id).then(setBudget).catch(console.error),
         fetchCategories(user.id).then(setCategories).catch(console.error), // Fetch categories
       ]);

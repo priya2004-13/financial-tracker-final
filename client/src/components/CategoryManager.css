@@ -30,12 +30,13 @@
 .category-manager-icon {
     width: 36px;
     height: 36px;
-    background: linear-gradient(135deg, var(--info-color), #60a5fa); /* Blue gradient */
+    background: linear-gradient(135deg, var(--info-color), #60a5fa);
+    /* Blue gradient */
     border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--text-inverse);
     flex-shrink: 0;
 }
 
@@ -62,11 +63,12 @@
 
 .btn-toggle-form:not(.active) {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
+    color: var(--text-inverse);
 }
+
 .btn-toggle-form:not(.active):hover {
-     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--primary-color) 30%, transparent);
 }
 
 
@@ -75,8 +77,9 @@
     color: var(--text-secondary);
     border: 1px solid var(--border-color);
 }
+
 .btn-toggle-form.active:hover {
-     background: var(--hover-bg);
+    background: var(--hover-bg);
 }
 
 
@@ -118,13 +121,14 @@
 
 .emoji-btn.selected {
     border-color: var(--primary-color);
-    background-color: rgba(99, 102, 241, 0.1);
+    background-color: color-mix(in srgb, var(--primary-color) 10%, transparent);
 }
 
 .error-message {
     color: var(--danger-color);
     font-size: 0.875rem;
-    margin-top: -0.5rem; /* Reduce gap */
+    margin-top: -0.5rem;
+    /* Reduce gap */
     text-align: center;
 }
 
@@ -135,7 +139,8 @@
     gap: 0.75rem;
     max-height: 250px;
     overflow-y: auto;
-    padding-right: 0.5rem; /* Scrollbar spacing */
+    padding-right: 0.5rem;
+    /* Scrollbar spacing */
 }
 
 .category-item {
@@ -148,7 +153,7 @@
 }
 
 .category-item:hover {
-     background-color: var(--hover-bg);
+    background-color: var(--hover-bg);
 }
 
 
@@ -164,7 +169,7 @@
     font-weight: 500;
     color: var(--text-primary);
     margin-right: 0.5rem;
-     white-space: nowrap;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -185,7 +190,7 @@
 
 .btn-delete-category:hover {
     color: var(--danger-color);
-    background-color: rgba(239, 68, 68, 0.1);
+    background-color: color-mix(in srgb, var(--danger-color) 10%, transparent);
 }
 
 .empty-categories {
@@ -203,17 +208,19 @@
         gap: 1.5rem;
     }
 
-     .category-manager-header {
+    .category-manager-header {
         padding-bottom: 1.5rem;
     }
 
     .category-manager-title {
         font-size: 1.25rem;
     }
-     .category-add-form {
+
+    .category-add-form {
         padding: 1.5rem;
     }
-     .categories-list {
+
+    .categories-list {
         gap: 1rem;
     }
 }

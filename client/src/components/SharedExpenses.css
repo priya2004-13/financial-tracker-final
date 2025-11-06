@@ -34,7 +34,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--text-inverse);
     flex-shrink: 0;
 }
 
@@ -51,7 +51,7 @@
     gap: 0.5rem;
     padding: 0.5rem 1rem;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
+    color: var(--text-inverse);
     border: none;
     border-radius: var(--radius-md);
     font-size: 0.875rem;
@@ -227,12 +227,12 @@
 
 .btn-remove-participant:hover {
     background: var(--danger-color);
-    color: white;
+    color: var(--text-inverse);
 }
 
 .btn-add-participant {
     padding: 0.5rem 1rem;
-    background: white;
+    background: var(--card-bg);
     border: 2px dashed var(--border-color);
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -251,7 +251,7 @@
 .btn-submit-expense {
     padding: 0.75rem 1.5rem;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
+    color: var(--text-inverse);
     border: none;
     border-radius: var(--radius-md);
     cursor: pointer;
@@ -348,7 +348,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
-    background: white;
+    background: var(--card-bg);
     border-radius: var(--radius-sm);
     font-size: 0.875rem;
 }
@@ -393,7 +393,7 @@
 .btn-mark-paid {
     padding: 0.25rem 0.5rem;
     background: var(--primary-color);
-    color: white;
+    color: var(--text-inverse);
     border: none;
     border-radius: var(--radius-sm);
     cursor: pointer;

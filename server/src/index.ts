@@ -14,6 +14,7 @@ import cors from "cors";
 import webhookRouter from "./routes/webhooks";
 import { webhookMiddleware } from "./middleware/webhooks";
 import usersRouter from "./routes/users";
+import { startWebhookRetryWorker } from "./utils/webhook-retry";
 import 'dotenv/config'
 const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
@@ -32,7 +33,13 @@ const mongoURI: string = process.env.MONGO_URI || 'mongodb://localhost:27017/fin
 
 mongoose
   .connect(mongoURI)
-  .then(() => console.log("✅ CONNECTED TO MONGODB!"))
+  .then(() => {
+    console.log("✅ CONNECTED TO MONGODB!");
+
+    // Start webhook retry worker after successful DB connection
+    startWebhookRetryWorker(60000); // Run every 60 seconds
+    console.log("🔄 Webhook retry worker started (60s interval)");
+  })
   .catch((err) => console.error("❌ Failed to Connect to MongoDB:", err));
 
 // Health check endpoint
@@ -52,7 +59,7 @@ app.use("/notifications", notificationRouter);
 app.use("/ai", aiInsightsRouter);
 app.use("/categories", categoryRouter);
 app.use("/transaction-templates", transactionTemplateRouter);
-app.use("/shared-expenses", sharedExpenseRouter); 
+app.use("/shared-expenses", sharedExpenseRouter);
 
 // 404 handler
 app.use((req, res) => {

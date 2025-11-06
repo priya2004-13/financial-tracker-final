@@ -1,5 +1,5 @@
-// client/src/pages/dashboard/financial-record-list.tsx - WITH ATTACHMENT DISPLAY
-import { useMemo, useState } from "react";
+// client/src/pages/dashboard/financial-record-list.tsx - WITH PAGINATION
+import { useMemo, useState, useEffect } from "react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import {
   Trash2,
@@ -18,10 +18,16 @@ import {
   GitCommit,
   Image as ImageIcon,
   Eye,
-  StickyNote
+  StickyNote,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  Loader
 } from "lucide-react";
 import "./recordList.css";
-import { FinancialRecord  } from "../../../services/api";
+import { FinancialRecord, fetchFinancialRecords, PaginatedRecordsResponse } from "../../../services/api";
+import { useUser } from "@clerk/clerk-react";
 
 const CATEGORY_COLORS: Record<string, string> = {
   Salary: '#10b981',
@@ -33,6 +39,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export const FinancialRecordList = () => {
+  const { user } = useUser();
   const { records, updateRecord, deleteRecord, categories } = useFinancialRecords();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<FinancialRecord>>({});
@@ -41,9 +48,36 @@ export const FinancialRecordList = () => {
   const [sortBy, setSortBy] = useState<"date" | "amount">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+  const [allRecords, setAllRecords] = useState<FinancialRecord[]>(records);
+  const [paginationInfo, setPaginationInfo] = useState<PaginatedRecordsResponse['pagination'] | null>(null);
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
+
   // Image preview state
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [expandedRecordId, setExpandedRecordId] = useState<string | null>(null);
+
+  // Load paginated records
+  useEffect(() => {
+    const loadRecords = async () => {
+      if (!user?.id) return;
+
+      setIsLoadingPage(true);
+      try {
+        const response = await fetchFinancialRecords(user.id, currentPage, pageSize);
+        setAllRecords(response.records);
+        setPaginationInfo(response.pagination);
+      } catch (error) {
+        console.error("Error loading records:", error);
+      } finally {
+        setIsLoadingPage(false);
+      }
+    };
+
+    loadRecords();
+  }, [user?.id, currentPage, pageSize]);
 
   const allCategories = useMemo(() => {
     const defaultCategories = ["All", "Food", "Rent", "Salary", "Utilities", "Entertainment", "Other"];
@@ -52,7 +86,7 @@ export const FinancialRecordList = () => {
   }, [categories]);
 
   const filteredAndSortedRecords = useMemo(() => {
-    let filtered = records.filter((record) => {
+    let filtered = allRecords.filter((record) => {
       const matchesSearch = record.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = filterCategory === "All" || record.category === filterCategory;
       return matchesSearch && matchesCategory;
@@ -68,7 +102,7 @@ export const FinancialRecordList = () => {
       }
     });
     return filtered;
-  }, [records, searchTerm, filterCategory, sortBy, sortOrder]);
+  }, [allRecords, searchTerm, filterCategory, sortBy, sortOrder]);
 
   const getCategoryColor = (categoryName: string) => {
     return CATEGORY_COLORS[categoryName] || CATEGORY_COLORS['Other'];
@@ -217,7 +251,7 @@ export const FinancialRecordList = () => {
 
             return (
               <div key={record._id} className={`record-card ${isIncome ? 'income-card' : 'expense-card'} ${record.isSplit ? 'split-indicator' : ''}`}>
-                {record.isSplit && <GitCommit size={14} className="split-icon"   />}
+                {record.isSplit && <GitCommit size={14} className="split-icon" />}
 
                 <div className="record-card-left">
                   <div
@@ -425,6 +459,95 @@ export const FinancialRecordList = () => {
         )}
       </div>
 
+      {/* Pagination Controls */}
+      {paginationInfo && paginationInfo.totalPages > 1 && (
+        <div className="pagination-container">
+          <div className="pagination-info">
+            <span className="records-count">
+              Showing {((currentPage - 1) * pageSize) + 1} - {Math.min(currentPage * pageSize, paginationInfo.totalRecords)} of {paginationInfo.totalRecords} transactions
+            </span>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="page-size-select"
+            >
+              <option value={25}>25 per page</option>
+              <option value={50}>50 per page</option>
+              <option value={100}>100 per page</option>
+            </select>
+          </div>
+
+          <div className="pagination-controls">
+            <button
+              onClick={() => setCurrentPage(1)}
+              disabled={!paginationInfo.hasPrevious || isLoadingPage}
+              className="pagination-btn"
+              title="First page"
+            >
+              <ChevronsLeft size={18} />
+            </button>
+            <button
+              onClick={() => setCurrentPage(prev => prev - 1)}
+              disabled={!paginationInfo.hasPrevious || isLoadingPage}
+              className="pagination-btn"
+              title="Previous page"
+            >
+              <ChevronLeft size={18} />
+            </button>
+
+            <div className="page-numbers">
+              {Array.from({ length: Math.min(5, paginationInfo.totalPages) }, (_, i) => {
+                const pageNum = currentPage <= 3
+                  ? i + 1
+                  : currentPage >= paginationInfo.totalPages - 2
+                    ? paginationInfo.totalPages - 4 + i
+                    : currentPage - 2 + i;
+
+                if (pageNum < 1 || pageNum > paginationInfo.totalPages) return null;
+
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`page-number-btn ${currentPage === pageNum ? 'active' : ''}`}
+                    disabled={isLoadingPage}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              disabled={!paginationInfo.hasMore || isLoadingPage}
+              className="pagination-btn"
+              title="Next page"
+            >
+              <ChevronRight size={18} />
+            </button>
+            <button
+              onClick={() => setCurrentPage(paginationInfo.totalPages)}
+              disabled={!paginationInfo.hasMore || isLoadingPage}
+              className="pagination-btn"
+              title="Last page"
+            >
+              <ChevronsRight size={18} />
+            </button>
+          </div>
+
+          {isLoadingPage && (
+            <div className="pagination-loading">
+              <Loader size={16} className="spin" />
+              <span>Loading...</span>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Image Preview Modal */}
       {previewImage && (
         <div className="preview-modal" onClick={closePreview}>
@@ -432,7 +555,7 @@ export const FinancialRecordList = () => {
             <button className="btn-close-preview" onClick={closePreview}>
               <X size={24} />
             </button>
-            <img src={previewImage} alt="Receipt Preview"  />
+            <img src={previewImage} alt="Receipt Preview" />
           </div>
         </div>
       )}

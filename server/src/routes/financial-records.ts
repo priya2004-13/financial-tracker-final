@@ -6,17 +6,42 @@ import mongoose from "mongoose";
 
 const router = express.Router();
 
-// GET all records for a user
+// GET all records for a user with pagination
 router.get("/getAllByUserID/:userId", async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
-    const records = await FinancialRecordModel.find({ userId: userId }).sort({ date: -1 });
 
-    if (records.length === 0) {
-      return res.status(200).send([]);
-    }
+    // Pagination parameters
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 50; // Default 50 records per page
+    const skip = (page - 1) * limit;
 
-    res.status(200).send(records);
+    // Get total count for pagination metadata
+    const totalRecords = await FinancialRecordModel.countDocuments({ userId: userId });
+
+    // Fetch paginated records
+    const records = await FinancialRecordModel
+      .find({ userId: userId })
+      .sort({ date: -1 }) // Most recent first
+      .skip(skip)
+      .limit(limit);
+
+    // Calculate pagination metadata
+    const totalPages = Math.ceil(totalRecords / limit);
+    const hasMore = page < totalPages;
+    const hasPrevious = page > 1;
+
+    res.status(200).json({
+      records,
+      pagination: {
+        currentPage: page,
+        limit,
+        totalRecords,
+        totalPages,
+        hasMore,
+        hasPrevious
+      }
+    });
   } catch (err) {
     console.error("Error fetching records:", err);
     res.status(500).send("Error fetching financial records.");
