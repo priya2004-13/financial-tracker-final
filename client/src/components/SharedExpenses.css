@@ -175,6 +175,26 @@
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
+/* Style option tags in shared expenses form */
+.form-input-shared option {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.form-input-shared option:hover {
+    background-color: var(--primary-color);
+    color: var(--text-inverse);
+}
+
+.form-input-shared option:checked {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--text-inverse);
+    font-weight: 600;
+}
+
 /* Participants Section */
 .participants-section {
     margin-top: 1rem;

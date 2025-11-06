@@ -130,94 +130,108 @@
 /* DARK THEME                                 */
 /* ========================================== */
 :root[data-theme="dark"] {
-  /* Primary Colors */
-  --primary-color: #6366f1;
-  --primary-dark: #4f46e5;
-  --primary-light: #818cf8;
-  --primary-hover: #818cf8; /* Lighter for hover on dark */
-  --secondary-color: #8b5cf6;
-  --secondary-dark: #7c3aed;
-  --secondary-light: #a78bfa;
-  --secondary-hover: #a78bfa; /* Lighter for hover on dark */
+    /* Primary Colors */
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-light: #818cf8;
+    --primary-hover: #818cf8;
+    /* Lighter for hover on dark */
+    --secondary-color: #8b5cf6;
+    --secondary-dark: #7c3aed;
+    --secondary-light: #a78bfa;
+    --secondary-hover: #a78bfa;
+    /* Lighter for hover on dark */
 
-  /* Semantic Colors (Brightened for dark mode) */
-  --success-color: #34d399;
-  --success-light: #6ee7b7;
-  --success-hover: #10b981;
-  --danger-color: #f87171;
-  --danger-light: #fca5a5;
-  --danger-hover: #ef4444;
-  --warning-color: #fbbf24;
-  --warning-light: #fcd34d;
-  --warning-hover: #f59e0b;
-  --info-color: #60a5fa;
-  --info-light: #93c5fd;
-  --info-hover: #3b82f6;
+    /* Semantic Colors (Brightened for dark mode) */
+    --success-color: #34d399;
+    --success-light: #6ee7b7;
+    --success-hover: #10b981;
+    --danger-color: #f87171;
+    --danger-light: #fca5a5;
+    --danger-hover: #ef4444;
+    --warning-color: #fbbf24;
+    --warning-light: #fcd34d;
+    --warning-hover: #f59e0b;
+    --info-color: #60a5fa;
+    --info-light: #93c5fd;
+    --info-hover: #3b82f6;
 
-  /* Text Colors */
-  --text-primary: #f9fafb; /* Was dark, now light */
-  --text-secondary: #d1d5db;
-  --text-tertiary: #9ca3af;
-  --text-inverse: #1f2937; /* Was light, now dark */
+    /* Text Colors */
+    --text-primary: #f9fafb;
+    /* Was dark, now light */
+    --text-secondary: #d1d5db;
+    --text-tertiary: #9ca3af;
+    --text-inverse: #1f2937;
+    /* Was light, now dark */
 
-  /* Background Colors */
-  --background-light: #1f2937; /* Main card/content bg */
-  --background-medium: #374151; /* Hover bg */
-  --background-dark: #4b5563; /* Active/pressed bg */
-  --card-bg: #1f2937;
-  --hover-bg: #374151;
-  --overlay-bg: rgba(0, 0, 0, 0.7); /* Darker overlay */
-  --body-bg: linear-gradient(135deg, #111827 0%, #1a202c 50%, #2d3748 100%);
+    /* Background Colors */
+    --background-light: #1f2937;
+    /* Main card/content bg */
+    --background-medium: #374151;
+    /* Hover bg */
+    --background-dark: #4b5563;
+    /* Active/pressed bg */
+    --card-bg: #1f2937;
+    --hover-bg: #374151;
+    --overlay-bg: rgba(0, 0, 0, 0.7);
+    /* Darker overlay */
+    --body-bg: linear-gradient(135deg, #111827 0%, #1a202c 50%, #2d3748 100%);
 
-  /* Alternative naming for compatibility */
-  --bg-primary: #111827; /* Darkest body bg */
-  --bg-secondary: #1f2937; /* Card bg */
-  --bg-tertiary: #374151; /* Hover bg */
-  --bg-elevated: #1f2937; /* Card bg */
-  --bg-hover: #374151;
+    /* Alternative naming for compatibility */
+    --bg-primary: #111827;
+    /* Darkest body bg */
+    --bg-secondary: #1f2937;
+    /* Card bg */
+    --bg-tertiary: #374151;
+    /* Hover bg */
+    --bg-elevated: #1f2937;
+    /* Card bg */
+    --bg-hover: #374151;
 
-  /* Border & Dividers */
-  --border-color: #374151;
-  --border-light: #1f2937;
-  --border-dark: #4b5563;
-  --border-focus: var(--primary-light); /* Brighter focus */
+    /* Border & Dividers */
+    --border-color: #374151;
+    --border-light: #1f2937;
+    --border-dark: #4b5563;
+    --border-focus: var(--primary-light);
+    /* Brighter focus */
 
-  /* Input Colors */
-  --input-bg: #374151;
-  --input-border: #4b5563;
-  --input-text: #f9fafb;
-  --input-placeholder: #9ca3af;
-  --input-focus-border: var(--primary-light);
-  --input-focus-shadow: rgba(99, 102, 241, 0.3);
+    /* Input Colors */
+    --input-bg: #374151;
+    --input-border: #4b5563;
+    --input-text: #f9fafb;
+    --input-placeholder: #9ca3af;
+    --input-focus-border: var(--primary-light);
+    --input-focus-shadow: rgba(99, 102, 241, 0.3);
 
-  /* Chart Colors */
-  --chart-grid: #374151;
-  --chart-text: #9ca3af;
+    /* Chart Colors */
+    --chart-grid: #374151;
+    --chart-text: #9ca3af;
 
-  /* Scrollbar */
-  --scrollbar-track: #1f2937;
-  --scrollbar-thumb: #4b5563;
-  --scrollbar-thumb-hover: #6b7280;
+    /* Scrollbar */
+    --scrollbar-track: #1f2937;
+    --scrollbar-thumb: #4b5563;
+    --scrollbar-thumb-hover: #6b7280;
 
-  /* Shadows (Adjusted for dark bg) */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.12);
-  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.08);
-  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.4);
+    /* Shadows (Adjusted for dark bg) */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.12);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.08);
+    --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.4);
 
-  /* Navbar (Keeping the bright gradient) */
-  --navbar-bg: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  --navbar-text: #ffffff;
-  --navbar-button-bg: rgba(255, 255, 255, 0.1);
-  --navbar-button-hover: rgba(255, 255, 255, 0.2);
+    /* Navbar (Keeping the bright gradient) */
+    --navbar-bg: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    --navbar-text: #ffffff;
+    --navbar-button-bg: rgba(255, 255, 255, 0.1);
+    --navbar-button-hover: rgba(255, 255, 255, 0.2);
 
-  /* Skeleton Loading */
-  --skeleton-base: #374151;
-  --skeleton-highlight: #4b5563;
+    /* Skeleton Loading */
+    --skeleton-base: #374151;
+    --skeleton-highlight: #4b5563;
 }
+
 /* ========================================== */
 /* SHARED VARIABLES (Theme-independent)      */
 /* ========================================== */
@@ -636,4 +650,82 @@ a,
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* ========================================== */
+/* SELECT AND OPTION STYLING                  */
+/* ========================================== */
+
+/* Style for select dropdowns */
+select {
+    cursor: pointer;
+    font-family: inherit;
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    transition: all var(--transition-base);
+}
+
+select:hover {
+    border-color: var(--primary-light);
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-10);
+}
+
+/* Style for option tags */
+select option {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all var(--transition-base);
+    border-radius: var(--radius-sm);
+}
+
+/* Option hover state (works in some browsers) */
+select option:hover {
+    background-color: var(--primary-color);
+    color: var(--text-inverse);
+}
+
+/* Option selected state */
+select option:checked {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--text-inverse);
+    font-weight: 600;
+}
+
+/* Option disabled state */
+select option:disabled {
+    color: var(--text-tertiary);
+    background-color: var(--bg-secondary);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Placeholder option styling */
+select option[value=""] {
+    color: var(--text-tertiary);
+    font-style: italic;
+}
+
+/* Dark mode specific adjustments */
+:root[data-theme="dark"] select option {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+:root[data-theme="dark"] select option:checked {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--text-inverse);
+}
+
+:root[data-theme="dark"] select option:hover {
+    background-color: var(--primary-color);
+    color: var(--text-inverse);
 }

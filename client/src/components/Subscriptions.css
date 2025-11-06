@@ -173,6 +173,26 @@
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 10%, transparent);
 }
 
+/* Style option tags in subscription form */
+.form-field select option {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.form-field select option:hover {
+    background-color: var(--primary-color);
+    color: var(--text-inverse);
+}
+
+.form-field select option:checked {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--text-inverse);
+    font-weight: 600;
+}
+
 .btn-primary {
     /* Base styles for consistency */
     display: flex;

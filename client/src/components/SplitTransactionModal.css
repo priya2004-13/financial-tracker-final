@@ -263,6 +263,22 @@
 .split-modal-content select option {
     position: relative;
     z-index: 100002;
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.split-modal-content select option:hover {
+    background-color: var(--primary-color);
+    color: var(--text-inverse);
+}
+
+.split-modal-content select option:checked {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--text-inverse);
+    font-weight: 600;
 }
 
 /* Fix modal header and footer to stay on top within modal */
