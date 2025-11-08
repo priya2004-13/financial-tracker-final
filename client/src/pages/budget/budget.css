@@ -1088,65 +1088,138 @@
 }
 
 /* Phase 3: Action Buttons Row */
-.phase3-actions-row {
+.actions-row {
+    /* display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
     display: flex;
+    justify-content: space-evenly;
     flex-wrap: wrap;
     gap: 1rem;
     margin-bottom: 2rem;
-    padding: 1rem;
+    padding: 1.5rem;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .action-btn {
     display: flex;
+    min-width: 150px;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
+    padding: 1rem 1.5rem;
     background: var(--input-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
     color: var(--text-primary);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    font-weight: 600;
     font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    white-space: wrap;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.action-btn:hover::before {
+    opacity: 1;
 }
 
 .action-btn:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border-color: transparent;
+}
+
+.action-btn:active {
+    transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn svg {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.action-btn:hover svg {
+    transform: scale(1.1);
+}
+
+/* Scenario Button */
+.scenario-btn {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(99, 102, 241, 0.1));
+    border-color: rgba(139, 92, 246, 0.3);
 }
 
 .scenario-btn:hover,
 .scenario-btn.active {
     background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
     color: white;
-    border-color: transparent;
+    border-color: #8b5cf6;
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+}
+
+.scenario-btn.active {
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.5);
+}
+
+/* Comparison Button */
+.comparison-btn {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1));
+    border-color: rgba(59, 130, 246, 0.3);
 }
 
 .comparison-btn:hover,
 .comparison-btn.active {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
-    border-color: transparent;
+    border-color: #3b82f6;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+}
+
+.comparison-btn.active {
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+}
+
+/* Export Button */
+.export-btn {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+    border-color: rgba(16, 185, 129, 0.3);
 }
 
 .export-btn:hover {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
-    border-color: transparent;
+    border-color: #10b981;
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
 }
 
+/* Import Button */
 .import-btn {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
+    border-color: rgba(245, 158, 11, 0.3);
     cursor: pointer;
 }
 
 .import-btn:hover {
     background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     color: white;
-    border-color: transparent;
+    border-color: #f59e0b;
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
 }
 
 /* Phase 3: Scenario Calculator */
@@ -1813,13 +1886,16 @@
     }
 
     /* Phase 3 Features Mobile */
-    .phase3-actions-row {
-        flex-direction: column;
+    .actions-row {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 1rem;
     }
 
     .action-btn {
         width: 100%;
-        justify-content: center;
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
     }
 
     .scenario-calculator,
@@ -1859,5 +1935,76 @@
     .dual-bar-row {
         grid-template-columns: 60px 1fr 80px;
         gap: 0.5rem;
+    }
+}
+
+/* ============================================
+   MOBILE-FIRST BUDGET PAGE
+   ============================================ */
+
+@media (max-width: 639px) {
+    .budget-page {
+        margin-left: 0;
+        padding: 1rem;
+        padding-bottom: 100px;
+    }
+
+    /* Hide desktop elements */
+    .page-header .back-button {
+        display: none;
+    }
+
+    .page-header .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .header-icon {
+        width: 48px !important;
+        height: 48px !important;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem !important;
+    }
+
+    .page-header p {
+        font-size: 0.875rem !important;
+    }
+
+    /* Simplify budget layout for mobile */
+    .budget-content,
+    .budget-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    /* Hide complex features on mobile */
+    .scenario-calculator,
+    .comparison-tool,
+    .budget-history,
+    .export-import-section,
+    .advanced-features {
+        display: none !important;
+    }
+
+    /* Make cards mobile-friendly */
+    .budget-card,
+    .health-score-card {
+        padding: 1rem !important;
+    }
+
+    .budget-card h2 {
+        font-size: 1rem !important;
+    }
+
+    /* Month selector mobile */
+    .month-selector {
+        gap: 0.5rem !important;
+    }
+
+    .month-selector button {
+        padding: 0.5rem !important;
     }
 }

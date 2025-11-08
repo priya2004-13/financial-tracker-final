@@ -291,7 +291,7 @@
 @media (min-width: 1024px) {
     .dashboard-container {
         padding: var(--spacing-2xl) var(--spacing-xl);
-        max-width: 1400px;
+        /* max-width: 1400px; */
     }
 
     .dashboard-welcome {

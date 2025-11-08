@@ -3,6 +3,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
+import { useScreenSize } from "../../hooks/useScreenSize";
 import { BudgetManager } from "../../components/BudgetManager";
 import { BudgetTracking } from "../../components/BudgetTracking";
 import { BudgetTemplates } from "../../components/BudgetTemplates";
@@ -13,6 +14,8 @@ import "./budget.css";
 export const BudgetPage = () => {
     const navigate = useNavigate();
     const { budget, records, isLoading } = useFinancialRecords();
+    const screenSize = useScreenSize();
+    const isMobile = screenSize === "xs";
     const [selectedMonth, setSelectedMonth] = useState(new Date());
     const [timePeriod, setTimePeriod] = useState<"week" | "month" | "quarter" | "year">("month");
 
@@ -771,7 +774,7 @@ export const BudgetPage = () => {
                     </div>
 
                     {/* Phase 3: Action Buttons Row */}
-                    <div className="phase3-actions-row">
+                    <div className="actions-row">
                         <button
                             className={`action-btn scenario-btn ${showScenarioCalculator ? 'active' : ''}`}
                             onClick={() => setShowScenarioCalculator(!showScenarioCalculator)}

@@ -313,6 +313,17 @@
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #312e81 100%);
 }
 
+/* Mobile Container - Remove background gradient on mobile */
+@media (max-width: 639px) {
+  .app-container {
+    background: var(--background);
+  }
+
+  .app-container.dark {
+    background: var(--background);
+  }
+}
+
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   * {

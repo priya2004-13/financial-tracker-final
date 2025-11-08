@@ -7,9 +7,11 @@ import { TransactionsPage } from "./pages/transactions";
 import { BudgetPage } from "./pages/budget";
 import { AnalyticsPage } from "./pages/analytics";
 import { GoalsPage } from "./pages/goals";
+import { ProfilePage } from "./pages/ProfilePage";
 import { FinancialRecordsProvider } from "./contexts/financial-record-context";
 import { ThemeProvider, useTheme } from "./contexts/themeContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { GlobalFeatures } from "./components/GlobalFeatures";
 import {
   SignedIn,
   SignedOut,
@@ -27,7 +29,6 @@ import { Navigation } from "./components/Navigation";
 
 const ProtectedDashboardRoute = () => {
   const { isLoaded, isSignedIn } = useUser();
-  const screenSize = useScreenSize();
 
   if (!isLoaded) {
     return <PageLoader message="Authenticating user..." variant="fullscreen" />;
@@ -40,7 +41,7 @@ const ProtectedDashboardRoute = () => {
   return (
     <ErrorBoundary level="section">
       <FinancialRecordsProvider>
-        {screenSize === "xs" ? <MobileLayout /> : <Dashboard />}
+        <Dashboard />
       </FinancialRecordsProvider>
     </ErrorBoundary>
   );
@@ -155,55 +156,145 @@ function AppContent() {
   const { theme } = useTheme();
   const screenSize = useScreenSize();
   const isMobile = screenSize === "xs";
+  const { isSignedIn } = useUser();
 
   return (
     <div className={`app-container ${theme}`}>
       <Navbar />
       {!isMobile && <Navigation />}
+
+      {/* Global Features - Hide on mobile, only show when signed in on desktop */}
+      {isSignedIn && !isMobile && (
+        <FinancialRecordsProvider>
+          <GlobalFeatures />
+        </FinancialRecordsProvider>
+      )}
+
       <Routes>
-        <Route path="/" element={<ProtectedDashboardRoute />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route
-          path="/transactions"
-          element={
-            <ErrorBoundary level="section">
-              <FinancialRecordsProvider>
-                <TransactionsPage />
-              </FinancialRecordsProvider>
-            </ErrorBoundary>
-          }
-        />
-        <Route
-          path="/budget"
-          element={
-            <ErrorBoundary level="section">
-              <FinancialRecordsProvider>
-                <BudgetPage />
-              </FinancialRecordsProvider>
-            </ErrorBoundary>
-          }
-        />
-        <Route
-          path="/analytics"
-          element={
-            <ErrorBoundary level="section">
-              <FinancialRecordsProvider>
-                <AnalyticsPage />
-              </FinancialRecordsProvider>
-            </ErrorBoundary>
-          }
-        />
-        <Route
-          path="/goals"
-          element={
-            <ErrorBoundary level="section">
-              <FinancialRecordsProvider>
-                <GoalsPage />
-              </FinancialRecordsProvider>
-            </ErrorBoundary>
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* Mobile Routes - Wrapped in MobileLayout */}
+        {isMobile ? (
+          <Route element={<MobileLayout />}>
+            <Route
+              path="/"
+              element={
+                <ErrorBoundary level="section">
+                  <FinancialRecordsProvider>
+                    <Dashboard />
+                  </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/transactions"
+              element={
+                <ErrorBoundary level="section">
+                  <FinancialRecordsProvider>
+                    <TransactionsPage />
+                  </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/budget"
+              element={
+                <ErrorBoundary level="section">
+                  <FinancialRecordsProvider>
+                    <BudgetPage />
+                  </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/analytics"
+              element={
+                <ErrorBoundary level="section">
+                  <FinancialRecordsProvider>
+                    <AnalyticsPage />
+                  </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/goals"
+              element={
+                <ErrorBoundary level="section">
+                  <FinancialRecordsProvider>
+                    <GoalsPage />
+                  </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ErrorBoundary level="section">
+                  <FinancialRecordsProvider>
+                    <ProfilePage />
+                  </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        ) : (
+          /* Desktop Routes */
+          <>
+            <Route path="/" element={<ProtectedDashboardRoute />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route
+              path="/transactions"
+              element={
+                <ErrorBoundary level="section">
+                  <FinancialRecordsProvider>
+                    <TransactionsPage />
+                  </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/budget"
+              element={
+                <ErrorBoundary level="section">
+                  <FinancialRecordsProvider>
+                    <BudgetPage />
+                  </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/analytics"
+              element={
+                <ErrorBoundary level="section">
+                  <FinancialRecordsProvider>
+                    <AnalyticsPage />
+                  </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/goals"
+              element={
+                <ErrorBoundary level="section">
+                  <FinancialRecordsProvider>
+                    <GoalsPage />
+                  </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ErrorBoundary level="section">
+                  <FinancialRecordsProvider>
+                    <ProfilePage />
+                  </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </>
+        )}
       </Routes>
     </div>
   );

@@ -1,11 +1,36 @@
 // client/src/pages/dashboard/index.tsx - Updated with Scroll Detection
 import { useUser } from "@clerk/clerk-react";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
-import { DollarSign, TrendingDown, Wallet, Target, ArrowUp, Receipt, PiggyBank, BarChart3, Goal } from "lucide-react";
+import {
+  DollarSign,
+  TrendingDown,
+  Wallet,
+  Target,
+  ArrowUp,
+  Receipt,
+  PiggyBank,
+  BarChart3,
+  Goal,
+  Plus,
+  TrendingUp,
+  Calendar,
+  Download,
+  Settings,
+  Eye,
+  EyeOff,
+  Newspaper,
+  ExternalLink,
+  RefreshCw,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  PieChart
+} from "lucide-react";
 
 // Import the scroll detection hook
 import { useScrollDetection } from "../../hooks/useScrollDetection";
+import { useScreenSize } from "../../hooks/useScreenSize";
 
 // Import components
 import { FinancialRecordForm } from "./financial-record-form";
@@ -25,13 +50,103 @@ import { StatCard } from "../../components/StatCard";
 import "./dashboard.css";
 import { CategoryChart } from "../../components/CategoryChart";
 import { PageLoader } from "../../components/PageLoader";
+import { Link } from "react-router-dom";
 export const Dashboard = () => {
   const { user } = useUser();
   const { records, budget, isLoading } = useFinancialRecords();
   const [showHeader, setShowHeader] = React.useState(true);
+  const screenSize = useScreenSize();
+  const isMobile = screenSize === "xs";
+
+  // Widget customization state
+  const [visibleWidgets, setVisibleWidgets] = useState({
+    financialOverview: true,
+    financialHealth: true,
+    recentTransactions: true,
+    budgetTracking: true,
+    spendingInsights: true,
+    categoryAnalysis: true,
+    quickActions: true,
+    financialNews: true
+  });
+
+  // Financial news state
+  const [newsArticles, setNewsArticles] = useState<Array<{
+    id: string;
+    title: string;
+    description: string;
+    source: string;
+    url: string;
+    publishedAt: string;
+  }>>([]);
+  const [newsLoading, setNewsLoading] = useState(false);
+  const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
+
   useEffect(() => {
     setTimeout(() => setShowHeader(false), 2000);
   }, []);
+
+  // Load financial news (mock data for demo - replace with real API)
+  useEffect(() => {
+    const loadNews = () => {
+      setNewsLoading(true);
+      // Mock financial news data
+      const mockNews = [
+        {
+          id: '1',
+          title: 'Top 5 Savings Strategies for 2024',
+          description: 'Learn effective ways to maximize your savings and build wealth this year.',
+          source: 'Financial Times',
+          url: 'https://example.com/news/1',
+          publishedAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          title: 'Understanding Budget Categories',
+          description: 'A comprehensive guide to organizing your expenses effectively.',
+          source: 'Money Magazine',
+          url: 'https://example.com/news/2',
+          publishedAt: new Date(Date.now() - 86400000).toISOString()
+        },
+        {
+          id: '3',
+          title: 'Investment Tips for Beginners',
+          description: 'Start your investment journey with these essential tips.',
+          source: 'Forbes',
+          url: 'https://example.com/news/3',
+          publishedAt: new Date(Date.now() - 172800000).toISOString()
+        },
+        {
+          id: '4',
+          title: 'Smart Spending Habits to Adopt',
+          description: 'Transform your financial future with these proven habits.',
+          source: 'Bloomberg',
+          url: 'https://example.com/news/4',
+          publishedAt: new Date(Date.now() - 259200000).toISOString()
+        }
+      ];
+      setNewsArticles(mockNews);
+      setNewsLoading(false);
+    };
+
+    loadNews();
+  }, []);
+
+  const toggleWidget = (widget: keyof typeof visibleWidgets) => {
+    setVisibleWidgets(prev => ({
+      ...prev,
+      [widget]: !prev[widget]
+    }));
+  };
+
+  const nextNews = () => {
+    setCurrentNewsIndex((prev) => (prev + 1) % newsArticles.length);
+  };
+
+  const prevNews = () => {
+    setCurrentNewsIndex((prev) => (prev - 1 + newsArticles.length) % newsArticles.length);
+  };
+
   // Scroll detection for sidebar and main content
   const sidebar = useScrollDetection();
   const mainContent = useScrollDetection();
@@ -99,149 +214,449 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="dashboard-container desktop-view">
-      {/* Header - Fixed */}
-    <div className={`dashboard-header ${showHeader ? 'dashboard-header-visible' : 'dashboard-header-hidden'}`}>
-        <h1 className="dashboard-welcome">Welcome back, {user?.firstName}! 👋</h1>
-        <p className="dashboard-subtitle">Here's your financial overview</p>
-      </div>
+    <div className={`dashboard-container ${isMobile ? 'mobile-dashboard' : ''}`}>
+      {/* Mobile Layout */}
+      {isMobile ? (
+        <div className="mobile-dashboard-content">
+          {/* Mobile Header */}
+          <div className="mobile-dashboard-header">
+            <h1 className="mobile-welcome">Hi, {user?.firstName}! 👋</h1>
+            <p className="mobile-subtitle">Your Financial Overview</p>
+          </div>
 
-      {/* Stats Grid - Fixed */}
-      <div className="stats-grid">
-        <StatCard
-          title="Total Balance"
-          value={balance}
-          icon={Wallet}
-          color="#6366f1"
-          trend="All time"
-        />
-        <StatCard
-          title="This Month Income"
-          value={currentMonthIncome}
-          icon={DollarSign}
-          color="#10b981"
-          trend="Current month"
-        />
-        <StatCard
-          title="This Month Expenses"
-          value={currentMonthExpenses}
-          icon={TrendingDown}
-          color="#ef4444"
-          trend="Current month"
-        />
-        {budget && (
-          <StatCard
-            title="Budget Remaining"
-            value={budgetAdherence}
-            icon={Target}
-            color="#8b5cf6"
-            trend={`${budgetAdherence.toFixed(0)}%`}
-            prefix=""
-          />
-        )}
-      </div>
+          {/* Mobile Stats - Scrollable Horizontal */}
+          <div className="mobile-stats-scroll">
+            <div className="mobile-stat-card">
+              <div className="mobile-stat-icon" style={{ backgroundColor: '#6366f1' }}>
+                <Wallet size={20} />
+              </div>
+              <div className="mobile-stat-info">
+                <span className="mobile-stat-label">Balance</span>
+                <span className="mobile-stat-value">₹{balance.toFixed(2)}</span>
+              </div>
+            </div>
+            <div className="mobile-stat-card">
+              <div className="mobile-stat-icon" style={{ backgroundColor: '#10b981' }}>
+                <TrendingUp size={20} />
+              </div>
+              <div className="mobile-stat-info">
+                <span className="mobile-stat-label">Income</span>
+                <span className="mobile-stat-value">₹{currentMonthIncome.toFixed(2)}</span>
+              </div>
+            </div>
+            <div className="mobile-stat-card">
+              <div className="mobile-stat-icon" style={{ backgroundColor: '#ef4444' }}>
+                <TrendingDown size={20} />
+              </div>
+              <div className="mobile-stat-info">
+                <span className="mobile-stat-label">Expenses</span>
+                <span className="mobile-stat-value">₹{currentMonthExpenses.toFixed(2)}</span>
+              </div>
+            </div>
+            {budget && (
+              <div className="mobile-stat-card">
+                <div className="mobile-stat-icon" style={{ backgroundColor: '#8b5cf6' }}>
+                  <Target size={20} />
+                </div>
+                <div className="mobile-stat-info">
+                  <span className="mobile-stat-label">Budget Left</span>
+                  <span className="mobile-stat-value">{budgetAdherence.toFixed(0)}%</span>
+                </div>
+              </div>
+            )}
+          </div>
 
-      {/* Main Dashboard Grid - Scrollable sections */}
-      <div className="dashboard-grid">
-        {/* Sidebar - Independently Scrollable */}
-        <div
-          ref={sidebar.scrollRef}
-          className={`dashboard-sidebar ${sidebar.isScrollable ? 'has-scroll' : ''} ${sidebar.isAtBottom ? 'scroll-bottom' : ''}`}
-        >
-          <FinancialRecordForm />
-          <TransactionTemplates />
-          <BudgetManager />
-          <BudgetTemplates />
-          <CategoryManager />
-          <SavingsGoals />
-          <Subscriptions />
+          {/* Mobile Quick Actions */}
+          <div className="mobile-quick-actions">
+            <Link to="/transactions" className="mobile-action-btn">
+              <Plus size={18} />
+              <span>Add Transaction</span>
+            </Link>
+            <Link to="/budget" className="mobile-action-btn">
+              <PiggyBank size={18} />
+              <span>Set Budget</span>
+            </Link>
+          </div>
 
-          {/* Scroll to top button for sidebar */}
-          {sidebar.isScrollable && !sidebar.isAtTop && (
-            <button
-              className="scroll-to-top visible"
-              onClick={sidebar.scrollToTop}
-              title="Scroll to top"
-            >
-              <ArrowUp size={20} />
-            </button>
-          )}
+          {/* Mobile Content Cards */}
+          <div className="mobile-dashboard-cards">
+            <div className="mobile-dashboard-card">
+              <div className="mobile-card-header">
+                <h3>Recent Transactions</h3>
+                <Link to="/transactions" className="mobile-view-all">View All</Link>
+              </div>
+              <FinancialRecordList />
+            </div>
+
+            {budget && (
+              <div className="mobile-dashboard-card">
+                <div className="mobile-card-header">
+                  <h3>Budget Tracking</h3>
+                  <Link to="/budget" className="mobile-view-all">Manage</Link>
+                </div>
+                <BudgetTracking />
+              </div>
+            )}
+          </div>
         </div>
+      ) : (
+        /* Desktop Layout */
+        <>
+          {/* Header - Fixed */}
+          <div className={`dashboard-header ${showHeader ? 'dashboard-header-visible' : 'dashboard-header-hidden'}`}>
+            <h1 className="dashboard-welcome">Welcome back, {user?.firstName}! 👋</h1>
+            <p className="dashboard-subtitle">Here's your financial overview</p>
+          </div>
 
-        {/* Main Content - Independently Scrollable */}
-        <div
-          ref={mainContent.scrollRef}
-          className={`dashboard-main ${mainContent.isScrollable ? 'has-scroll' : ''} ${mainContent.isAtBottom ? 'scroll-bottom' : ''}`}
-        >
-          <DashboardCard
-            title="Financial Overview"
-            subtitle="AI-powered insights"
-            viewMorePath="/analytics"
-            viewMoreText="View Full Analytics"
-            icon={<BarChart3 size={20} />}
-          >
-            <FinancialSummary />
-          </DashboardCard>
+          {/* Stats Grid - Fixed */}
+          <div className="stats-grid">
+            <StatCard
+              title="Total Balance"
+              value={balance}
+              icon={Wallet}
+              color="#6366f1"
+              trend="All time"
+            />
+            <StatCard
+              title="This Month Income"
+              value={currentMonthIncome}
+              icon={DollarSign}
+              color="#10b981"
+              trend="Current month"
+            />
+            <StatCard
+              title="This Month Expenses"
+              value={currentMonthExpenses}
+              icon={TrendingDown}
+              color="#ef4444"
+              trend="Current month"
+            />
+            {budget && (
+              <StatCard
+                title="Budget Remaining"
+                value={budgetAdherence}
+                icon={Target}
+                color="#8b5cf6"
+                trend={`${budgetAdherence.toFixed(0)}%`}
+                prefix=""
+              />
+            )}
+          </div>
 
-          <DashboardCard
-            title="Financial Health"
-            subtitle="Your overall financial status"
-            viewMorePath="/analytics"
-            icon={<Target size={20} />}
-          >
-            <FinancialHealth />
-          </DashboardCard>
+          {/* Quick Actions Panel */}
+          {visibleWidgets.quickActions && (
+            <div className="quick-actions-panel">
+              <div className="quick-actions-header">
+                <h3><Plus size={18} /> Quick Actions</h3>
+                <button
+                  className="widget-toggle-btn"
+                  onClick={() => toggleWidget('quickActions')}
+                  title="Hide Quick Actions"
+                >
+                  <EyeOff size={16} />
+                </button>
+              </div>
+              <div className="quick-actions-grid">
+                <Link to="/transactions" className="quick-action-card">
+                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                    <Plus size={20} />
+                  </div>
+                  <span>Add Transaction</span>
+                </Link>
 
-          <DashboardCard
-            title="Recent Transactions"
-            subtitle="Latest financial records"
-            viewMorePath="/transactions"
-            viewMoreText="View All Transactions"
-            icon={<Receipt size={20} />}
-          >
-            <FinancialRecordList />
-          </DashboardCard>
+                <Link to="/budget" className="quick-action-card">
+                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
+                    <PiggyBank size={20} />
+                  </div>
+                  <span>Set Budget</span>
+                </Link>
 
-          <DashboardCard
-            title="Budget Tracking"
-            subtitle="Monitor your spending limits"
-            viewMorePath="/budget"
-            viewMoreText="Manage Budget"
-            icon={<PiggyBank size={20} />}
-          >
-            {budget && <BudgetTracking />}
-          </DashboardCard>
+                <Link to="/goals" className="quick-action-card">
+                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}>
+                    <Target size={20} />
+                  </div>
+                  <span>Create Goal</span>
+                </Link>
 
-          <DashboardCard
-            title="Spending Insights"
-            subtitle="AI analysis of your spending"
-            viewMorePath="/analytics"
-            icon={<BarChart3 size={20} />}
-          >
-            <SpendingInsights />
-          </DashboardCard>
+                <Link to="/analytics" className="quick-action-card">
+                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' }}>
+                    <TrendingUp size={20} />
+                  </div>
+                  <span>View Analytics</span>
+                </Link>
 
-          <DashboardCard
-            title="Category Analysis"
-            subtitle="Spending by category"
-            viewMorePath="/analytics"
-            icon={<BarChart3 size={20} />}
-          >
-            <CategoryChart />
-          </DashboardCard>
+                <Link to="/transactions" className="quick-action-card">
+                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' }}>
+                    <Calendar size={20} />
+                  </div>
+                  <span>Calendar View</span>
+                </Link>
 
-          {/* Scroll to top button for main content */}
-          {mainContent.isScrollable && !mainContent.isAtTop && (
-            <button
-              className="scroll-to-top visible"
-              onClick={mainContent.scrollToTop}
-              title="Scroll to top"
-            >
-              <ArrowUp size={20} />
-            </button>
+                <button className="quick-action-card" onClick={() => window.print()}>
+                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)' }}>
+                    <Download size={20} />
+                  </div>
+                  <span>Export Data</span>
+                </button>
+              </div>
+            </div>
           )}
-        </div>
-      </div>
+
+          {/* Financial News Panel */}
+          {visibleWidgets.financialNews && newsArticles.length > 0 && (
+            <div className="financial-news-panel">
+              <div className="news-header">
+                <div className="news-title">
+                  <Newspaper size={18} />
+                  <h3>Financial News & Tips</h3>
+                </div>
+                <div className="news-controls">
+                  <button
+                    className="news-nav-btn"
+                    onClick={prevNews}
+                    disabled={newsArticles.length <= 1}
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <span className="news-indicator">
+                    {currentNewsIndex + 1} / {newsArticles.length}
+                  </span>
+                  <button
+                    className="news-nav-btn"
+                    onClick={nextNews}
+                    disabled={newsArticles.length <= 1}
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                  <button
+                    className="widget-toggle-btn"
+                    onClick={() => toggleWidget('financialNews')}
+                    title="Hide News"
+                  >
+                    <EyeOff size={16} />
+                  </button>
+                </div>
+              </div>
+
+              {newsLoading ? (
+                <div className="news-loading">
+                  <RefreshCw size={20} className="spin" />
+                  <span>Loading news...</span>
+                </div>
+              ) : (
+                <div className="news-content">
+                  <div className="news-article">
+                    <h4>{newsArticles[currentNewsIndex].title}</h4>
+                    <p>{newsArticles[currentNewsIndex].description}</p>
+                    <div className="news-meta">
+                      <span className="news-source">{newsArticles[currentNewsIndex].source}</span>
+                      <span className="news-date">
+                        {new Date(newsArticles[currentNewsIndex].publishedAt).toLocaleDateString()}
+                      </span>
+                      <a
+                        href={newsArticles[currentNewsIndex].url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="news-link"
+                      >
+                        Read More <ExternalLink size={14} />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Widget Customization Bar */}
+          <div className="widget-customization-bar">
+            <div className="customization-label">
+              <Settings size={16} />
+              <span>Customize Dashboard</span>
+            </div>
+            <div className="widget-toggles">
+              <button
+                className={`widget-toggle ${!visibleWidgets.quickActions ? 'hidden' : ''}`}
+                onClick={() => toggleWidget('quickActions')}
+                title={visibleWidgets.quickActions ? 'Hide Quick Actions' : 'Show Quick Actions'}
+              >
+                {visibleWidgets.quickActions ? <Eye size={14} /> : <EyeOff size={14} />}
+                <span>Quick Actions</span>
+              </button>
+              <button
+                className={`widget-toggle ${!visibleWidgets.financialNews ? 'hidden' : ''}`}
+                onClick={() => toggleWidget('financialNews')}
+                title={visibleWidgets.financialNews ? 'Hide News' : 'Show News'}
+              >
+                {visibleWidgets.financialNews ? <Eye size={14} /> : <EyeOff size={14} />}
+                <span>News</span>
+              </button>
+              <button
+                className={`widget-toggle ${!visibleWidgets.financialOverview ? 'hidden' : ''}`}
+                onClick={() => toggleWidget('financialOverview')}
+                title={visibleWidgets.financialOverview ? 'Hide Overview' : 'Show Overview'}
+              >
+                {visibleWidgets.financialOverview ? <Eye size={14} /> : <EyeOff size={14} />}
+                <span>Overview</span>
+              </button>
+              <button
+                className={`widget-toggle ${!visibleWidgets.financialHealth ? 'hidden' : ''}`}
+                onClick={() => toggleWidget('financialHealth')}
+                title={visibleWidgets.financialHealth ? 'Hide Health' : 'Show Health'}
+              >
+                {visibleWidgets.financialHealth ? <Eye size={14} /> : <EyeOff size={14} />}
+                <span>Health</span>
+              </button>
+              <button
+                className={`widget-toggle ${!visibleWidgets.recentTransactions ? 'hidden' : ''}`}
+                onClick={() => toggleWidget('recentTransactions')}
+                title={visibleWidgets.recentTransactions ? 'Hide Transactions' : 'Show Transactions'}
+              >
+                {visibleWidgets.recentTransactions ? <Eye size={14} /> : <EyeOff size={14} />}
+                <span>Transactions</span>
+              </button>
+              <button
+                className={`widget-toggle ${!visibleWidgets.budgetTracking ? 'hidden' : ''}`}
+                onClick={() => toggleWidget('budgetTracking')}
+                title={visibleWidgets.budgetTracking ? 'Hide Budget' : 'Show Budget'}
+              >
+                {visibleWidgets.budgetTracking ? <Eye size={14} /> : <EyeOff size={14} />}
+                <span>Budget</span>
+              </button>
+              <button
+                className={`widget-toggle ${!visibleWidgets.spendingInsights ? 'hidden' : ''}`}
+                onClick={() => toggleWidget('spendingInsights')}
+                title={visibleWidgets.spendingInsights ? 'Hide Insights' : 'Show Insights'}
+              >
+                {visibleWidgets.spendingInsights ? <Eye size={14} /> : <EyeOff size={14} />}
+                <span>Insights</span>
+              </button>
+              <button
+                className={`widget-toggle ${!visibleWidgets.categoryAnalysis ? 'hidden' : ''}`}
+                onClick={() => toggleWidget('categoryAnalysis')}
+                title={visibleWidgets.categoryAnalysis ? 'Hide Categories' : 'Show Categories'}
+              >
+                {visibleWidgets.categoryAnalysis ? <Eye size={14} /> : <EyeOff size={14} />}
+                <span>Categories</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Main Dashboard Grid - Scrollable sections */}
+          <div className="dashboard-grid">
+            {/* Sidebar - Independently Scrollable */}
+            <div
+              ref={sidebar.scrollRef}
+              className={`dashboard-sidebar ${sidebar.isScrollable ? 'has-scroll' : ''} ${sidebar.isAtBottom ? 'scroll-bottom' : ''}`}
+            >
+              <FinancialRecordForm />
+              <TransactionTemplates />
+              <BudgetManager />
+              <BudgetTemplates />
+              <CategoryManager />
+              <SavingsGoals />
+              <Subscriptions />
+
+              {/* Scroll to top button for sidebar */}
+              {sidebar.isScrollable && !sidebar.isAtTop && (
+                <button
+                  className="scroll-to-top visible"
+                  onClick={sidebar.scrollToTop}
+                  title="Scroll to top"
+                >
+                  <ArrowUp size={20} />
+                </button>
+              )}
+            </div>
+
+            {/* Main Content - Independently Scrollable */}
+            <div
+              ref={mainContent.scrollRef}
+              className={`dashboard-main ${mainContent.isScrollable ? 'has-scroll' : ''} ${mainContent.isAtBottom ? 'scroll-bottom' : ''}`}
+            >
+              {visibleWidgets.financialOverview && (
+                <DashboardCard
+                  title="Financial Overview"
+                  subtitle="AI-powered insights"
+                  viewMorePath="/analytics"
+                  viewMoreText="View Full Analytics"
+                  icon={<BarChart3 size={20} />}
+                >
+                  <FinancialSummary />
+                </DashboardCard>
+              )}
+
+              {visibleWidgets.financialHealth && (
+                <DashboardCard
+                  title="Financial Health"
+                  subtitle="Your overall financial status"
+                  viewMorePath="/analytics"
+                  icon={<Target size={20} />}
+                >
+                  <FinancialHealth />
+                </DashboardCard>
+              )}
+
+              {visibleWidgets.recentTransactions && (
+                <DashboardCard
+                  title="Recent Transactions"
+                  subtitle="Latest financial records"
+                  viewMorePath="/transactions"
+                  viewMoreText="View All Transactions"
+                  icon={<Receipt size={20} />}
+                >
+                  <FinancialRecordList />
+                </DashboardCard>
+              )}
+
+              {visibleWidgets.budgetTracking && budget && (
+                <DashboardCard
+                  title="Budget Tracking"
+                  subtitle="Monitor your spending limits"
+                  viewMorePath="/budget"
+                  viewMoreText="Manage Budget"
+                  icon={<PiggyBank size={20} />}
+                >
+                  <BudgetTracking />
+                </DashboardCard>
+              )}
+
+              {visibleWidgets.spendingInsights && (
+                <DashboardCard
+                  title="Spending Insights"
+                  subtitle="AI analysis of your spending"
+                  viewMorePath="/analytics"
+                  icon={<BarChart3 size={20} />}
+                >
+                  <SpendingInsights />
+                </DashboardCard>
+              )}
+
+              {visibleWidgets.categoryAnalysis && (
+                <DashboardCard
+                  title="Category Analysis"
+                  subtitle="Spending by category"
+                  viewMorePath="/analytics"
+                  icon={<BarChart3 size={20} />}
+                >
+                  <CategoryChart />
+                </DashboardCard>
+              )}
+
+              {/* Scroll to top button for main content */}
+              {mainContent.isScrollable && !mainContent.isAtTop && (
+                <button
+                  className="scroll-to-top visible"
+                  onClick={mainContent.scrollToTop}
+                  title="Scroll to top"
+                >
+                  <ArrowUp size={20} />
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
