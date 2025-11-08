@@ -11,7 +11,6 @@ import {
   Receipt,
   PiggyBank,
   BarChart3,
-  Goal,
   Plus,
   TrendingUp,
   Calendar,
@@ -24,14 +23,10 @@ import {
   RefreshCw,
   ChevronLeft,
   ChevronRight,
-  FileText,
-  PieChart
 } from "lucide-react";
-
 // Import the scroll detection hook
 import { useScrollDetection } from "../../hooks/useScrollDetection";
 import { useScreenSize } from "../../hooks/useScreenSize";
-
 // Import components
 import { FinancialRecordForm } from "./financial-record-form";
 import { FinancialRecordList } from "./financial-record-list";
@@ -50,6 +45,9 @@ import { StatCard } from "../../components/StatCard";
 import "./dashboard.css";
 import { CategoryChart } from "../../components/CategoryChart";
 import { PageLoader } from "../../components/PageLoader";
+import AIInsights from "../../components/AIInsights";
+import AIAdvisor from "../../components/AIAdvisor";
+import ReportDownloads from "../../components/ReportDownloads";
 import { Link } from "react-router-dom";
 export const Dashboard = () => {
   const { user } = useUser();
@@ -67,7 +65,10 @@ export const Dashboard = () => {
     spendingInsights: true,
     categoryAnalysis: true,
     quickActions: true,
-    financialNews: true
+    financialNews: true,
+    aiInsights: true,
+    aiAdvisor: true,
+    reportDownloads: true
   });
 
   // Financial news state
@@ -81,7 +82,6 @@ export const Dashboard = () => {
   }>>([]);
   const [newsLoading, setNewsLoading] = useState(false);
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
-
   useEffect(() => {
     setTimeout(() => setShowHeader(false), 2000);
   }, []);
@@ -155,7 +155,7 @@ export const Dashboard = () => {
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
-    const additionalIncome = records
+    const additionalIncome = (records || [])
       .filter((record) => {
         const recordDate = new Date(record.date);
         return (
@@ -172,7 +172,7 @@ export const Dashboard = () => {
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
-    return records
+    return (records || [])
       .filter((record) => {
         const recordDate = new Date(record.date);
         return (
@@ -185,13 +185,13 @@ export const Dashboard = () => {
   }, [records]);
 
   const totalIncome = useMemo(() => {
-    return records
+    return (records || [])
       .filter((record) => record.category === "Salary")
       .reduce((total, record) => total + record.amount, 0);
   }, [records]);
 
   const totalExpenses = useMemo(() => {
-    return records
+    return (records || [])
       .filter((record) => record.category !== "Salary")
       .reduce((total, record) => total + record.amount, 0);
   }, [records]);
@@ -640,6 +640,36 @@ export const Dashboard = () => {
                   icon={<BarChart3 size={20} />}
                 >
                   <CategoryChart />
+                </DashboardCard>
+              )}
+
+              {visibleWidgets.aiInsights && (
+                <DashboardCard
+                  title="AI Insights"
+                  subtitle="AI-powered financial analysis"
+                  icon={<TrendingUp size={20} />}
+                >
+                  <AIInsights />
+                </DashboardCard>
+              )}
+
+              {visibleWidgets.aiAdvisor && (
+                <DashboardCard
+                  title="AI Financial Advisor"
+                  subtitle="Get personalized financial advice"
+                  icon={<TrendingUp size={20} />}
+                >
+                  <AIAdvisor />
+                </DashboardCard>
+              )}
+
+              {visibleWidgets.reportDownloads && (
+                <DashboardCard
+                  title="Reports"
+                  subtitle="Download financial reports"
+                  icon={<Download size={20} />}
+                >
+                  <ReportDownloads />
                 </DashboardCard>
               )}
 

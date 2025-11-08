@@ -1,0 +1,333 @@
+﻿/* Report Downloads Component Styles */
+
+.report-downloads-container {
+    padding: 24px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.report-header {
+    margin-bottom: 24px;
+}
+
+.report-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 8px 0;
+}
+
+.report-icon {
+    font-size: 28px;
+}
+
+.report-description {
+    color: #6b7280;
+    font-size: 15px;
+    margin: 0;
+}
+
+.report-notification {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.report-notification.error {
+    background-color: #fee;
+    border: 1px solid #fcc;
+    color: #c33;
+}
+
+.report-notification.success {
+    background-color: #efe;
+    border: 1px solid #cfc;
+    color: #3c3;
+}
+
+.notification-icon {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.report-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.report-card {
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.report-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+    transform: translateY(-2px);
+}
+
+.report-card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-bottom: 16px;
+}
+
+.report-card-icon.comprehensive {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.report-card-icon.summary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.report-card-content {
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.report-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 8px 0;
+}
+
+.report-card-description {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 16px 0;
+}
+
+.report-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.report-features li {
+    color: #4b5563;
+    font-size: 14px;
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+}
+
+.download-report-btn {
+    width: 100%;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.download-report-btn.comprehensive {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.download-report-btn.comprehensive:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+}
+
+.download-report-btn.summary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+}
+
+.download-report-btn.summary:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+    transform: translateY(-2px);
+}
+
+.download-report-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.download-report-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-icon {
+    font-size: 20px;
+}
+
+.btn-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.report-note {
+    background-color: #f3f4f6;
+    border-left: 4px solid #667eea;
+    padding: 16px;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.note-icon {
+    font-size: 20px;
+    color: #667eea;
+    flex-shrink: 0;
+}
+
+.report-note p {
+    margin: 0;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .report-downloads-container {
+        background: #1f2937;
+    }
+
+    .report-title {
+        color: #f9fafb;
+    }
+
+    .report-description {
+        color: #9ca3af;
+    }
+
+    .report-card {
+        border-color: #374151;
+        background: #111827;
+    }
+
+    .report-card:hover {
+        border-color: #667eea;
+    }
+
+    .report-card-title {
+        color: #f9fafb;
+    }
+
+    .report-card-description {
+        color: #9ca3af;
+    }
+
+    .report-features li {
+        color: #d1d5db;
+    }
+
+    .report-note {
+        background-color: #374151;
+    }
+
+    .report-note p {
+        color: #d1d5db;
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .report-downloads-container {
+        padding: 16px;
+    }
+
+    .report-title {
+        font-size: 20px;
+    }
+
+    .report-options {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .report-card {
+        padding: 20px;
+    }
+
+    .report-card-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 28px;
+    }
+
+    .report-card-title {
+        font-size: 18px;
+    }
+
+    .report-card-description,
+    .report-features li {
+        font-size: 13px;
+    }
+
+    .download-report-btn {
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .report-title {
+        font-size: 18px;
+    }
+
+    .report-icon {
+        font-size: 24px;
+    }
+
+    .report-description {
+        font-size: 14px;
+    }
+}

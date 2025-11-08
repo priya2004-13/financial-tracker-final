@@ -7,7 +7,6 @@ import {
     User,
     Mail,
     Calendar,
-    Settings,
     LogOut,
     Moon,
     Sun,

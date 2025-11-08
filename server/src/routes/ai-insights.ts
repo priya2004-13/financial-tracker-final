@@ -3,7 +3,16 @@ import express, { Request, Response } from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import FinancialRecordModel from "../schema/financial-record";
 import BudgetModel from "../schema/budget";
-import NotificationModel from "../schema/notification";
+import SavingsGoalModel from "../schema/savings-goal";
+
+import {
+  generateComprehensiveInsights,
+  generatePersonalizedAdvice,
+  predictNextMonthExpenses,
+  analyzeSpendingTrends,
+  generateBudgetRecommendations,
+  FinancialData
+} from "../ai/enhancedAI";
 import 'dotenv/config';
 
 const router = express.Router();
@@ -57,7 +66,7 @@ ${budget ? `Category Budgets: ${JSON.stringify(budget.categoryBudgets, null, 2)}
     const response = await result.response;
     const summary = await response.text();
 
-    res.status(200).send({ 
+    res.status(200).send({
       summary,
       data: {
         totalIncome,
@@ -93,9 +102,9 @@ router.post("/anomaly-detection", async (req: Request, res: Response) => {
     });
 
     if (historicalRecords.length < 3) {
-      return res.status(200).send({ 
-        isAnomaly: false, 
-        message: "Not enough data for anomaly detection" 
+      return res.status(200).send({
+        isAnomaly: false,
+        message: "Not enough data for anomaly detection"
       });
     }
 
@@ -112,7 +121,7 @@ router.post("/anomaly-detection", async (req: Request, res: Response) => {
       isAnomaly,
       average: average.toFixed(2),
       currentAmount: amount,
-      message: isAnomaly 
+      message: isAnomaly
         ? `This expense of ₹${amount.toFixed(2)} is significantly higher than your usual ₹${average.toFixed(2)} in ${category}`
         : "This expense is within your normal spending range"
     });
@@ -120,6 +129,294 @@ router.post("/anomaly-detection", async (req: Request, res: Response) => {
   } catch (err) {
     console.error("Error detecting anomaly:", err);
     res.status(500).send("Error detecting anomaly");
+  }
+});
+
+// POST get comprehensive AI insights
+router.post("/comprehensive-insights", async (req: Request, res: Response) => {
+  try {
+    const { userId, startDate, endDate } = req.body;
+
+    if (!userId) {
+      return res.status(400).send("User ID is required");
+    }
+
+    const start = startDate ? new Date(startDate) : new Date(new Date().setDate(new Date().getDate() - 30));
+    const end = endDate ? new Date(endDate) : new Date();
+
+    const records = await FinancialRecordModel.find({
+      userId,
+      date: { $gte: start, $lte: end }
+    });
+
+    const budget = await BudgetModel.findOne({ userId });
+    const savingsGoals = await SavingsGoalModel.find({ userId });
+
+    const totalIncome = records
+      .filter(r => r.category === 'Salary' || r.amount > 0)
+      .reduce((sum, r) => sum + Math.abs(r.amount), 0);
+
+    const expensesByCategory: Record<string, number> = {};
+    records
+      .filter(r => r.category !== 'Salary' && r.amount < 0)
+      .forEach(r => {
+        expensesByCategory[r.category] = (expensesByCategory[r.category] || 0) + Math.abs(r.amount);
+      });
+
+    const totalExpenses = Object.values(expensesByCategory).reduce((sum, val) => sum + val, 0);
+
+    const financialData: FinancialData = {
+      totalIncome,
+      totalExpenses,
+      expensesByCategory,
+      budget: budget ? {
+        monthlySalary: budget.monthlySalary,
+        categoryBudgets: budget.categoryBudgets
+      } : undefined,
+      savingsGoals: savingsGoals.map((goal: any) => ({
+        name: goal.goalName,
+        targetAmount: goal.targetAmount,
+        currentAmount: goal.currentAmount,
+        deadline: goal.targetDate
+      })),
+      timeframe: `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`
+    };
+
+    const insights = await generateComprehensiveInsights(financialData);
+
+    res.status(200).json({
+      insights,
+      summary: {
+        totalIncome,
+        totalExpenses,
+        savingsRate: totalIncome > 0 ? ((totalIncome - totalExpenses) / totalIncome) * 100 : 0
+      }
+    });
+
+  } catch (err) {
+    console.error("Error generating comprehensive insights:", err);
+    res.status(500).send("Error generating insights");
+  }
+});
+
+// POST get personalized financial advice
+router.post("/personalized-advice", async (req: Request, res: Response) => {
+  try {
+    const { userId, startDate, endDate } = req.body;
+
+    if (!userId) {
+      return res.status(400).send("User ID is required");
+    }
+
+    const start = startDate ? new Date(startDate) : new Date(new Date().setDate(new Date().getDate() - 30));
+    const end = endDate ? new Date(endDate) : new Date();
+
+    const records = await FinancialRecordModel.find({
+      userId,
+      date: { $gte: start, $lte: end }
+    });
+
+    const budget = await BudgetModel.findOne({ userId });
+    const savingsGoals = await SavingsGoalModel.find({ userId });
+
+    const totalIncome = records
+      .filter(r => r.category === 'Salary' || r.amount > 0)
+      .reduce((sum, r) => sum + Math.abs(r.amount), 0);
+
+    const expensesByCategory: Record<string, number> = {};
+    records
+      .filter(r => r.category !== 'Salary' && r.amount < 0)
+      .forEach(r => {
+        expensesByCategory[r.category] = (expensesByCategory[r.category] || 0) + Math.abs(r.amount);
+      });
+
+    const totalExpenses = Object.values(expensesByCategory).reduce((sum, val) => sum + val, 0);
+
+    const financialData: FinancialData = {
+      totalIncome,
+      totalExpenses,
+      expensesByCategory,
+      budget: budget ? {
+        monthlySalary: budget.monthlySalary,
+        categoryBudgets: budget.categoryBudgets
+      } : undefined,
+      savingsGoals: savingsGoals.map((goal: any) => ({
+        name: goal.goalName,
+        targetAmount: goal.targetAmount,
+        currentAmount: goal.currentAmount,
+        deadline: goal.targetDate
+      })),
+      timeframe: `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`
+    };
+
+    const advice = await generatePersonalizedAdvice(financialData);
+
+    res.status(200).json({ advice });
+
+  } catch (err) {
+    console.error("Error generating personalized advice:", err);
+    res.status(500).send("Error generating advice");
+  }
+});
+
+// POST predict next month expenses
+router.post("/predict-expenses", async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).send("User ID is required");
+    }
+
+    // Get last 6 months of data
+    const monthlyData: Array<{ month: string; expenses: Record<string, number> }> = [];
+
+    for (let i = 5; i >= 0; i--) {
+      const monthStart = new Date();
+      monthStart.setMonth(monthStart.getMonth() - i);
+      monthStart.setDate(1);
+
+      const monthEnd = new Date(monthStart);
+      monthEnd.setMonth(monthEnd.getMonth() + 1);
+      monthEnd.setDate(0);
+
+      const records = await FinancialRecordModel.find({
+        userId,
+        date: { $gte: monthStart, $lte: monthEnd }
+      });
+
+      const expenses: Record<string, number> = {};
+      records
+        .filter(r => r.category !== 'Salary' && r.amount < 0)
+        .forEach(r => {
+          expenses[r.category] = (expenses[r.category] || 0) + Math.abs(r.amount);
+        });
+
+      monthlyData.push({
+        month: monthStart.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        expenses
+      });
+    }
+
+    const predictions = await predictNextMonthExpenses(monthlyData);
+
+    res.status(200).json({
+      predictions,
+      totalPredicted: Object.values(predictions).reduce((sum, val) => sum + val, 0)
+    });
+
+  } catch (err) {
+    console.error("Error predicting expenses:", err);
+    res.status(500).send("Error predicting expenses");
+  }
+});
+
+// POST analyze spending trends
+router.post("/spending-trends", async (req: Request, res: Response) => {
+  try {
+    const { userId, months = 6 } = req.body;
+
+    if (!userId) {
+      return res.status(400).send("User ID is required");
+    }
+
+    const monthlyData: Array<{
+      month: string;
+      totalExpenses: number;
+      expensesByCategory: Record<string, number>;
+    }> = [];
+
+    for (let i = months - 1; i >= 0; i--) {
+      const monthStart = new Date();
+      monthStart.setMonth(monthStart.getMonth() - i);
+      monthStart.setDate(1);
+
+      const monthEnd = new Date(monthStart);
+      monthEnd.setMonth(monthEnd.getMonth() + 1);
+      monthEnd.setDate(0);
+
+      const records = await FinancialRecordModel.find({
+        userId,
+        date: { $gte: monthStart, $lte: monthEnd }
+      });
+
+      const expensesByCategory: Record<string, number> = {};
+      records
+        .filter(r => r.category !== 'Salary' && r.amount < 0)
+        .forEach(r => {
+          expensesByCategory[r.category] = (expensesByCategory[r.category] || 0) + Math.abs(r.amount);
+        });
+
+      const totalExpenses = Object.values(expensesByCategory).reduce((sum, val) => sum + val, 0);
+
+      monthlyData.push({
+        month: monthStart.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        totalExpenses,
+        expensesByCategory
+      });
+    }
+
+    const trendAnalysis = await analyzeSpendingTrends(monthlyData);
+
+    res.status(200).json({
+      ...trendAnalysis,
+      monthlyData
+    });
+
+  } catch (err) {
+    console.error("Error analyzing spending trends:", err);
+    res.status(500).send("Error analyzing trends");
+  }
+});
+
+// POST get budget recommendations
+router.post("/budget-recommendations", async (req: Request, res: Response) => {
+  try {
+    const { userId, financialGoals } = req.body;
+
+    if (!userId) {
+      return res.status(400).send("User ID is required");
+    }
+
+    // Get last 30 days of expenses
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const records = await FinancialRecordModel.find({
+      userId,
+      date: { $gte: thirtyDaysAgo }
+    });
+
+    const budget = await BudgetModel.findOne({ userId });
+
+    const totalIncome = records
+      .filter(r => r.category === 'Salary' || r.amount > 0)
+      .reduce((sum, r) => sum + Math.abs(r.amount), 0);
+
+    const currentExpenses: Record<string, number> = {};
+    records
+      .filter(r => r.category !== 'Salary' && r.amount < 0)
+      .forEach(r => {
+        currentExpenses[r.category] = (currentExpenses[r.category] || 0) + Math.abs(r.amount);
+      });
+
+    const income = budget?.monthlySalary || totalIncome || 50000; // Default fallback
+
+    const recommendations = await generateBudgetRecommendations(
+      income,
+      currentExpenses,
+      financialGoals
+    );
+
+    res.status(200).json({
+      recommendations,
+      currentIncome: income,
+      currentExpenses: Object.values(currentExpenses).reduce((sum, val) => sum + val, 0)
+    });
+
+  } catch (err) {
+    console.error("Error generating budget recommendations:", err);
+    res.status(500).send("Error generating recommendations");
   }
 });
 

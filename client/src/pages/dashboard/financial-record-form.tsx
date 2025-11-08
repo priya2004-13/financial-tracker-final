@@ -1,5 +1,5 @@
 // client/src/pages/dashboard/financial-record-form.tsx - FIXED WITH ATTACHMENTS
-import React, { useState, useEffect,  useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import {
@@ -158,9 +158,10 @@ export const FinancialRecordForm = () => {
       alert(`Template "${templateName}" saved!`);
       setShowTemplateNameInput(false);
       setTemplateName("");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error saving template:", err);
-      alert(`Error saving template: ${err.message || 'Please try again.'}`);
+      const errorMessage = err instanceof Error ? err.message : 'Please try again.';
+      alert(`Error saving template: ${errorMessage}`);
     }
   };
 

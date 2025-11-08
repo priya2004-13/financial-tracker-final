@@ -5,11 +5,11 @@ import financialRecordRouter from "./routes/financial-records";
 import budgetRouter from "./routes/budget";
 import savingsGoalRouter from "./routes/savings-goals";
 import recurringPaymentRouter from "./routes/recurring-payments";
-import notificationRouter from "./routes/notifications";
 import aiInsightsRouter from "./routes/ai-insights";
 import categoryRouter from "./routes/category";
 import transactionTemplateRouter from "./routes/transaction-template";
 import sharedExpenseRouter from "./routes/shared-expense"; // ✅ ADDED
+import reportsRouter from "./routes/reports"; // ✅ ADDED - PDF Reports
 import cors from "cors";
 import webhookRouter from "./routes/webhooks";
 import { webhookMiddleware } from "./middleware/webhooks";
@@ -55,11 +55,11 @@ app.use("/financial-records", financialRecordRouter);
 app.use("/budget", budgetRouter);
 app.use("/savings-goals", savingsGoalRouter);
 app.use("/recurring-payments", recurringPaymentRouter);
-app.use("/notifications", notificationRouter);
 app.use("/ai", aiInsightsRouter);
 app.use("/categories", categoryRouter);
 app.use("/transaction-templates", transactionTemplateRouter);
 app.use("/shared-expenses", sharedExpenseRouter);
+app.use("/reports", reportsRouter); // ✅ NEW - PDF Reports
 
 // 404 handler
 app.use((req, res) => {
@@ -83,5 +83,6 @@ app.listen(port, () => {
   console.log(`   - AI Insights: /ai`);
   console.log(`   - Categories: /categories`);
   console.log(`   - Templates: /transaction-templates`);
-  console.log(`   - Shared Expenses: /shared-expenses ✅ NEW`);
+  console.log(`   - Shared Expenses: /shared-expenses ✅`);
+  console.log(`   - Reports & PDF: /reports ✅ NEW`);
 });

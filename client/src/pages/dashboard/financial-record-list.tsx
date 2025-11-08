@@ -107,7 +107,7 @@ export const FinancialRecordList = ({
   }, [categories]);
 
   const filteredAndSortedRecords = useMemo(() => {
-    let filtered = allRecords.filter((record) => {
+    const filtered = allRecords.filter((record) => {
       const matchesSearch = record.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = filterCategory === "All" || record.category === filterCategory;
       return matchesSearch && matchesCategory;
