@@ -255,7 +255,9 @@
   gap: 0.125rem;
   text-align: right;
 }
-
+.user-profile-link{
+text-decoration: none;
+}
 .user-name-display {
   font-size: 0.875rem;
   color: var(--navbar-text);

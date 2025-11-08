@@ -10,7 +10,7 @@ import { SpendingInsights } from "../../components/SpendingInsights";
 import TrendAnalysisChart from "../../components/TrendAnalysisChart";
 import { FinancialHealth } from "../../components/FinancialHealth";
 import { FinancialSummary } from "../../components/FinancialSummary";
-import { ArrowLeft, BarChart3, TrendingUp, PieChart, IndianRupee, Flame, Calendar as CalendarIcon, Percent, TrendingDown, ArrowUpCircle, ArrowDownCircle, Zap, Activity, Target, AlertTriangle, Brain, Sparkles, TrendingUpIcon, Filter } from "lucide-react";
+import { ArrowLeft, BarChart3, TrendingUp, PieChart, IndianRupee, Flame, Calendar as CalendarIcon, Percent, TrendingDown, ArrowUpCircle, ArrowDownCircle, Zap, Activity, Target, AlertTriangle, Brain, Sparkles, TrendingUpIcon, Filter, DollarSign, Wallet, TrendingUpIcon as TrendIcon, ChevronUp, ChevronDown } from "lucide-react";
 import "./analytics.css";
 
 export const AnalyticsPage = () => {
@@ -25,6 +25,10 @@ export const AnalyticsPage = () => {
     const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d" | "1y">("30d");
     const [showPredictions, setShowPredictions] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+    // Mobile-specific state
+    const [mobileTab, setMobileTab] = useState<"overview" | "trends" | "breakdown">("overview");
+    const [showFilters, setShowFilters] = useState(false);
 
     // Phase 1: Calculate financial metrics
     const financialMetrics = useMemo(() => {
@@ -449,6 +453,343 @@ export const AnalyticsPage = () => {
         return <PageLoader message="Loading analytics..." variant="minimal" />;
     }
 
+    // Mobile render
+    if (isMobile) {
+        return (
+            <div className="mobile-analytics-wrapper">
+                {/* Mobile Header */}
+                <div className="mobile-analytics-header">
+                    <h1>Analytics</h1>
+                    <p>Financial Insights & Trends</p>
+                </div>
+
+                {/* Tab Navigation */}
+                <div className="mobile-analytics-tabs">
+                    <button
+                        className={`mobile-tab-btn ${mobileTab === "overview" ? "active" : ""}`}
+                        onClick={() => setMobileTab("overview")}
+                    >
+                        Overview
+                    </button>
+                    <button
+                        className={`mobile-tab-btn ${mobileTab === "trends" ? "active" : ""}`}
+                        onClick={() => setMobileTab("trends")}
+                    >
+                        Trends
+                    </button>
+                    <button
+                        className={`mobile-tab-btn ${mobileTab === "breakdown" ? "active" : ""}`}
+                        onClick={() => setMobileTab("breakdown")}
+                    >
+                        Breakdown
+                    </button>
+                </div>
+
+                {/* Time Period Selector */}
+                <div className="mobile-period-selector">
+                    <div className="mobile-period-chips">
+                        <button
+                            className={`mobile-period-chip ${timeRange === "7d" ? "active" : ""}`}
+                            onClick={() => setTimeRange("7d")}
+                        >
+                            7 Days
+                        </button>
+                        <button
+                            className={`mobile-period-chip ${timeRange === "30d" ? "active" : ""}`}
+                            onClick={() => setTimeRange("30d")}
+                        >
+                            30 Days
+                        </button>
+                        <button
+                            className={`mobile-period-chip ${timeRange === "90d" ? "active" : ""}`}
+                            onClick={() => setTimeRange("90d")}
+                        >
+                            90 Days
+                        </button>
+                        <button
+                            className={`mobile-period-chip ${timeRange === "1y" ? "active" : ""}`}
+                            onClick={() => setTimeRange("1y")}
+                        >
+                            1 Year
+                        </button>
+                    </div>
+                </div>
+
+                {/* Overview Tab */}
+                {mobileTab === "overview" && (
+                    <>
+                        {/* Quick Metrics */}
+                        <div className="mobile-quick-metrics">
+                            <div className="mobile-metric-card">
+                                <div className="mobile-metric-header">
+                                    <div className="mobile-metric-icon">
+                                        <DollarSign />
+                                    </div>
+                                </div>
+                                <div className="mobile-metric-label">Income</div>
+                                <div className="mobile-metric-value">
+                                    ₹{financialMetrics.income.toFixed(0)}
+                                </div>
+                                <div className="mobile-metric-change positive">
+                                    <TrendingUp />
+                                    This month
+                                </div>
+                            </div>
+
+                            <div className="mobile-metric-card">
+                                <div className="mobile-metric-header">
+                                    <div className="mobile-metric-icon">
+                                        <ArrowDownCircle />
+                                    </div>
+                                </div>
+                                <div className="mobile-metric-label">Expenses</div>
+                                <div className="mobile-metric-value">
+                                    ₹{financialMetrics.expenses.toFixed(0)}
+                                </div>
+                                <div className="mobile-metric-change negative">
+                                    <TrendingDown />
+                                    This month
+                                </div>
+                            </div>
+
+                            <div className="mobile-metric-card">
+                                <div className="mobile-metric-header">
+                                    <div className="mobile-metric-icon">
+                                        <Wallet />
+                                    </div>
+                                </div>
+                                <div className="mobile-metric-label">Savings</div>
+                                <div className="mobile-metric-value">
+                                    ₹{financialMetrics.savings.toFixed(0)}
+                                </div>
+                                <div className={`mobile-metric-change ${financialMetrics.savings > 0 ? "positive" : "negative"}`}>
+                                    {financialMetrics.savings > 0 ? <ChevronUp /> : <ChevronDown />}
+                                    {financialMetrics.savingsRate.toFixed(1)}% rate
+                                </div>
+                            </div>
+
+                            <div className="mobile-metric-card">
+                                <div className="mobile-metric-header">
+                                    <div className="mobile-metric-icon">
+                                        <Flame />
+                                    </div>
+                                </div>
+                                <div className="mobile-metric-label">Burn Rate</div>
+                                <div className="mobile-metric-value">
+                                    ₹{financialMetrics.burnRate.toFixed(0)}
+                                </div>
+                                <div className="mobile-metric-change">
+                                    <Activity />
+                                    per day
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Financial Health */}
+                        <div className="mobile-chart-section">
+                            <div className="mobile-chart-card">
+                                <div className="mobile-chart-header">
+                                    <h3 className="mobile-chart-title">Financial Health</h3>
+                                </div>
+                                <div className="mobile-chart-container">
+                                    <FinancialHealth />
+                                </div>
+                            </div>
+
+                            <div className="mobile-chart-card">
+                                <div className="mobile-chart-header">
+                                    <h3 className="mobile-chart-title">Financial Summary</h3>
+                                </div>
+                                <div className="mobile-chart-container">
+                                    <FinancialSummary />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* AI Insights */}
+                        {aiInsights.length > 0 && (
+                            <div className="mobile-insights-section">
+                                {aiInsights.slice(0, 3).map((insight, idx) => (
+                                    <div key={idx} className="mobile-insight-card">
+                                        <div className="mobile-insight-header">
+                                            <div className={`mobile-insight-icon ${insight.type}`}>
+                                                {insight.icon === 'alert' && <AlertTriangle size={20} />}
+                                                {insight.icon === 'trophy' && <Target size={20} />}
+                                                {insight.icon === 'target' && <Target size={20} />}
+                                                {insight.icon === 'trending-up' && <TrendingUp size={20} />}
+                                                {insight.icon === 'trending-down' && <TrendingDown size={20} />}
+                                            </div>
+                                            <div className="mobile-insight-content">
+                                                <h4 className="mobile-insight-title">{insight.title}</h4>
+                                                <p className="mobile-insight-text">{insight.message}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </>
+                )}
+
+                {/* Trends Tab */}
+                {mobileTab === "trends" && (
+                    <div className="mobile-chart-section">
+                        <div className="mobile-chart-card">
+                            <div className="mobile-chart-header">
+                                <h3 className="mobile-chart-title">Spending Trends</h3>
+                            </div>
+                            <div className="mobile-chart-container">
+                                <TrendAnalysisChart />
+                            </div>
+                        </div>
+
+                        <div className="mobile-chart-card">
+                            <div className="mobile-chart-header">
+                                <h3 className="mobile-chart-title">Monthly Spending</h3>
+                            </div>
+                            <div className="mobile-chart-container">
+                                <SpendingBarChart />
+                            </div>
+                        </div>
+
+                        {/* Month-over-Month Comparison */}
+                        <div className="mobile-comparison-section">
+                            <div className="mobile-comparison-card">
+                                <div className="mobile-comparison-header">
+                                    <span className="mobile-comparison-title">Month-over-Month</span>
+                                    <span className="mobile-comparison-period">vs Last Month</span>
+                                </div>
+                                <div className="mobile-comparison-values">
+                                    <div className="mobile-comparison-value">
+                                        <div className="mobile-comparison-label">Previous</div>
+                                        <div className="mobile-comparison-amount">
+                                            ₹{monthOverMonthAnalytics.prevExpenses.toFixed(0)}
+                                        </div>
+                                    </div>
+                                    <div className="mobile-comparison-value">
+                                        <div className="mobile-comparison-label">Current</div>
+                                        <div className="mobile-comparison-amount">
+                                            ₹{monthOverMonthAnalytics.currentExpenses.toFixed(0)}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={`mobile-comparison-change ${monthOverMonthAnalytics.expenseChange > 0 ? "up" : "down"}`}>
+                                    {monthOverMonthAnalytics.expenseChange > 0 ? <ChevronUp /> : <ChevronDown />}
+                                    {Math.abs(monthOverMonthAnalytics.expenseChange).toFixed(1)}% change
+                                </div>
+                            </div>
+
+                            <div className="mobile-comparison-card">
+                                <div className="mobile-comparison-header">
+                                    <span className="mobile-comparison-title">Year-over-Year</span>
+                                    <span className="mobile-comparison-period">vs Last Year</span>
+                                </div>
+                                <div className="mobile-comparison-values">
+                                    <div className="mobile-comparison-value">
+                                        <div className="mobile-comparison-label">Last Year</div>
+                                        <div className="mobile-comparison-amount">
+                                            ₹{yearOverYearAnalytics.lastYearExpenses.toFixed(0)}
+                                        </div>
+                                    </div>
+                                    <div className="mobile-comparison-value">
+                                        <div className="mobile-comparison-label">This Year</div>
+                                        <div className="mobile-comparison-amount">
+                                            ₹{yearOverYearAnalytics.currentExpenses.toFixed(0)}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={`mobile-comparison-change ${yearOverYearAnalytics.expenseChange > 0 ? "up" : "down"}`}>
+                                    {yearOverYearAnalytics.expenseChange > 0 ? <ChevronUp /> : <ChevronDown />}
+                                    {Math.abs(yearOverYearAnalytics.expenseChange).toFixed(1)}% change
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Breakdown Tab */}
+                {mobileTab === "breakdown" && (
+                    <div className="mobile-chart-section">
+                        <div className="mobile-chart-card">
+                            <div className="mobile-chart-header">
+                                <h3 className="mobile-chart-title">Category Distribution</h3>
+                            </div>
+                            <div className="mobile-chart-container">
+                                <CategoryChart />
+                            </div>
+                        </div>
+
+                        {/* Category Breakdown List */}
+                        <div className="mobile-chart-card">
+                            <div className="mobile-chart-header">
+                                <h3 className="mobile-chart-title">Top Categories</h3>
+                            </div>
+                            <div className="mobile-category-list">
+                                {radarChartData.slice(0, 5).map((item, idx) => (
+                                    <div key={item.category} className="mobile-category-item">
+                                        <div
+                                            className="mobile-category-color"
+                                            style={{ backgroundColor: `hsl(${idx * 40}, 70%, 50%)` }}
+                                        />
+                                        <div className="mobile-category-info">
+                                            <div className="mobile-category-name">{item.category}</div>
+                                            <div className="mobile-category-percent">
+                                                {item.percentage.toFixed(1)}% of total
+                                            </div>
+                                        </div>
+                                        <div className="mobile-category-amount">
+                                            ₹{item.amount.toFixed(0)}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Spending Insights */}
+                        <div className="mobile-chart-card">
+                            <div className="mobile-chart-header">
+                                <h3 className="mobile-chart-title">AI-Powered Insights</h3>
+                            </div>
+                            <SpendingInsights />
+                        </div>
+
+                        {/* Anomalies */}
+                        {anomalies.length > 0 && (
+                            <div className="mobile-chart-card">
+                                <div className="mobile-chart-header">
+                                    <h3 className="mobile-chart-title">Unusual Spending</h3>
+                                </div>
+                                <div className="mobile-category-list">
+                                    {anomalies.slice(0, 3).map((anomaly) => (
+                                        <div key={anomaly.category} className="mobile-insight-card">
+                                            <div className="mobile-insight-header">
+                                                <div className={`mobile-insight-icon warning`}>
+                                                    <AlertTriangle size={20} />
+                                                </div>
+                                                <div className="mobile-insight-content">
+                                                    <h4 className="mobile-insight-title">{anomaly.category}</h4>
+                                                    <p className="mobile-insight-text">
+                                                        {anomaly.deviation > 0 ? "+" : ""}{anomaly.deviation.toFixed(0)}%
+                                                        {anomaly.deviation > 0 ? " higher" : " lower"} than usual
+                                                    </p>
+                                                    <p className="mobile-insight-text" style={{ fontSize: "11px", marginTop: "4px" }}>
+                                                        Avg: ₹{anomaly.averageSpending.toFixed(0)} →
+                                                        Now: ₹{anomaly.currentSpending.toFixed(0)}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    // Desktop render
     return (
         <div className="analytics-page">
             {/* Header */}

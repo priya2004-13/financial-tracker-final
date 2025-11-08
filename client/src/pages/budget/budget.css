@@ -755,6 +755,7 @@
 }
 
 .metric-card {
+    flex-direction: column;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -1758,7 +1759,9 @@
     color: #ef4444;
 }
 
-/* Responsive Design */
+/* ============================================
+   TABLET RESPONSIVE (768px - 1023px)
+   ============================================ */
 @media (max-width: 1023px) {
     .budget-page {
         margin-left: 0;
@@ -1768,9 +1771,7 @@
     .budget-content {
         grid-template-columns: 1fr;
     }
-}
 
-@media (max-width: 768px) {
     .header-content {
         flex-direction: column;
         align-items: flex-start;
@@ -1789,7 +1790,7 @@
         flex-direction: column;
     }
 
-    /* Phase 1 Features Mobile */
+    /* Phase 1 Features Tablet */
     .month-selector {
         gap: 1rem;
         padding: 0.75rem;
@@ -1837,7 +1838,7 @@
         display: none;
     }
 
-    /* Phase 2 Features Mobile */
+    /* Phase 2 Features Tablet */
     .comparison-grid {
         grid-template-columns: 1fr;
     }
@@ -1939,17 +1940,17 @@
 }
 
 /* ============================================
-   MOBILE-FIRST BUDGET PAGE
+   MOBILE RESPONSIVE (360px - 480px)
    ============================================ */
 
-@media (max-width: 639px) {
+@media (max-width: 480px) {
     .budget-page {
         margin-left: 0;
         padding: 1rem;
         padding-bottom: 100px;
     }
 
-    /* Hide desktop elements */
+    /* Mobile-optimized header */
     .page-header .back-button {
         display: none;
     }
@@ -1961,23 +1962,23 @@
     }
 
     .header-icon {
-        width: 48px !important;
-        height: 48px !important;
+        width: 48px;
+        height: 48px;
     }
 
     .page-header h1 {
-        font-size: 1.5rem !important;
+        font-size: 1.5rem;
     }
 
     .page-header p {
-        font-size: 0.875rem !important;
+        font-size: 0.875rem;
     }
 
     /* Simplify budget layout for mobile */
     .budget-content,
     .budget-grid {
-        grid-template-columns: 1fr !important;
-        gap: 1rem !important;
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
     /* Hide complex features on mobile */
@@ -1986,25 +1987,25 @@
     .budget-history,
     .export-import-section,
     .advanced-features {
-        display: none !important;
+        display: none;
     }
 
     /* Make cards mobile-friendly */
     .budget-card,
     .health-score-card {
-        padding: 1rem !important;
+        padding: 1rem;
     }
 
     .budget-card h2 {
-        font-size: 1rem !important;
+        font-size: 1rem;
     }
 
     /* Month selector mobile */
     .month-selector {
-        gap: 0.5rem !important;
+        gap: 0.5rem;
     }
 
     .month-selector button {
-        padding: 0.5rem !important;
+        padding: 0.5rem;
     }
 }

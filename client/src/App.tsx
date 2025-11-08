@@ -1,6 +1,6 @@
 // client/src/App.tsx
 import "./App.css";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Link } from "react-router-dom";
 import { Dashboard } from "./pages/dashboard";
 import { Auth } from "./pages/auth";
 import { TransactionsPage } from "./pages/transactions";
@@ -84,14 +84,16 @@ const Navbar = () => {
 
                 <div className="user-profile-section">
                   <div className="user-info-display">
-                    <div className="user-details">
-                      <span className="user-name-display">
-                        {user?.firstName} {user?.lastName}
-                      </span>
-                      <span className="user-email-display">
-                        {user?.primaryEmailAddress?.emailAddress}
-                      </span>
-                    </div>
+                    <Link to={`/profile`} className="user-profile-link">
+                      <div className="user-details">
+                        <span className="user-name-display">
+                          {user?.firstName} {user?.lastName}
+                        </span>
+                        <span className="user-email-display">
+                          {user?.primaryEmailAddress?.emailAddress}
+                        </span>
+                      </div>
+                    </Link>
                     <UserButton
                       appearance={{
                         elements: {

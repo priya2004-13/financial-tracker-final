@@ -154,17 +154,16 @@
     }
 }
 
-/* Responsive Design */
+/* ============================================
+   TABLET RESPONSIVE (768px - 1023px)
+   ============================================ */
 @media (max-width: 1023px) {
     .analytics-page {
         margin-left: 0;
-        padding: 1rem;
+        padding: 1.5rem;
     }
 
-    .charts-grid {
-        grid-template-columns: 1fr;
-    }
-
+    .charts-grid,
     .overview-grid {
         grid-template-columns: 1fr;
     }
@@ -576,123 +575,6 @@
 
 .yoy-footer .negative {
     color: #ef4444;
-}
-
-@media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .header-icon {
-        width: 48px;
-        height: 48px;
-    }
-
-    .header-text h1 {
-        font-size: 1.5rem;
-    }
-
-    .analytics-section {
-        padding: 1rem;
-    }
-
-    .section-title {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .charts-grid {
-        grid-template-columns: 1fr;
-    }
-
-    /* Analytics Phase 1 Mobile Styles */
-    .metrics-grid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-
-    .metric-card {
-        padding: 1rem;
-    }
-
-    .metric-content h3 {
-        font-size: 1.5rem;
-    }
-
-    .metric-content p {
-        font-size: 0.75rem;
-    }
-
-    .metric-icon {
-        width: 40px;
-        height: 40px;
-    }
-
-    .metric-icon svg {
-        width: 20px;
-        height: 20px;
-    }
-
-    .expense-ratios-grid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-
-    .ratio-item {
-        padding: 0.75rem;
-    }
-
-    .ratio-header h4 {
-        font-size: 0.85rem;
-    }
-
-    .ratio-header span {
-        font-size: 0.95rem;
-    }
-
-    .comparison-grid-mom {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-
-    .comparison-card {
-        padding: 1rem;
-    }
-
-    .comparison-header h4 {
-        font-size: 0.9rem;
-    }
-
-    .comparison-value {
-        font-size: 1.25rem;
-    }
-
-    .comparison-grid-yoy {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-
-    .yoy-card {
-        padding: 1rem;
-    }
-
-    .yoy-header h4 {
-        font-size: 0.9rem;
-    }
-
-    .yoy-bar-container {
-        grid-template-columns: auto 1fr auto;
-        gap: 0.5rem;
-    }
-
-    .yoy-bar-container span {
-        font-size: 0.75rem;
-    }
-
-    .yoy-footer {
-        font-size: 0.75rem;
-    }
 }
 
 /* ============================================
@@ -1418,433 +1300,566 @@
 }
 
 /* ============================================
-   MOBILE RESPONSIVE (340px - 450px)
+   MOBILE ANALYTICS STYLES (360px - 480px)
    ============================================ */
 
-@media (max-width: 768px) {
-    .analytics-page {
-        padding: 1rem;
-        margin-left: 0;
-        padding-bottom: 80px;
-    }
-
-    .header-content {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .header-icon {
-        width: 48px;
-        height: 48px;
-    }
-
-    .header-text h1 {
-        font-size: 1.5rem;
-    }
-
-    .analytics-section {
-        padding: 1rem;
-    }
-
-    .section-title {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-    }
-
-    .charts-grid {
-        grid-template-columns: 1fr;
-    }
-
-    /* Phase 1 Mobile Styles */
-    .metrics-grid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-
-    .metric-card {
-        padding: 1rem;
-    }
-
-    .metric-content h3 {
-        font-size: 1.5rem;
-    }
-
-    .metric-content p {
-        font-size: 0.75rem;
-    }
-
-    .metric-icon {
-        width: 40px;
-        height: 40px;
-    }
-
-    .metric-icon svg {
-        width: 20px;
-        height: 20px;
-    }
-
-    .expense-ratios-grid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-
-    .ratio-item {
-        padding: 0.75rem;
-    }
-
-    .ratio-header h4 {
-        font-size: 0.85rem;
-    }
-
-    .ratio-header span {
-        font-size: 0.95rem;
-    }
-
-    .comparison-grid-mom {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-
-    .comparison-card {
-        padding: 1rem;
-    }
-
-    .comparison-header h4 {
-        font-size: 0.9rem;
-    }
-
-    .comparison-value {
-        font-size: 1.25rem;
-    }
-
-    .comparison-grid-yoy {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-
-    .yoy-card {
-        padding: 1rem;
-    }
-
-    .yoy-header h4 {
-        font-size: 0.9rem;
-    }
-
-    .yoy-bar-container {
-        grid-template-columns: auto 1fr auto;
-        gap: 0.5rem;
-    }
-
-    .yoy-bar-container span {
-        font-size: 0.75rem;
-    }
-
-    .yoy-footer {
-        font-size: 0.75rem;
-    }
-
-    /* Phase 2 & 3 Mobile Styles */
-    .chart-controls {
-        width: 100%;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .time-range-selector,
-    .chart-type-selector {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .range-btn,
-    .chart-btn {
-        flex: 1;
-        padding: 0.625rem 0.75rem;
-        font-size: 0.8rem;
-        justify-content: center;
-    }
-
-    .interactive-chart-container {
-        padding: 1rem;
-    }
-
-    .interactive-chart-container h3 {
-        font-size: 1.1rem;
-    }
-
-    .chart-description {
-        font-size: 0.85rem;
-    }
-
-    /* Heatmap Mobile */
-    .heatmap-grid {
-        grid-template-columns: 50px 1fr;
-    }
-
-    .label-y {
-        height: 40px;
-        font-size: 0.75rem;
-    }
-
-    .label-x {
-        font-size: 0.65rem;
-    }
-
-    .heatmap-cell {
-        min-height: 40px;
-    }
-
-    .cell-value {
-        font-size: 0.6rem;
-    }
-
-    /* Radar Mobile */
-    .radar-chart {
-        width: 250px;
-        height: 250px;
-    }
-
-    .radar-segment {
-        width: 125px;
-    }
-
-    .radar-label {
-        right: -70px;
-        font-size: 0.7rem;
-        width: 130px;
-    }
-
-    .radar-legend {
-        grid-template-columns: 1fr;
-    }
-
-    /* Sankey Mobile */
-    .sankey-diagram {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-        padding: 1rem;
-        min-height: auto;
-    }
-
-    .sankey-flows {
-        order: 3;
-        flex-direction: row;
-        height: 100px;
-    }
-
-    .flow-line {
-        flex: 1;
-        height: 100% !important;
-        min-height: auto;
-    }
-
-    .sankey-column.source {
-        order: 1;
-    }
-
-    .sankey-column.target {
-        order: 2;
-    }
-
-    /* Predictions Mobile */
-    .prediction-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .prediction-header h3 {
-        font-size: 1.1rem;
-    }
-
-    .prediction-metrics {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .pred-value {
-        font-size: 1.5rem;
-    }
-
-    .prediction-trend {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    /* Anomalies Mobile */
-    .anomalies-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .anomaly-card {
-        padding: 1rem;
-    }
-
-    .anomaly-category {
-        font-size: 1rem;
-    }
-
-    .bar-section {
-        grid-template-columns: 35px 1fr 70px;
-    }
-
-    .bar-section .bar-fill {
-        height: 24px;
-    }
-
-    .bar-label,
-    .bar-value {
-        font-size: 0.8rem;
-    }
-
-    /* AI Insights Mobile */
-    .ai-insights-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .insight-card {
-        padding: 1rem;
-        flex-direction: column;
-    }
-
-    .insight-icon {
-        width: 40px;
-        height: 40px;
-    }
-
-    .insight-content h3 {
-        font-size: 1rem;
-    }
-
-    .insight-message {
-        font-size: 0.875rem;
-    }
-
-    .insight-action {
-        font-size: 0.8rem;
-    }
-}
-
-/* Extra Small Mobile (340px - 400px) */
-@media (max-width: 400px) {
-    .analytics-page {
-        padding: 0.75rem;
-    }
-
-    .back-button {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.85rem;
-    }
-
-    .header-icon {
-        width: 40px;
-        height: 40px;
-    }
-
-    .header-text h1 {
-        font-size: 1.25rem;
-    }
-
-    .header-text p {
-        font-size: 0.85rem;
-    }
-
-    .metric-card {
-        padding: 0.875rem;
-    }
-
-    .metric-content h3 {
-        font-size: 1.25rem;
-    }
-
-    .interactive-chart-container {
-        padding: 0.875rem;
-    }
-
-    .interactive-chart-container h3 {
-        font-size: 1rem;
-    }
-
-    .radar-chart {
-        width: 220px;
-        height: 220px;
-    }
-
-    .prediction-card {
-        padding: 1rem;
-    }
-
-    .pred-value {
-        font-size: 1.25rem;
-    }
-
-    .range-btn,
-    .chart-btn {
-        padding: 0.5rem 0.5rem;
-        font-size: 0.75rem;
-    }
-}
-
-/* ============================================
-   MOBILE-FIRST ANALYTICS PAGE
-   ============================================ */
-
-@media (max-width: 639px) {
-    .analytics-page {
-        margin-left: 0;
-        padding: 1rem;
-        padding-bottom: 100px;
-    }
-
-    /* Hide desktop elements */
-    .page-header .back-button {
+@media (max-width: 480px) {
+
+    /* Hide desktop page structure on mobile */
+    .analytics-page>.page-header,
+    .analytics-page>.analytics-content {
         display: none;
     }
 
-    .page-header .header-content {
+    /* Mobile Wrapper */
+    .mobile-analytics-wrapper {
+        display: block;
+        padding: 0;
+        padding-bottom: 80px;
+        min-height: 100vh;
+        background: var(--background-light);
+    }
+
+    /* Mobile Header */
+    .mobile-analytics-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-color);
+        padding: 12px 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .mobile-analytics-header h1 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0;
+        color: var(--text-primary);
+    }
+
+    .mobile-analytics-header p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin: 4px 0 0 0;
+    }
+
+    /* Tab Navigation */
+    .mobile-analytics-tabs {
+        display: flex;
+        gap: 8px;
+        padding: 12px 16px;
+        background: var(--background-light);
+        border-bottom: 1px solid var(--border-color);
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .mobile-analytics-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-tab-btn {
+        flex-shrink: 0;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        background: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .mobile-tab-btn.active {
+        color: var(--primary-color);
+        background: rgba(99, 102, 241, 0.1);
+        border-color: var(--primary-color);
+    }
+
+    .mobile-tab-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* Time Period Selector */
+    .mobile-period-selector {
+        padding: 12px 16px;
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .mobile-period-chips {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding-bottom: 2px;
+    }
+
+    .mobile-period-chips::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-period-chip {
+        flex-shrink: 0;
+        padding: 6px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        background: var(--background-light);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .mobile-period-chip.active {
+        color: white;
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .mobile-period-chip:active {
+        transform: scale(0.95);
+    }
+
+    /* Quick Metrics */
+    .mobile-quick-metrics {
+        display: flex;
+        gap: 12px;
+        padding: 16px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        background: var(--background-light);
+    }
+
+    .mobile-quick-metrics::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-metric-card {
+        flex-shrink: 0;
+        width: 160px;
+        padding: 16px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        transition: all 0.2s ease;
+    }
+
+    .mobile-metric-card:active {
+        transform: scale(0.98);
+    }
+
+    .mobile-metric-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .mobile-metric-icon {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: rgba(99, 102, 241, 0.1);
+    }
+
+    .mobile-metric-icon svg {
+        width: 20px;
+        height: 20px;
+        color: var(--primary-color);
+    }
+
+    .mobile-metric-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    .mobile-metric-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+    }
+
+    .mobile-metric-change {
+        font-size: 12px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .mobile-metric-change.positive {
+        color: var(--success-color);
+    }
+
+    .mobile-metric-change.negative {
+        color: var(--danger-color);
+    }
+
+    .mobile-metric-change svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* Chart Section */
+    .mobile-chart-section {
+        padding: 16px;
+        background: var(--background-light);
+    }
+
+    .mobile-chart-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        position: relative;
+        z-index: 1;
+        isolation: isolate;
+    }
+
+    .mobile-chart-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+
+    .mobile-chart-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .mobile-chart-container {
+        width: 100%;
+        height: 240px;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    /* Fix chart overflow issues */
+    .mobile-chart-container>* {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .mobile-chart-container canvas,
+    .mobile-chart-container svg {
+        max-width: 100% !important;
+        max-height: 240px !important;
+    }
+
+    /* Category Breakdown */
+    .mobile-category-list {
+        display: flex;
         flex-direction: column;
+        gap: 12px;
+    }
+
+    .mobile-category-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: var(--background-light);
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+
+    .mobile-category-item:active {
+        transform: scale(0.98);
+        background: var(--hover-bg);
+    }
+
+    .mobile-category-color {
+        width: 4px;
+        height: 40px;
+        border-radius: 2px;
+        flex-shrink: 0;
+    }
+
+    .mobile-category-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .mobile-category-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+    }
+
+    .mobile-category-percent {
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+
+    .mobile-category-amount {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+        text-align: right;
+    }
+
+    /* Comparison Section */
+    .mobile-comparison-section {
+        padding: 16px;
+        background: var(--background-light);
+    }
+
+    .mobile-comparison-card {
+        padding: 16px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        margin-bottom: 12px;
+    }
+
+    .mobile-comparison-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .mobile-comparison-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+    }
+
+    .mobile-comparison-period {
+        font-size: 12px;
+        color: var(--text-tertiary);
+        padding: 4px 8px;
+        background: var(--background-light);
+        border-radius: 8px;
+    }
+
+    .mobile-comparison-values {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .mobile-comparison-value {
         text-align: center;
-        gap: 0.5rem;
     }
 
-    .header-icon {
-        width: 48px !important;
-        height: 48px !important;
+    .mobile-comparison-label {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
     }
 
-    .page-header h1 {
-        font-size: 1.5rem !important;
+    .mobile-comparison-amount {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
     }
 
-    .page-header p {
-        font-size: 0.875rem !important;
+    .mobile-comparison-change {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        margin-top: 8px;
+        font-size: 13px;
+        font-weight: 500;
     }
 
-    /* Simplify analytics cards for mobile */
-    .analytics-grid,
-    .advanced-analytics-section {
-        grid-template-columns: 1fr !important;
-        gap: 1rem !important;
+    .mobile-comparison-change.up {
+        color: var(--success-color);
     }
 
-    /* Hide complex widgets on mobile */
-    .sankey-diagram,
-    .prediction-section,
-    .interactive-charts,
-    .scenario-calculator {
-        display: none !important;
+    .mobile-comparison-change.down {
+        color: var(--danger-color);
     }
 
-    /* Make remaining cards mobile-friendly */
-    .analytics-card {
-        padding: 1rem !important;
+    /* Insights Section */
+    .mobile-insights-section {
+        padding: 16px;
+        background: var(--background-light);
     }
 
-    .analytics-card h2 {
-        font-size: 1rem !important;
+    .mobile-insight-card {
+        padding: 16px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
-    .chart-container {
-        height: 250px !important;
+    .mobile-insight-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .mobile-insight-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        flex-shrink: 0;
+    }
+
+    .mobile-insight-icon.info {
+        background: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+    }
+
+    .mobile-insight-icon.warning {
+        background: rgba(251, 146, 60, 0.1);
+        color: #fb923c;
+    }
+
+    .mobile-insight-icon.success {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+    }
+
+    .mobile-insight-content {
+        flex: 1;
+    }
+
+    .mobile-insight-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+    }
+
+    .mobile-insight-text {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+
+    /* Device-specific breakpoints */
+
+    /* Small phones (360-374px) */
+    @media (max-width: 374px) {
+        .mobile-analytics-header {
+            padding: 10px 12px;
+        }
+
+        .mobile-analytics-header h1 {
+            font-size: 18px;
+        }
+
+        .mobile-metric-card {
+            width: 140px;
+            padding: 12px;
+        }
+
+        .mobile-metric-value {
+            font-size: 20px;
+        }
+
+        .mobile-quick-metrics {
+            gap: 10px;
+            padding: 12px;
+        }
+
+        .mobile-chart-container {
+            height: 200px;
+        }
+
+        .mobile-tab-btn {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+    }
+
+    /* Standard phones (375-414px) */
+    @media (min-width: 375px) and (max-width: 414px) {
+        .mobile-metric-card {
+            width: 165px;
+        }
+
+        .mobile-chart-container {
+            height: 250px;
+        }
+    }
+
+    /* Large phones (415-480px) */
+    @media (min-width: 415px) {
+        .mobile-metric-card {
+            width: 180px;
+        }
+
+        .mobile-chart-container {
+            height: 280px;
+        }
+    }
+
+    /* Landscape mode */
+    @media (max-width: 896px) and (orientation: landscape) {
+        .mobile-analytics-wrapper {
+            padding-bottom: 60px;
+        }
+
+        .mobile-quick-metrics {
+            padding: 12px;
+        }
+
+        .mobile-metric-card {
+            width: 140px;
+            padding: 12px;
+        }
+
+        .mobile-chart-container {
+            height: 200px;
+        }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+
+        .mobile-tab-btn,
+        .mobile-period-chip,
+        .mobile-metric-card,
+        .mobile-category-item {
+            transition: none;
+        }
+    }
+
+    /* High contrast mode */
+    @media (prefers-contrast: high) {
+
+        .mobile-analytics-header,
+        .mobile-metric-card,
+        .mobile-chart-card,
+        .mobile-comparison-card {
+            border-width: 2px;
+        }
     }
 }
