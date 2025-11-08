@@ -86,51 +86,40 @@ export const Dashboard = () => {
     setTimeout(() => setShowHeader(false), 2000);
   }, []);
 
-  // Load financial news (mock data for demo - replace with real API)
+  // Load financial news from Marketaux API
   useEffect(() => {
-    const loadNews = () => {
-      setNewsLoading(true);
-      // Mock financial news data
-      const mockNews = [
-        {
-          id: '1',
-          title: 'Top 5 Savings Strategies for 2024',
-          description: 'Learn effective ways to maximize your savings and build wealth this year.',
-          source: 'Financial Times',
-          url: 'https://example.com/news/1',
-          publishedAt: new Date().toISOString()
-        },
-        {
-          id: '2',
-          title: 'Understanding Budget Categories',
-          description: 'A comprehensive guide to organizing your expenses effectively.',
-          source: 'Money Magazine',
-          url: 'https://example.com/news/2',
-          publishedAt: new Date(Date.now() - 86400000).toISOString()
-        },
-        {
-          id: '3',
-          title: 'Investment Tips for Beginners',
-          description: 'Start your investment journey with these essential tips.',
-          source: 'Forbes',
-          url: 'https://example.com/news/3',
-          publishedAt: new Date(Date.now() - 172800000).toISOString()
-        },
-        {
-          id: '4',
-          title: 'Smart Spending Habits to Adopt',
-          description: 'Transform your financial future with these proven habits.',
-          source: 'Bloomberg',
-          url: 'https://example.com/news/4',
-          publishedAt: new Date(Date.now() - 259200000).toISOString()
-        }
-      ];
-      setNewsArticles(mockNews);
-      setNewsLoading(false);
-    };
-
     loadNews();
   }, []);
+
+  const loadNews = async (forceRefresh: boolean = false) => {
+    setNewsLoading(true);
+    try {
+      // Dynamic import to avoid bundling issues
+      const { fetchTrendingFinanceNews } = await import('../../../services/marketaux-service');
+      const articles = await fetchTrendingFinanceNews(5, !forceRefresh); // useCache = !forceRefresh
+
+      // Transform Marketaux articles to our format
+      const transformedArticles = articles.map(article => ({
+        id: article.uuid,
+        title: article.title,
+        description: article.description || article.snippet,
+        source: article.source,
+        url: article.url,
+        publishedAt: article.published_at
+      }));
+
+      setNewsArticles(transformedArticles);
+    } catch (error) {
+      console.error('Error loading financial news:', error);
+    } finally {
+      setNewsLoading(false);
+    }
+  };
+
+  const refreshNews = () => {
+    console.log('🔄 Manually refreshing news (bypassing cache)...');
+    loadNews(true); // Force refresh, bypass cache
+  };
 
   const toggleWidget = (widget: keyof typeof visibleWidgets) => {
     setVisibleWidgets(prev => ({
@@ -427,6 +416,14 @@ export const Dashboard = () => {
                     disabled={newsArticles.length <= 1}
                   >
                     <ChevronRight size={16} />
+                  </button>
+                  <button
+                    className="news-nav-btn"
+                    onClick={refreshNews}
+                    disabled={newsLoading}
+                    title="Refresh news (bypass cache)"
+                  >
+                    <RefreshCw size={16} className={newsLoading ? 'spin' : ''} />
                   </button>
                   <button
                     className="widget-toggle-btn"
