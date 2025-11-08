@@ -1,10 +1,4 @@
-.dashboard-container {
-  padding: 2.5rem;
-  max-width: 1600px;
-  margin: 0 auto;
-}
-
-.dashboard-container h1 {
+/* .dashboard-container h1 {
   font-size: 2.2rem;
   font-weight: 700;
   background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
@@ -25,7 +19,7 @@
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
-}
+} */
 
 /* Summary Cards */
 .summary {

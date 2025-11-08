@@ -2,7 +2,7 @@
 import { useUser } from "@clerk/clerk-react";
 import React, { useEffect, useMemo } from "react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
-import { DollarSign, TrendingDown, Wallet, Target, ArrowUp } from "lucide-react";
+import { DollarSign, TrendingDown, Wallet, Target, ArrowUp, Receipt, PiggyBank, BarChart3, Goal } from "lucide-react";
 
 // Import the scroll detection hook
 import { useScrollDetection } from "../../hooks/useScrollDetection";
@@ -19,30 +19,22 @@ import { CategoryManager } from "../../components/CategoryManager";
 import { FinancialHealth } from "../../components/FinancialHealth";
 import { TransactionTemplates } from "../../components/TransactionTemplates";
 import { BudgetTemplates } from "../../components/BudgetTemplates";
-
-import { FinancialRecordChart as SpendingBarChart } from "./financial-record-chart";
+import { DashboardCard } from "../../components/DashboardCard";
 import { SpendingInsights } from "../../components/SpendingInsights";
-import { SharedExpenses } from "../../components/SharedExpenses";
 import { StatCard } from "../../components/StatCard";
-
 import "./dashboard.css";
-import TrendAnalysisChart from "../../components/TrendAnalysisChart";
-import SpendingHeatmap from "../../components/SpendingHeatmap";
 import { CategoryChart } from "../../components/CategoryChart";
-import { RingLoader } from "react-spinners";
 import { PageLoader } from "../../components/PageLoader";
 export const Dashboard = () => {
   const { user } = useUser();
   const { records, budget, isLoading } = useFinancialRecords();
   const [showHeader, setShowHeader] = React.useState(true);
   useEffect(() => {
-    setTimeout(() => setShowHeader(false), 1000);
-
+    setTimeout(() => setShowHeader(false), 2000);
   }, []);
   // Scroll detection for sidebar and main content
   const sidebar = useScrollDetection();
   const mainContent = useScrollDetection();
-
   // Calculate stats (existing code)
   const currentMonthIncome = useMemo(() => {
     const now = new Date();
@@ -109,10 +101,10 @@ export const Dashboard = () => {
   return (
     <div className="dashboard-container desktop-view">
       {/* Header - Fixed */}
-      {showHeader && <div className="dashboard-header">
+    <div className={`dashboard-header ${showHeader ? 'dashboard-header-visible' : 'dashboard-header-hidden'}`}>
         <h1 className="dashboard-welcome">Welcome back, {user?.firstName}! 👋</h1>
         <p className="dashboard-subtitle">Here's your financial overview</p>
-      </div>}
+      </div>
 
       {/* Stats Grid - Fixed */}
       <div className="stats-grid">
@@ -181,16 +173,62 @@ export const Dashboard = () => {
           ref={mainContent.scrollRef}
           className={`dashboard-main ${mainContent.isScrollable ? 'has-scroll' : ''} ${mainContent.isAtBottom ? 'scroll-bottom' : ''}`}
         >
-          <FinancialSummary />
-          <FinancialHealth />
-          <SharedExpenses />
-          <SpendingInsights />
-          {budget && <BudgetTracking />}
-          <CategoryChart />
-          <SpendingBarChart />
-          <FinancialRecordList />
-          <SpendingHeatmap />
-          <TrendAnalysisChart />
+          <DashboardCard
+            title="Financial Overview"
+            subtitle="AI-powered insights"
+            viewMorePath="/analytics"
+            viewMoreText="View Full Analytics"
+            icon={<BarChart3 size={20} />}
+          >
+            <FinancialSummary />
+          </DashboardCard>
+
+          <DashboardCard
+            title="Financial Health"
+            subtitle="Your overall financial status"
+            viewMorePath="/analytics"
+            icon={<Target size={20} />}
+          >
+            <FinancialHealth />
+          </DashboardCard>
+
+          <DashboardCard
+            title="Recent Transactions"
+            subtitle="Latest financial records"
+            viewMorePath="/transactions"
+            viewMoreText="View All Transactions"
+            icon={<Receipt size={20} />}
+          >
+            <FinancialRecordList />
+          </DashboardCard>
+
+          <DashboardCard
+            title="Budget Tracking"
+            subtitle="Monitor your spending limits"
+            viewMorePath="/budget"
+            viewMoreText="Manage Budget"
+            icon={<PiggyBank size={20} />}
+          >
+            {budget && <BudgetTracking />}
+          </DashboardCard>
+
+          <DashboardCard
+            title="Spending Insights"
+            subtitle="AI analysis of your spending"
+            viewMorePath="/analytics"
+            icon={<BarChart3 size={20} />}
+          >
+            <SpendingInsights />
+          </DashboardCard>
+
+          <DashboardCard
+            title="Category Analysis"
+            subtitle="Spending by category"
+            viewMorePath="/analytics"
+            icon={<BarChart3 size={20} />}
+          >
+            <CategoryChart />
+          </DashboardCard>
 
           {/* Scroll to top button for main content */}
           {mainContent.isScrollable && !mainContent.isAtTop && (

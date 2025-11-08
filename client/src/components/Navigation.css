@@ -1,0 +1,319 @@
+﻿/* client/src/components/Navigation.css */
+
+:root {
+    --nav-width: 280px;
+}
+
+.main-navigation {
+    background: var(--card-bg);
+    border-right: 1px solid var(--border-color);
+    height: 100vh;
+    width: var(--nav-width);
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding-top: 80px;
+    z-index: 100;
+    overflow-y: auto;
+    transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.main-navigation.collapsed {
+    width: 80px;
+}
+
+.main-navigation.mobile {
+    display: none;
+}
+
+.nav-toggle-btn {
+    position: absolute;
+    left: 20px;
+    top: 50px;
+    width: 28px;
+    height: 28px;
+    background: var(--primary-color);
+    border: 2px solid var(--card-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    transition: all 0.3s ease;
+    z-index: 101;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nav-toggle-btn:hover {
+    background: var(--primary-hover);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.nav-toggle-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.nav-header {
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.main-navigation.collapsed .nav-header {
+    padding: 1.5rem 0.5rem 1rem 0.5rem;
+    text-align: center;
+}
+
+.nav-header h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin: 0;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.main-navigation.collapsed .nav-header h3 {
+    font-size: 0.7rem;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 1rem 0.75rem;
+    margin: 0;
+}
+
+.nav-list li {
+    margin-bottom: 0.5rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+
+.main-navigation.collapsed .nav-item {
+    padding: 0.875rem 0.5rem;
+    justify-content: center;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: var(--primary-color);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.nav-item:hover {
+    background: var(--hover-bg);
+    border-color: var(--border-color);
+}
+
+.main-navigation:not(.collapsed) .nav-item:hover {
+    transform: translateX(4px);
+}
+
+.main-navigation.collapsed .nav-item:hover {
+    transform: scale(1.05);
+}
+
+.nav-item.active {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.nav-item.active::before {
+    transform: scaleY(1);
+}
+
+.nav-item-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.main-navigation.collapsed .nav-item-content {
+    gap: 0;
+    justify-content: center;
+}
+
+.nav-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--input-bg);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.main-navigation.collapsed .nav-item-icon {
+    width: 36px;
+    height: 36px;
+}
+
+.nav-item.active .nav-item-icon {
+    background: var(--primary-color);
+    color: white;
+}
+
+.nav-item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.main-navigation.collapsed .nav-item-text {
+    display: none;
+}
+
+.nav-item-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.nav-item.active .nav-item-label {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.nav-item-description {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.nav-item-arrow {
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.nav-item:hover .nav-item-arrow,
+.nav-item.active .nav-item-arrow {
+    opacity: 1;
+    transform: translateX(4px);
+}
+
+.nav-item.active .nav-item-arrow {
+    color: var(--primary-color);
+}
+
+/* Tooltip for collapsed state */
+.main-navigation.collapsed .nav-item {
+    position: relative;
+}
+
+.main-navigation.collapsed .nav-item::after {
+    content: attr(title);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%) translateX(8px);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-color);
+    z-index: 1000;
+}
+
+.main-navigation.collapsed .nav-item:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(12px);
+}
+
+/* Adjust main content when navigation is present */
+.app-container .navbar-enhanced {
+    left: var(--nav-width);
+    width: calc(100% - var(--nav-width));
+    transition: left 0.3s ease, width 0.3s ease;
+}
+
+.app-container>div:not(.navbar-enhanced) {
+    margin-left: var(--nav-width);
+    transition: margin-left 0.3s ease;
+}
+
+/* Scrollbar styling */
+.main-navigation::-webkit-scrollbar {
+    width: 6px;
+}
+
+.main-navigation::-webkit-scrollbar-track {
+    background: var(--card-bg);
+}
+
+.main-navigation::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.main-navigation::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .main-navigation.desktop:not(.collapsed) {
+        width: 240px;
+    }
+
+    :root {
+        --nav-width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-navigation.desktop {
+        display: none;
+    }
+
+    :root {
+        --nav-width: 0px;
+    }
+
+    .app-container .navbar-enhanced {
+        left: 0;
+        width: 100%;
+    }
+
+    .app-container>div:not(.navbar-enhanced) {
+        margin-left: 0;
+    }
+}
