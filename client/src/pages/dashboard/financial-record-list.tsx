@@ -23,7 +23,9 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  Loader
+  Loader,
+  CheckSquare,
+  Square
 } from "lucide-react";
 import "./recordList.css";
 import { FinancialRecord, fetchFinancialRecords, PaginatedRecordsResponse } from "../../../services/api";
@@ -41,9 +43,18 @@ const CATEGORY_COLORS: Record<string, string> = {
 interface FinancialRecordListProps {
   filteredRecords?: FinancialRecord[];
   showFilters?: boolean;
+  selectedTransactions?: Set<string>;
+  onToggleSelect?: (id: string) => void;
+  enableSelection?: boolean;
 }
 
-export const FinancialRecordList = ({ filteredRecords, showFilters = true }: FinancialRecordListProps) => {
+export const FinancialRecordList = ({
+  filteredRecords,
+  showFilters = true,
+  selectedTransactions = new Set(),
+  onToggleSelect,
+  enableSelection = false
+}: FinancialRecordListProps) => {
   const { user } = useUser();
   const { records, updateRecord, deleteRecord, categories } = useFinancialRecords();
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -260,9 +271,21 @@ export const FinancialRecordList = ({ filteredRecords, showFilters = true }: Fin
             const isExpanded = expandedRecordId === record._id;
             const hasAttachments = record.attachments && record.attachments.length > 0;
             const hasNotes = record.notes && record.notes.trim().length > 0;
+            const isSelected = record._id ? selectedTransactions.has(record._id) : false;
 
             return (
-              <div key={record._id} className={`record-card ${isIncome ? 'income-card' : 'expense-card'} ${record.isSplit ? 'split-indicator' : ''}`}>
+              <div key={record._id} className={`record-card ${isIncome ? 'income-card' : 'expense-card'} ${record.isSplit ? 'split-indicator' : ''} ${isSelected ? 'selected' : ''}`}>
+                {/* Selection Checkbox */}
+                {enableSelection && record._id && (
+                  <div className="record-checkbox" onClick={() => onToggleSelect?.(record._id!)}>
+                    {isSelected ? (
+                      <CheckSquare size={20} className="checkbox-icon checked" />
+                    ) : (
+                      <Square size={20} className="checkbox-icon" />
+                    )}
+                  </div>
+                )}
+
                 {record.isSplit && <GitCommit size={14} className="split-icon" />}
 
                 <div className="record-card-left">

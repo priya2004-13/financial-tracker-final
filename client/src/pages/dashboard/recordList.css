@@ -440,10 +440,65 @@
   /* Add fade-in */
 }
 
+/* Selected record highlight */
+.record-card.selected {
+  border-color: var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color) 5%, var(--background-light));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 10%, transparent);
+}
+
+/* Selection checkbox */
+.record-checkbox {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.record-checkbox:hover {
+  transform: scale(1.1);
+}
+
+.checkbox-icon {
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.checkbox-icon.checked {
+  color: var(--primary-color);
+}
+
+.record-card.selected .record-checkbox {
+  animation: checkboxPulse 0.3s ease;
+}
+
+@keyframes checkboxPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* Adjust padding when checkbox is present */
+.record-card:has(.record-checkbox) {
+  padding-left: 3rem;
+}
+
 /* Split Indicator */
 .record-card.split-indicator {
   padding-left: 1.5rem;
   /* Indent split items */
+}
+
+.record-card:has(.record-checkbox).split-indicator {
+  padding-left: 3.5rem;
 }
 
 .split-icon {
