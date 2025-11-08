@@ -209,7 +209,7 @@ export const TransactionsPage = () => {
 
                     {/* Transaction List */}
                     <div className="transactions-list-container">
-                        <FinancialRecordList />
+                        <FinancialRecordList filteredRecords={filteredRecords} showFilters={false} />
                         {filteredRecords.length === 0 && (
                             <div className="no-results">
                                 <p>No transactions found matching your filters.</p>

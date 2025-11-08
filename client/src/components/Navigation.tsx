@@ -79,9 +79,7 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobile = false }) => {
                 {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
             </button>
 
-            {/* <div className="nav-header">
-                <h3>{isCollapsed ? "Nav" : "Navigation"}</h3>
-            </div> */}
+         
             <ul className="nav-list">
                 {navItems.map((item) => {
                     const Icon = item.icon;

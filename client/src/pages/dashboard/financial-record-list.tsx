@@ -38,7 +38,12 @@ const CATEGORY_COLORS: Record<string, string> = {
   Other: '#a855f7',
 };
 
-export const FinancialRecordList = () => {
+interface FinancialRecordListProps {
+  filteredRecords?: FinancialRecord[];
+  showFilters?: boolean;
+}
+
+export const FinancialRecordList = ({ filteredRecords, showFilters = true }: FinancialRecordListProps) => {
   const { user } = useUser();
   const { records, updateRecord, deleteRecord, categories } = useFinancialRecords();
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -59,8 +64,13 @@ export const FinancialRecordList = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [expandedRecordId, setExpandedRecordId] = useState<string | null>(null);
 
-  // Load paginated records
+  // Load paginated records (only if no filtered records are provided)
   useEffect(() => {
+    if (filteredRecords) {
+      setAllRecords(filteredRecords);
+      return;
+    }
+
     const loadRecords = async () => {
       if (!user?.id) return;
 
@@ -77,7 +87,7 @@ export const FinancialRecordList = () => {
     };
 
     loadRecords();
-  }, [user?.id, currentPage, pageSize]);
+  }, [user?.id, currentPage, pageSize, filteredRecords]);
 
   const allCategories = useMemo(() => {
     const defaultCategories = ["All", "Food", "Rent", "Salary", "Utilities", "Entertainment", "Other"];
@@ -181,55 +191,57 @@ export const FinancialRecordList = () => {
         </div>
 
         {/* Search and Filter Bar */}
-        <div className="records-filter-bar">
-          <div className="search-box">
-            <Search size={18} />
-            <input
-              type="text"
-              placeholder="Search transactions..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-          </div>
-          <div className="filter-controls">
-            <div className="filter-group">
-              <Filter size={16} />
-              <select
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-                className="filter-select"
-              >
-                {allCategories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
+        {showFilters && (
+          <div className="records-filter-bar">
+            <div className="search-box">
+              <Search size={18} />
+              <input
+                type="text"
+                placeholder="Search transactions..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
             </div>
+            <div className="filter-controls">
+              <div className="filter-group">
+                <Filter size={16} />
+                <select
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                  className="filter-select"
+                >
+                  {allCategories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="sort-group">
-              <button
-                className={`sort-btn ${sortBy === 'date' ? 'active' : ''} btn-primary ripple-button`}
-                onClick={() => setSortBy('date')}
-              >
-                <Calendar size={16} />
-                Date
-              </button>
-              <button
-                className={`sort-btn ${sortBy === 'amount' ? 'active' : ''} btn-primary ripple-button`}
-                onClick={() => setSortBy('amount')}
-              >
-                <IndianRupee size={16} />
-                Amount
-              </button>
-              <button
-                className="sort-order-btn btn-primary ripple-button"
-                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-              >
-                {sortOrder === 'asc' ? <TrendingUp size={21} /> : <TrendingDown size={21} />}
-              </button>
+              <div className="sort-group">
+                <button
+                  className={`sort-btn ${sortBy === 'date' ? 'active' : ''} btn-primary ripple-button`}
+                  onClick={() => setSortBy('date')}
+                >
+                  <Calendar size={16} />
+                  Date
+                </button>
+                <button
+                  className={`sort-btn ${sortBy === 'amount' ? 'active' : ''} btn-primary ripple-button`}
+                  onClick={() => setSortBy('amount')}
+                >
+                  <IndianRupee size={16} />
+                  Amount
+                </button>
+                <button
+                  className="sort-order-btn btn-primary ripple-button"
+                  onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                >
+                  {sortOrder === 'asc' ? <TrendingUp size={21} /> : <TrendingDown size={21} />}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Records List */}

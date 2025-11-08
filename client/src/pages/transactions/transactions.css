@@ -3,8 +3,11 @@
 .transactions-page {
     padding: 2rem;
     max-width: 1600px;
-    margin: 0 2rem;
+    margin: 0;
+    margin-left: var(--nav-width, 280px);
+    padding-right: 2rem;
     animation: fadeIn 0.3s ease-in;
+    transition: margin-left 0.3s ease;
 }
 
 .page-header {
@@ -203,7 +206,12 @@
 }
 
 /* Responsive Design */
-@media (max-width: 1200px) {
+@media (max-width: 1023px) {
+    .transactions-page {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
     .transactions-content {
         grid-template-columns: 1fr;
     }
@@ -215,10 +223,6 @@
 }
 
 @media (max-width: 768px) {
-    .transactions-page {
-        padding: 1rem;
-    }
-
     .transactions-stats {
         grid-template-columns: 1fr;
     }

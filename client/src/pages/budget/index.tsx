@@ -1,5 +1,5 @@
 ﻿// client/src/pages/budget/index.tsx
-import React from "react";
+ 
 import { useNavigate } from "react-router-dom";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import { BudgetManager } from "../../components/BudgetManager";

@@ -2,17 +2,20 @@
 @import '../../enhanced-mobile.css';
 @import "../../microInteractions.css";
 @import "../../theme-variables.css";
+
 /* Dashboard Container - Fixed height viewport */
 .dashboard-container {
   max-width: 100%;
-  margin: 0 3rem;
+  margin: 0;
+  margin-left: var(--nav-width, 280px);
   padding: .5rem 1rem;
+  padding-right: 2rem;
   display: flex;
   flex-direction: column;
   height: 100vh;
   /* Full viewport height */
   overflow: hidden;
-  transition: 0.5s ease;
+  transition: margin-left 0.3s ease;
   /* Prevent body scroll */
 }
 
@@ -22,18 +25,21 @@
   /* Don't shrink */
   margin-bottom: 1.5rem;
 }
+
 .dashboard-header-hidden {
   display: none;
   opacity: 0;
   /* transform: translateY(-20px); */
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
+
 .dashboard-header-visible {
   display: block;
   opacity: 1;
   /* transform: translateY(0); */
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
+
 /* Stats Grid - Fixed, no scroll */
 .stats-grid {
   flex-shrink: 0;
@@ -175,8 +181,9 @@
 @media (min-width: 1024px) {
   .dashboard-container {
     padding: var(--spacing-2xl) var(--spacing-xl);
-    /* max-width: 1400px; */
-    margin: 0 2rem;
+
+    margin-left: var(--nav-width, 280px);
+    margin-right: 2rem;
   }
 
   .stats-grid {
@@ -202,7 +209,8 @@
 @media (min-width: 1280px) {
   .dashboard-container {
     /* max-width: 1600px; */
-    margin: 0 2rem;
+    margin-left: var(--nav-width, 280px);
+    margin-right: 2rem;
   }
 
   .dashboard-grid {
@@ -261,6 +269,13 @@
 
 /* Mobile optimization - single column stacked */
 @media (max-width: 1023px) {
+  .dashboard-container {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
   .dashboard-grid {
     grid-template-columns: 1fr;
     /* Single column on mobile/tablet */

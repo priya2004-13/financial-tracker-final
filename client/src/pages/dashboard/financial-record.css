@@ -1,26 +1,3 @@
-/* .dashboard-container h1 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 2.5rem;
-  text-align: left;
-}
-
-.dashboard-content {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 2.5rem;
-  align-items: flex-start;
-}
-
-.dashboard-left, .dashboard-right {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-} */
-
 /* Summary Cards */
 .summary {
   display: grid;
