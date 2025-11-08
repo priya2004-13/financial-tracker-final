@@ -1,6 +1,6 @@
 ﻿// client/src/components/SplitTransactionModal.tsx
 import React, { useState, useEffect } from 'react';
-import { Split, Plus, Trash2, X, AlertCircle, CheckCircle, DollarSign } from 'lucide-react';
+import { Split, Plus, Trash2, X, AlertCircle, CheckCircle, IndianRupee } from 'lucide-react';
 import './SplitTransactionModal.css';
 
 interface SplitItem {
@@ -31,7 +31,7 @@ export const SplitTransactionModal: React.FC<SplitTransactionModalProps> = ({
         { id: 1, description: '', amount: '', category: '' },
     ]);
     const [autoDistribute, setAutoDistribute] = useState(false);
-console.log(autoDistribute)
+    console.log(autoDistribute)
     useEffect(() => {
         if (isOpen) {
             // Lock body scroll
@@ -179,7 +179,7 @@ console.log(autoDistribute)
                                     <div className="field-group">
                                         <label>Amount</label>
                                         <div className="input-with-icon">
-                                            <DollarSign size={16} />
+                                            <IndianRupee size={16} />
                                             <input
                                                 type="number"
                                                 value={item.amount}

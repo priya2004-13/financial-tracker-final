@@ -6,7 +6,7 @@ import { PageLoader } from "../../components/PageLoader";
 import SavingsGoals from "../../components/SavingsGoals";
 import { Subscriptions } from "../../components/Subscriptions";
 import { SharedExpenses } from "../../components/SharedExpenses";
-import { ArrowLeft, Target, Repeat, Users, TrendingUp, CreditCard, Trophy, Zap, Calendar, DollarSign, Award, Star, CheckCircle2, AlertCircle, Sparkles, Plus, BarChart3, Percent } from "lucide-react";
+import { ArrowLeft, Target, Repeat, Users, TrendingUp, CreditCard, Trophy, Zap, Calendar, IndianRupee, Award, Star, CheckCircle2, AlertCircle, Sparkles, Plus, BarChart3, Percent } from "lucide-react";
 import "./goals.css";
 
 export const GoalsPage = () => {
@@ -425,7 +425,7 @@ export const GoalsPage = () => {
                     <div className="stats-grid">
                         <div className="stat-card total">
                             <div className="stat-icon">
-                                <DollarSign size={24} />
+                                <IndianRupee size={24} />
                             </div>
                             <div className="stat-content">
                                 <span className="stat-label">Total Goal Target</span>
@@ -558,7 +558,7 @@ export const GoalsPage = () => {
                                             <span>{daysRemaining > 0 ? `${daysRemaining} days left` : isCompleted ? 'Completed!' : 'Overdue'}</span>
                                         </div>
                                         <div className="detail-item">
-                                            <DollarSign size={16} />
+                                            <IndianRupee size={16} />
                                             <span>₹{goal.monthlyContribution.toLocaleString()}/month</span>
                                         </div>
                                     </div>

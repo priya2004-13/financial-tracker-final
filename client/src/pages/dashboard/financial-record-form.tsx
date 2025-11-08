@@ -10,7 +10,7 @@ import {
 } from "../../../services/api";
 import {
   AlertTriangle,
-  DollarSign,
+  IndianRupee,
   Tag,
   CreditCard,
   FileText,
@@ -191,7 +191,7 @@ export const FinancialRecordForm = () => {
 
         <div className="form-field">
           <label className="form-label">
-            <DollarSign size={16} /> Amount
+            <IndianRupee size={16} /> Amount
           </label>
           <input
             className="form-input form-input-animated"

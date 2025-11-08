@@ -1,5 +1,5 @@
 ﻿// client/src/pages/analytics/index.tsx
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import { PageLoader } from "../../components/PageLoader";
@@ -10,7 +10,7 @@ import { SpendingInsights } from "../../components/SpendingInsights";
 import TrendAnalysisChart from "../../components/TrendAnalysisChart";
 import { FinancialHealth } from "../../components/FinancialHealth";
 import { FinancialSummary } from "../../components/FinancialSummary";
-import { ArrowLeft, BarChart3, TrendingUp, PieChart, DollarSign, Flame, Calendar as CalendarIcon, Percent, TrendingDown, ArrowUpCircle, ArrowDownCircle, Zap, Activity, Target, AlertTriangle, Brain, Sparkles, TrendingUpIcon, Filter } from "lucide-react";
+import { ArrowLeft, BarChart3, TrendingUp, PieChart, IndianRupee, Flame, Calendar as CalendarIcon, Percent, TrendingDown, ArrowUpCircle, ArrowDownCircle, Zap, Activity, Target, AlertTriangle, Brain, Sparkles, TrendingUpIcon, Filter } from "lucide-react";
 import "./analytics.css";
 
 export const AnalyticsPage = () => {
@@ -472,14 +472,14 @@ export const AnalyticsPage = () => {
                 {/* Phase 1: Financial Metrics Dashboard */}
                 <section className="analytics-section full-width">
                     <div className="section-title">
-                        <DollarSign size={24} />
+                        <IndianRupee size={24} />
                         <h2>Key Financial Metrics</h2>
                     </div>
                     <div className="metrics-grid">
                         {/* Savings Rate */}
                         <div className="metric-card savings-rate">
                             <div className="metric-icon">
-                                <DollarSign size={32} />
+                                <IndianRupee size={32} />
                             </div>
                             <div className="metric-content">
                                 <h3>Savings Rate</h3>
@@ -1083,22 +1083,23 @@ export const AnalyticsPage = () => {
                     </div>
                 </section>
 
-                {/* Spending Analysis */}
-                <section className="analytics-section full-width">
-                    <div className="section-title">
-                        <PieChart size={24} />
-                        <h2>Spending Analysis</h2>
-                    </div>
-                    <div className="charts-grid">
-                        <div className="chart-container">
-                            <CategoryChart />
-                        </div>
-                        <div className="chart-container">
-                            <SpendingBarChart />
-                        </div>
-                    </div>
-                </section>
+                {!isMobile && (
 
+                    <section className="analytics-section full-width">
+                        <div className="section-title">
+                            <PieChart size={24} />
+                            <h2>Spending Analysis</h2>
+                        </div>
+                        <div className="charts-grid">
+                            <div className="chart-container">
+                                <CategoryChart />
+                            </div>
+                            <div className="chart-container">
+                                <SpendingBarChart />
+                            </div>
+                        </div>
+                    </section>
+                )}
                 {/* Insights Section */}
                 <section className="analytics-section full-width">
                     <div className="section-title">

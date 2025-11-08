@@ -4,7 +4,7 @@ import {
     LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { useFinancialRecords } from '../contexts/financial-record-context';
-import { TrendingUp, TrendingDown, Calendar, DollarSign, Loader } from 'lucide-react';
+import { TrendingUp, TrendingDown, Calendar, IndianRupee, Loader } from 'lucide-react';
 import './SpendingInsights.css';
 
 export const SpendingInsights: React.FC = () => {
@@ -288,7 +288,7 @@ export const SpendingInsights: React.FC = () => {
             {/* Daily Average */}
             <div className="insight-card summary-card">
                 <div className="summary-content">
-                    <DollarSign size={24} className="summary-icon" />
+                    <IndianRupee size={24} className="summary-icon" />
                     <div>
                         <p className="summary-label">Average Daily Spending (Last 30 Days)</p>
                         <p className="summary-value">₹{spendingByDay.average.toFixed(2)}</p>

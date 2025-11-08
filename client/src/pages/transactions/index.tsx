@@ -6,7 +6,7 @@ import { FinancialRecordForm } from "../dashboard/financial-record-form";
 import { TransactionTemplates } from "../../components/TransactionTemplates";
 import { PageLoader } from "../../components/PageLoader";
 import { useScreenSize } from "../../hooks/useScreenSize";
-import { ArrowLeft, Filter, Search, Calendar as CalendarIcon, Tag, DollarSign, CreditCard, TrendingUp, TrendingDown, List, Grid, BarChart2, CheckSquare, Square, Trash2, Edit2, Download, AlertTriangle, PieChart, CalendarDays } from "lucide-react";
+import { ArrowLeft, Filter, Search, Calendar as CalendarIcon, Tag, IndianRupee, CreditCard, TrendingUp, TrendingDown, List, Grid, BarChart2, CheckSquare, Square, Trash2, Edit2, Download, AlertTriangle, PieChart, CalendarDays } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "./transactions.css";
 
@@ -317,6 +317,10 @@ export const TransactionsPage = () => {
             {/* Mobile Layout */}
             {isMobile ? (
                 <div className="mobile-transactions-content">
+                    <div className="transactions-sidebar">
+                        <FinancialRecordForm />
+                        <TransactionTemplates />
+                    </div>
                     <div className="mobile-page-header">
                         <h1>Transactions</h1>
                         <p>{filteredRecords.length} transactions</p>
@@ -488,7 +492,7 @@ export const TransactionsPage = () => {
                         </div>
                         <div className="stat-item balance">
                             <div className="stat-icon">
-                                <DollarSign size={20} />
+                                <IndianRupee size={20} />
                             </div>
                             <div className="stat-info">
                                 <span className="stat-label">Net Balance</span>
@@ -669,7 +673,7 @@ export const TransactionsPage = () => {
 
                                 {/* Amount Range Filter */}
                                 <div className="filter-group amount-range">
-                                    <DollarSign size={18} />
+                                    <IndianRupee size={18} />
                                     <input
                                         type="number"
                                         placeholder="Min ₹"

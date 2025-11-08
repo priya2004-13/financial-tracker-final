@@ -3,7 +3,7 @@ import { useUser } from "@clerk/clerk-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import {
-  DollarSign,
+  IndianRupee,
   TrendingDown,
   Wallet,
   Target,
@@ -309,7 +309,7 @@ export const Dashboard = () => {
             <StatCard
               title="This Month Income"
               value={currentMonthIncome}
-              icon={DollarSign}
+              icon={IndianRupee}
               color="#10b981"
               trend="Current month"
             />

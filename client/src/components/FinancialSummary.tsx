@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { getFinancialSummary } from '../../services/api';
-import { Sparkles, TrendingUp, TrendingDown, DollarSign, Loader } from 'lucide-react';
+import { Sparkles, TrendingUp, TrendingDown, IndianRupee, Loader } from 'lucide-react';
 import './FinancialSummary.css';
 
 export const FinancialSummary = () => {
@@ -106,7 +106,7 @@ export const FinancialSummary = () => {
 
                         <div className={`stat-card balance ${data.balance >= 0 ? 'positive' : 'negative'}`}>
                             <div className="stat-icon">
-                                <DollarSign size={20} />
+                                <IndianRupee size={20} />
                             </div>
                             <div className="stat-info">
                                 <span className="stat-label">Net Balance</span>
