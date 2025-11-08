@@ -1,12 +1,12 @@
 ﻿// client/src/pages/transactions/index.tsx
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import { FinancialRecordList } from "../dashboard/financial-record-list";
 import { FinancialRecordForm } from "../dashboard/financial-record-form";
 import { TransactionTemplates } from "../../components/TransactionTemplates";
 import { PageLoader } from "../../components/PageLoader";
 import { useScreenSize } from "../../hooks/useScreenSize";
-import { ArrowLeft, Filter, Search, Calendar as CalendarIcon, Tag, IndianRupee, CreditCard, TrendingUp, TrendingDown, List, Grid, BarChart2, CheckSquare, Square, Trash2, Edit2, Download, AlertTriangle, PieChart, CalendarDays } from "lucide-react";
+import { ArrowLeft, Filter, Search, Calendar as CalendarIcon, Tag, IndianRupee, CreditCard, TrendingUp, TrendingDown, List, Grid, BarChart2, CheckSquare, Square, Trash2, Edit2, Download, AlertTriangle, PieChart, CalendarDays, X, SlidersHorizontal, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "./transactions.css";
 
@@ -14,7 +14,7 @@ export const TransactionsPage = () => {
     const navigate = useNavigate();
     const { records, isLoading, deleteRecord, updateRecord } = useFinancialRecords();
     const screenSize = useScreenSize();
-    const isMobile = screenSize === "xs";
+    const isMobile = screenSize === "xs" || screenSize === "sm";
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -28,10 +28,39 @@ export const TransactionsPage = () => {
     const [viewMode, setViewMode] = useState<"list" | "grid" | "calendar">("list");
     const [showDuplicates, setShowDuplicates] = useState(false);
 
+    // Mobile-specific states
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
+    const [showMobileForm, setShowMobileForm] = useState(false);
+    const [showQuickStats, setShowQuickStats] = useState(true);
+    const filterBottomSheetRef = useRef<HTMLDivElement>(null);
+
     // Bulk operations state
     const [selectedTransactions, setSelectedTransactions] = useState<Set<string>>(new Set());
     const [bulkEditCategory, setBulkEditCategory] = useState<string>("");
     const [showBulkActions, setShowBulkActions] = useState(false);
+
+    // Close mobile filter on outside click
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (filterBottomSheetRef.current && !filterBottomSheetRef.current.contains(event.target as Node)) {
+                if (showMobileFilters) {
+                    setShowMobileFilters(false);
+                }
+            }
+        };
+
+        if (showMobileFilters) {
+            document.addEventListener('mousedown', handleClickOutside);
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.body.style.overflow = '';
+        };
+    }, [showMobileFilters]);
 
     // Get unique categories
     const categories = useMemo(() => {
@@ -316,69 +345,303 @@ export const TransactionsPage = () => {
         <div className={`transactions-page ${isMobile ? 'mobile-transactions' : ''}`}>
             {/* Mobile Layout */}
             {isMobile ? (
-                <div className="mobile-transactions-content">
-                    <div className="transactions-sidebar">
-                        <FinancialRecordForm />
-                        <TransactionTemplates />
-                    </div>
-                    <div className="mobile-page-header">
-                        <h1>Transactions</h1>
-                        <p>{filteredRecords.length} transactions</p>
-                    </div>
-
-                    {/* Mobile Search */}
-                    <div className="mobile-search-box">
-                        <Search size={18} />
-                        <input
-                            type="text"
-                            placeholder="Search transactions..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+                <div className="mobile-transactions-wrapper">
+                    {/* Mobile Header */}
+                    <div className="mobile-transactions-header">
+                        <div className="mobile-header-top">
+                            <h1>Transactions</h1>
+                            <button
+                                className="mobile-add-btn"
+                                onClick={() => setShowMobileForm(!showMobileForm)}
+                                aria-label="Add transaction"
+                            >
+                                {showMobileForm ? <X size={20} /> : <Plus size={20} />}
+                            </button>
+                        </div>
+                        <p className="mobile-subtitle">{filteredRecords.length} of {records.length} transactions</p>
                     </div>
 
-                    {/* Mobile Filter Chips */}
+                    {/* Mobile Form Slide-in */}
+                    {showMobileForm && (
+                        <div className="mobile-form-overlay" onClick={() => setShowMobileForm(false)}>
+                            <div className="mobile-form-drawer" onClick={(e) => e.stopPropagation()}>
+                                <div className="mobile-form-header">
+                                    <h2>Add Transaction</h2>
+                                    <button onClick={() => setShowMobileForm(false)} className="close-drawer-btn">
+                                        <X size={24} />
+                                    </button>
+                                </div>
+                                <div className="mobile-form-content">
+                                    <FinancialRecordForm />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Mobile Search Bar */}
+                    <div className="mobile-search-container">
+                        <div className="mobile-search-input-wrapper">
+                            <Search size={18} />
+                            <input
+                                type="text"
+                                placeholder="Search transactions..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="mobile-search-input"
+                            />
+                            {searchTerm && (
+                                <button
+                                    className="clear-search-btn"
+                                    onClick={() => setSearchTerm("")}
+                                    aria-label="Clear search"
+                                >
+                                    <X size={16} />
+                                </button>
+                            )}
+                        </div>
+                        <button
+                            className={`mobile-filter-btn ${searchTerm || selectedCategory !== "all" || dateRange !== "all" ||
+                                    transactionType !== "all" || paymentMethod !== "all" ? 'active' : ''
+                                }`}
+                            onClick={() => setShowMobileFilters(true)}
+                            aria-label="Open filters"
+                        >
+                            <SlidersHorizontal size={20} />
+                        </button>
+                    </div>
+
+                    {/* Mobile Type Filter Chips */}
                     <div className="mobile-filter-chips">
                         <button
-                            className={`filter-chip ${transactionType === "all" ? "active" : ""}`}
+                            className={`mobile-chip ${transactionType === "all" ? "active" : ""}`}
                             onClick={() => setTransactionType("all")}
                         >
                             All
                         </button>
                         <button
-                            className={`filter-chip ${transactionType === "income" ? "active" : ""}`}
+                            className={`mobile-chip ${transactionType === "income" ? "active" : ""}`}
                             onClick={() => setTransactionType("income")}
                         >
                             <TrendingUp size={14} /> Income
                         </button>
                         <button
-                            className={`filter-chip ${transactionType === "expense" ? "active" : ""}`}
+                            className={`mobile-chip ${transactionType === "expense" ? "active" : ""}`}
                             onClick={() => setTransactionType("expense")}
                         >
                             <TrendingDown size={14} /> Expense
                         </button>
                     </div>
 
-                    {/* Mobile Stats */}
-                    <div className="mobile-transaction-stats">
-                        <div className="mobile-stat">
-                            <span className="stat-label">Total</span>
-                            <span className="stat-value">
-                                ₹{filteredRecords.reduce((sum, r) => sum + r.amount, 0).toFixed(2)}
-                            </span>
+                    {/* Mobile Quick Stats (Collapsible) */}
+                    {showQuickStats && (
+                        <div className="mobile-quick-stats">
+                            <div className="mobile-stat-card income">
+                                <div className="stat-icon-wrapper">
+                                    <TrendingUp size={18} />
+                                </div>
+                                <div className="stat-content">
+                                    <span className="stat-label">Income</span>
+                                    <span className="stat-value">₹{stats.income.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div className="mobile-stat-card expense">
+                                <div className="stat-icon-wrapper">
+                                    <TrendingDown size={18} />
+                                </div>
+                                <div className="stat-content">
+                                    <span className="stat-label">Expenses</span>
+                                    <span className="stat-value">₹{stats.expenses.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div className="mobile-stat-card balance">
+                                <div className="stat-icon-wrapper">
+                                    <IndianRupee size={18} />
+                                </div>
+                                <div className="stat-content">
+                                    <span className="stat-label">Balance</span>
+                                    <span className="stat-value">₹{stats.balance.toFixed(2)}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="mobile-stat">
-                            <span className="stat-label">Average</span>
-                            <span className="stat-value">
-                                ₹{filteredRecords.length ? (filteredRecords.reduce((sum, r) => sum + r.amount, 0) / filteredRecords.length).toFixed(2) : '0.00'}
-                            </span>
-                        </div>
-                    </div>
+                    )}
 
                     {/* Mobile Transaction List */}
-                    <div className="mobile-transactions-list">
-                        <FinancialRecordList />
+                    <div className="mobile-transactions-list-wrapper">
+                        {filteredRecords.length === 0 ? (
+                            <div className="mobile-no-results">
+                                <AlertTriangle size={48} />
+                                <p>No transactions found</p>
+                                <span>Try adjusting your filters</span>
+                            </div>
+                        ) : (
+                            <FinancialRecordList
+                                filteredRecords={filteredRecords}
+                                showFilters={false}
+                            />
+                        )}
                     </div>
+
+                    {/* Mobile Filter Bottom Sheet */}
+                    {showMobileFilters && (
+                        <>
+                            <div
+                                className="mobile-filter-overlay"
+                                onClick={() => setShowMobileFilters(false)}
+                            />
+                            <div
+                                ref={filterBottomSheetRef}
+                                className="mobile-filter-bottom-sheet"
+                            >
+                                <div className="bottom-sheet-header">
+                                    <h2>Filters</h2>
+                                    <button
+                                        onClick={() => setShowMobileFilters(false)}
+                                        className="close-sheet-btn"
+                                        aria-label="Close filters"
+                                    >
+                                        <X size={24} />
+                                    </button>
+                                </div>
+
+                                <div className="bottom-sheet-content">
+                                    {/* Category Filter */}
+                                    <div className="mobile-filter-section">
+                                        <label className="filter-label">
+                                            <Tag size={16} />
+                                            Category
+                                        </label>
+                                        <select
+                                            value={selectedCategory}
+                                            onChange={(e) => setSelectedCategory(e.target.value)}
+                                            className="mobile-filter-select"
+                                        >
+                                            <option value="all">All Categories</option>
+                                            {categories.map(cat => (
+                                                <option key={cat} value={cat}>{cat}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {/* Date Range Filter */}
+                                    <div className="mobile-filter-section">
+                                        <label className="filter-label">
+                                            <CalendarIcon size={16} />
+                                            Date Range
+                                        </label>
+                                        <select
+                                            value={dateRange}
+                                            onChange={(e) => setDateRange(e.target.value)}
+                                            className="mobile-filter-select"
+                                        >
+                                            <option value="all">All Time</option>
+                                            <option value="today">Today</option>
+                                            <option value="week">Last 7 Days</option>
+                                            <option value="month">Last 30 Days</option>
+                                            <option value="year">Last Year</option>
+                                            <option value="custom">Custom Range</option>
+                                        </select>
+                                    </div>
+
+                                    {/* Custom Date Range */}
+                                    {dateRange === "custom" && (
+                                        <div className="mobile-filter-section">
+                                            <label className="filter-label">Custom Date Range</label>
+                                            <div className="date-range-inputs">
+                                                <input
+                                                    type="date"
+                                                    value={customDateFrom}
+                                                    onChange={(e) => setCustomDateFrom(e.target.value)}
+                                                    className="mobile-date-input"
+                                                    placeholder="From"
+                                                />
+                                                <span className="date-separator">to</span>
+                                                <input
+                                                    type="date"
+                                                    value={customDateTo}
+                                                    onChange={(e) => setCustomDateTo(e.target.value)}
+                                                    className="mobile-date-input"
+                                                    placeholder="To"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Payment Method Filter */}
+                                    {paymentMethods.length > 0 && (
+                                        <div className="mobile-filter-section">
+                                            <label className="filter-label">
+                                                <CreditCard size={16} />
+                                                Payment Method
+                                            </label>
+                                            <select
+                                                value={paymentMethod}
+                                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                                className="mobile-filter-select"
+                                            >
+                                                <option value="all">All Payment Methods</option>
+                                                {paymentMethods.map(method => (
+                                                    <option key={method} value={method}>{method}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    {/* Amount Range Filter */}
+                                    <div className="mobile-filter-section">
+                                        <label className="filter-label">
+                                            <IndianRupee size={16} />
+                                            Amount Range
+                                        </label>
+                                        <div className="amount-range-inputs">
+                                            <input
+                                                type="number"
+                                                placeholder="Min ₹"
+                                                value={minAmount}
+                                                onChange={(e) => setMinAmount(e.target.value)}
+                                                className="mobile-amount-input"
+                                                min="0"
+                                            />
+                                            <span className="amount-separator">to</span>
+                                            <input
+                                                type="number"
+                                                placeholder="Max ₹"
+                                                value={maxAmount}
+                                                onChange={(e) => setMaxAmount(e.target.value)}
+                                                className="mobile-amount-input"
+                                                min="0"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Bottom Sheet Actions */}
+                                <div className="bottom-sheet-actions">
+                                    <button
+                                        className="clear-filters-mobile-btn"
+                                        onClick={() => {
+                                            setSearchTerm("");
+                                            setSelectedCategory("all");
+                                            setDateRange("all");
+                                            setCustomDateFrom("");
+                                            setCustomDateTo("");
+                                            setMinAmount("");
+                                            setMaxAmount("");
+                                            setPaymentMethod("all");
+                                            setTransactionType("all");
+                                        }}
+                                    >
+                                        Clear All
+                                    </button>
+                                    <button
+                                        className="apply-filters-mobile-btn"
+                                        onClick={() => setShowMobileFilters(false)}
+                                    >
+                                        Apply Filters
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
             ) : (
                 /* Desktop Layout */
