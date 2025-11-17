@@ -33,6 +33,7 @@ interface FinancialRecordsContextType {
   updateRecord: (id: string, newRecord: FinancialRecord) => void;
   deleteRecord: (id: string) => void;
   updateBudget: (budget: UserBudget) => void;
+  setUserSalary: (salary: number, persist?: boolean) => void;
   addCategory: (category: Category) => void; // Add category functions
   deleteCategory: (id: string) => void;
   isLoading: boolean;
@@ -201,12 +202,53 @@ export const FinancialRecordsProvider = ({
   };
 
   const updateBudget = async (budgetData: UserBudget) => {
-    if (!user || !isOnline) return; // Add online check
+    if (!user || !isOnline) {
+      console.warn('⚠️ Cannot update budget: user not logged in or offline');
+      return;
+    }
     try {
+      // If incomeSources provided, compute total and set monthlySalary to that sum
+      if (budgetData.incomeSources && Array.isArray(budgetData.incomeSources)) {
+        const total = budgetData.incomeSources
+          .filter((s: any) => s.isActive)
+          .reduce((sum: number, s: any) => sum + (s.amount || 0), 0);
+        if (total > 0) {
+          budgetData.monthlySalary = total;
+        }
+      }
+      console.log('📤 Sending budget update to server:', budgetData);
       const updatedBudget = await apiUpdateBudget(user.id, budgetData);
+      console.log('📥 Received updated budget from server:', updatedBudget);
       setBudget(updatedBudget);
     } catch (err) {
-      console.error("Error updating budget:", err);
+      console.error("❌ Error updating budget:", err);
+      throw err; // Re-throw to let the caller handle it
+    }
+  };
+
+  // Set user salary globally and sync to backend
+  const setUserSalary = async (salary: number, persist: boolean = true) => {
+    if (!user) return;
+
+    // Create a default budget object if not present
+    const updatedBudget: UserBudget = {
+      _id: budget?._id,
+      userId: budget?.userId || user.id,
+      monthlySalary: salary,
+      categoryBudgets: budget?.categoryBudgets || {}
+    };
+
+    // Update local state immediately
+    setBudget(updatedBudget);
+
+    if (!isOnline) {
+      console.warn('⚠️ Offline: Salary updated locally but will be persisted when online');
+      return;
+    }
+
+    // Persist to server if required
+    if (persist) {
+      await updateBudget(updatedBudget);
     }
   };
 
@@ -238,7 +280,7 @@ export const FinancialRecordsProvider = ({
 
   return (
     <FinancialRecordsContext.Provider
-      value={{ records, budget, categories, addRecord, updateRecord, deleteRecord, updateBudget, addCategory, deleteCategory, isLoading, syncOfflineRecords }}
+      value={{ records, budget, categories, addRecord, updateRecord, deleteRecord, updateBudget, setUserSalary, addCategory, deleteCategory, isLoading, syncOfflineRecords }}
     >
       {children}
     </FinancialRecordsContext.Provider>

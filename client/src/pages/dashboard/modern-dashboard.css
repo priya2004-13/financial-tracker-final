@@ -275,6 +275,38 @@
     margin-top: 1.5rem;
 }
 
+.salary-inline-editor {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.75rem;
+}
+
+.salary-inline-editor .form-input {
+    width: 140px;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #e5e7eb);
+}
+
+.salary-inline-editor .btn-save,
+.salary-inline-editor .btn-cancel {
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.salary-inline-editor .btn-save {
+    background: var(--primary-color, #4f46e5);
+    color: white;
+    border: none;
+}
+
+.salary-inline-editor .btn-cancel {
+    background: transparent;
+    border: 1px solid var(--border-color, #e5e7eb);
+}
+
 .breakdown-title {
     font-size: 0.875rem;
     font-weight: 600;
@@ -1407,7 +1439,7 @@ details[open] .chevron-icon {
     align-items: center;
     padding: 1.5rem;
     border-bottom: 1px solid var(--border, #e5e7eb);
-    
+
     /* position: sticky; */
     z-index: 10;
 }

@@ -45,9 +45,12 @@ export const AnalyticsPage = () => {
             );
         });
 
-        const income = currentMonthRecords
+        const baseSalary = budget?.monthlySalary || 0;
+        const additionalIncomeThisMonth = currentMonthRecords
             .filter(r => r.category === "Salary")
             .reduce((sum, r) => sum + r.amount, 0);
+
+        const income = baseSalary + additionalIncomeThisMonth;
 
         const expenses = currentMonthRecords
             .filter(r => r.category !== "Salary")
@@ -63,7 +66,7 @@ export const AnalyticsPage = () => {
         const burnRate = expenses / daysInMonth;
 
         // Financial Runway: How many months can you survive with current savings
-        const totalSavings = records
+        const totalSavings = baseSalary + records
             .filter(r => r.category === "Salary")
             .reduce((sum, r) => sum + r.amount, 0) -
             records
@@ -72,7 +75,7 @@ export const AnalyticsPage = () => {
         const runway = burnRate > 0 ? totalSavings / expenses : 0;
 
         // Debt-to-Income Ratio (using budget if available)
-        const monthlyIncome = budget?.monthlySalary || income;
+        const monthlyIncome = baseSalary || income;
         const debtPayments = 0; // Would need debt tracking feature
         const debtToIncomeRatio = monthlyIncome > 0 ? (debtPayments / monthlyIncome) * 100 : 0;
 
@@ -129,10 +132,14 @@ export const AnalyticsPage = () => {
             );
         });
 
-        const currentIncome = currentData.filter(r => r.category === "Salary").reduce((sum, r) => sum + r.amount, 0);
+        const baseSalary = budget?.monthlySalary || 0;
+        const currentSalaryRecords = currentData.filter(r => r.category === "Salary").reduce((sum, r) => sum + r.amount, 0);
+        const prevSalaryRecords = prevData.filter(r => r.category === "Salary").reduce((sum, r) => sum + r.amount, 0);
+
+        const currentIncome = baseSalary + currentSalaryRecords;
         const currentExpenses = currentData.filter(r => r.category !== "Salary").reduce((sum, r) => sum + r.amount, 0);
 
-        const prevIncome = prevData.filter(r => r.category === "Salary").reduce((sum, r) => sum + r.amount, 0);
+        const prevIncome = baseSalary + prevSalaryRecords;
         const prevExpenses = prevData.filter(r => r.category !== "Salary").reduce((sum, r) => sum + r.amount, 0);
 
         const incomeChange = prevIncome > 0 ? ((currentIncome - prevIncome) / prevIncome) * 100 : 0;
@@ -175,10 +182,15 @@ export const AnalyticsPage = () => {
             );
         });
 
-        const currentIncome = currentData.filter(r => r.category === "Salary").reduce((sum, r) => sum + r.amount, 0);
+        // Compute base salary + any salary records for the current month
         const currentExpenses = currentData.filter(r => r.category !== "Salary").reduce((sum, r) => sum + r.amount, 0);
 
-        const lastYearIncome = lastYearData.filter(r => r.category === "Salary").reduce((sum, r) => sum + r.amount, 0);
+        const baseSalary = budget?.monthlySalary || 0;
+        const thisYearSalaryRecords = currentData.filter(r => r.category === "Salary").reduce((sum, r) => sum + r.amount, 0);
+        const lastYearSalaryRecords = lastYearData.filter(r => r.category === "Salary").reduce((sum, r) => sum + r.amount, 0);
+
+        const currentIncome = baseSalary + thisYearSalaryRecords;
+        const lastYearIncome = baseSalary + lastYearSalaryRecords;
         const lastYearExpenses = lastYearData.filter(r => r.category !== "Salary").reduce((sum, r) => sum + r.amount, 0);
 
         const incomeChange = lastYearIncome > 0 ? ((currentIncome - lastYearIncome) / lastYearIncome) * 100 : 0;

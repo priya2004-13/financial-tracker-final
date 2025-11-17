@@ -53,7 +53,7 @@ import ReportDownloads from "../../components/ReportDownloads";
 import { Link } from "react-router-dom";
 export const Dashboard = () => {
   const { user } = useUser();
-  const { records, budget, isLoading, updateBudget } = useFinancialRecords();
+  const { records, budget, isLoading, updateBudget, setUserSalary } = useFinancialRecords();
   const [showHeader, setShowHeader] = React.useState(true);
   const screenSize = useScreenSize();
   const isMobile = screenSize === "xs";
@@ -78,6 +78,8 @@ export const Dashboard = () => {
 
   // Income management state
   const [showIncomeModal, setShowIncomeModal] = useState(false);
+  const [editingSalaryInline, setEditingSalaryInline] = useState(false);
+  const [salaryInput, setSalaryInput] = useState<number>(budget?.monthlySalary || 0);
   const [editingIncomeSource, setEditingIncomeSource] = useState<{
     _id?: string;
     name: string;
@@ -175,13 +177,9 @@ export const Dashboard = () => {
       })
       .reduce((total, record) => total + record.amount, 0);
 
-    // Calculate total from income sources
-    const incomeSourcesTotal = (budget?.incomeSources || [])
-      .filter(source => source.isActive)
-      .reduce((total, source) => total + source.amount, 0);
-
-    // Use income sources if available, otherwise fall back to monthlySalary
-    const baseIncome = incomeSourcesTotal > 0 ? incomeSourcesTotal : (budget?.monthlySalary || 0);
+    // Use global monthlySalary as canonical base income (it will be derived
+    // from incomeSources when income sources exist)
+    const baseIncome = budget?.monthlySalary || 0;
 
     return baseIncome + additionalIncome;
   }, [records, budget]);
@@ -399,6 +397,16 @@ export const Dashboard = () => {
                     <button className="icon-btn-small">
                       <Settings size={16} />
                     </button>
+                    <button
+                      className="icon-btn-small"
+                      title="Edit Salary"
+                      onClick={() => {
+                        setSalaryInput(budget?.monthlySalary || 0);
+                        setEditingSalaryInline(true);
+                      }}
+                    >
+                      ✏️
+                    </button>
                   </div>
                 </div>
 
@@ -413,6 +421,37 @@ export const Dashboard = () => {
                     <span className="change-label">Additional income</span>
                   </div>
                 </div>
+
+                {editingSalaryInline && (
+                  <div className="salary-inline-editor">
+                    <input
+                      type="number"
+                      value={salaryInput}
+                      onChange={(e) => setSalaryInput(parseFloat(e.target.value) || 0)}
+                      className="form-input"
+                      step="0.01"
+                    />
+                    <button
+                      className="btn-save"
+                      onClick={async () => {
+                        // Update local context salary immediately
+                        await setUserSalary(salaryInput, false);
+                        // Persist full budget
+                        await updateBudget({
+                          userId: budget?.userId || user?.id || '',
+                          monthlySalary: salaryInput,
+                          categoryBudgets: budget?.categoryBudgets || {}
+                        });
+                        setEditingSalaryInline(false);
+                      }}
+                    >
+                      Save
+                    </button>
+                    <button className="btn-cancel" onClick={() => setEditingSalaryInline(false)}>
+                      Cancel
+                    </button>
+                  </div>
+                )}
 
                 <div className="income-breakdown">
                   <h4 className="breakdown-title">Income breakdown</h4>
@@ -930,21 +969,37 @@ export const Dashboard = () => {
                 </div>
 
                 <div className="modal-footer">
-                  {editingIncomeSource._id && (
+                  {editingIncomeSource._id && !editingIncomeSource._id.startsWith('temp_') && (
                     <button
                       className="btn-delete"
                       onClick={async () => {
                         if (window.confirm('Are you sure you want to delete this income source?')) {
                           if (!budget || !user) return;
+
                           const updatedSources = (budget?.incomeSources || []).filter(s => s._id !== editingIncomeSource._id);
-                          await updateBudget({
-                            userId: budget.userId || user.id,
-                            monthlySalary: budget.monthlySalary || 0,
-                            categoryBudgets: budget.categoryBudgets || {},
-                            incomeSources: updatedSources
+
+                          // Clean up any temp IDs
+                          const cleanedSources = updatedSources.map((source: any) => {
+                            if (source._id?.startsWith('temp_')) {
+                              const { _id, ...rest } = source;
+                              return rest;
+                            }
+                            return source;
                           });
-                          setShowIncomeModal(false);
-                          setEditingIncomeSource(null);
+
+                          try {
+                            await updateBudget({
+                              userId: budget.userId || user.id,
+                              monthlySalary: budget.monthlySalary || 0,
+                              categoryBudgets: budget.categoryBudgets || {},
+                              incomeSources: cleanedSources
+                            });
+                            setShowIncomeModal(false);
+                            setEditingIncomeSource(null);
+                          } catch (error) {
+                            console.error('❌ Error deleting income source:', error);
+                            alert('Failed to delete income source. Please try again.');
+                          }
                         }
                       }}
                     >
@@ -974,27 +1029,52 @@ export const Dashboard = () => {
                         const existingSources = budget?.incomeSources || [];
                         let updatedSources;
 
-                        if (editingIncomeSource._id) {
-                          // Update existing
+                        if (editingIncomeSource._id && !editingIncomeSource._id.startsWith('temp_')) {
+                          // Update existing (has real MongoDB ID)
                           updatedSources = existingSources.map(s =>
                             s._id === editingIncomeSource._id ? editingIncomeSource : s
                           );
                         } else {
-                          // Add new with a proper ID
-                          updatedSources = [...existingSources, {
-                            ...editingIncomeSource,
-                            _id: `temp_${Date.now()}` // Temporary ID until saved to DB
-                          }];
+                          // Add new - remove temp ID, let MongoDB generate real one
+                          const { _id, ...sourceWithoutId } = editingIncomeSource;
+                          updatedSources = [...existingSources.filter(s => !s._id?.startsWith('temp_')), sourceWithoutId];
                         }
 
-                        await updateBudget({
-                          userId: budget?.userId || user.id,
-                          monthlySalary: budget?.monthlySalary || 0,
-                          categoryBudgets: budget?.categoryBudgets || {},
-                          incomeSources: updatedSources
+                        // Clean up any temp IDs before sending to server
+                        const cleanedSources = updatedSources.map((source: any) => {
+                          if (source._id?.startsWith('temp_')) {
+                            const { _id, ...rest } = source;
+                            return rest;
+                          }
+                          return source;
                         });
-                        setShowIncomeModal(false);
-                        setEditingIncomeSource(null);
+
+                        console.log('💰 Saving income sources:', {
+                          existingSources,
+                          updatedSources,
+                          cleanedSources,
+                          budgetData: {
+                            userId: budget?.userId || user.id,
+                            monthlySalary: budget?.monthlySalary || 0,
+                            categoryBudgets: budget?.categoryBudgets || {},
+                            incomeSources: cleanedSources
+                          }
+                        });
+
+                        try {
+                          await updateBudget({
+                            userId: budget?.userId || user.id,
+                            monthlySalary: budget?.monthlySalary || 0,
+                            categoryBudgets: budget?.categoryBudgets || {},
+                            incomeSources: cleanedSources
+                          });
+                          console.log('✅ Income sources saved successfully');
+                          setShowIncomeModal(false);
+                          setEditingIncomeSource(null);
+                        } catch (error) {
+                          console.error('❌ Error saving income sources:', error);
+                          alert('Failed to save income source. Please try again.');
+                        }
                       }}
                     >
                       {editingIncomeSource._id ? 'Update' : 'Save'}

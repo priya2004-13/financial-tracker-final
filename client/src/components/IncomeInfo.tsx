@@ -49,7 +49,7 @@ export const IncomeInfo = () => {
         </div>
       </div>
       <p className="income-note">
-        💡 Your monthly salary is set in the budget. Add "Salary" category records for bonuses or additional income.
+        💡 Your monthly salary is set in the budget. If you add income sources in Income Management, your base salary will be calculated from those active income sources; use "Salary" category records for bonuses or one-off income.
       </p>
     </div>
   );

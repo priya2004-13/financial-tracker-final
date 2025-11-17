@@ -4,7 +4,7 @@ import { Target, TrendingUp, AlertCircle, IndianRupee } from "lucide-react";
 import "./BudgetManager.css";
 
 export const BudgetManager = () => {
-  const { budget, updateBudget, isLoading } = useFinancialRecords();
+  const { budget, updateBudget, setUserSalary, isLoading } = useFinancialRecords();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     monthlySalary: 0,
@@ -32,13 +32,19 @@ export const BudgetManager = () => {
     }
   }, [budget]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateBudget({
+
+    // Update local UI immediately to sync salary across the app
+    await setUserSalary(formData.monthlySalary, false);
+
+    // Persist full budget including category budgets
+    await updateBudget({
       userId: budget?.userId || "",
       monthlySalary: formData.monthlySalary,
       categoryBudgets: formData.categoryBudgets,
     });
+
     setIsEditing(false);
   };
 
