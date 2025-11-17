@@ -12,19 +12,20 @@ import transactionTemplateRouter from "./routes/transaction-template";
 import sharedExpenseRouter from "./routes/shared-expense"; // ✅ ADDED
 import reportsRouter from "./routes/reports"; // ✅ ADDED - PDF Reports
 import cors from "cors";
-import webhookRouter from "./routes/webhooks";
-import { webhookMiddleware } from "./middleware/webhooks";
-import usersRouter from "./routes/users";
-import { startWebhookRetryWorker } from "./utils/webhook-retry";
+// Webhook functionality disabled - using manual sync instead
+// import webhookRouter from "./routes/webhooks";
+// import { webhookMiddleware } from "./middleware/webhooks";
+// import { startWebhookRetryWorker } from "./utils/webhook-retry";
 import 'dotenv/config'
-const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+// Webhook secret not needed since we're using manual sync
+// const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
-if (!WEBHOOK_SECRET) {
-  console.error("❌ CLERK_WEBHOOK_SECRET is not set in environment variables");
-  process.exit(1);
-}
+// if (!WEBHOOK_SECRET) {
+//   console.error("❌ CLERK_WEBHOOK_SECRET is not set in environment variables");
+//   process.exit(1);
+// }
 const app: Express = express();
-webhookMiddleware(app);
+// webhookMiddleware(app);
 const port = process.env.PORT || 3001;
 
 app.use(express.json());
@@ -38,8 +39,9 @@ mongoose
     console.log("✅ CONNECTED TO MONGODB!");
 
     // Start webhook retry worker after successful DB connection
-    startWebhookRetryWorker(60000); // Run every 60 seconds
-    console.log("🔄 Webhook retry worker started (60s interval)");
+    // Using manual sync, so no need to start the worker
+    // startWebhookRetryWorker(60000); // Run every 60 seconds
+    // console.log("🔄 Webhook retry worker started (60s interval)");
   })
   .catch((err) => console.error("❌ Failed to Connect to MongoDB:", err));
 
@@ -50,8 +52,7 @@ app.get("/health", (req, res) => {
 });
 
 // Routes
-app.use("/webhooks", webhookRouter);
-app.use("/users", usersRouter);
+// app.use("/webhooks", webhookRouter);
 app.use("/financial-records", financialRecordRouter);
 app.use("/budget", budgetRouter);
 app.use("/savings-goals", savingsGoalRouter);

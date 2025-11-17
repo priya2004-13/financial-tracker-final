@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
 
@@ -40,15 +39,29 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const fetchProfile = async (clerkId: string) => {
         try {
             setLoading(true);
+
+            // First, sync the user data
+            if (user) {
+                console.log('🔄 Syncing user data...');
+                await fetch(`${API_BASE_URL}/users/sync`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        clerkId: clerkId,
+                        email: user.primaryEmailAddress?.emailAddress,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        phoneNumber: user.phoneNumbers?.[0]?.phoneNumber,
+                        avatar: user.imageUrl,
+                        username: user.username
+                    })
+                });
+            }
+
+            // Then fetch the profile
             const response = await fetch(`${API_BASE_URL}/users/${clerkId}`);
 
             if (!response.ok) {
-                if (response.status === 404) {
-                    console.log('⏳ User syncing from webhook...');
-                    // Retry after 2 seconds
-                    setTimeout(() => fetchProfile(clerkId), 2000);
-                    return;
-                }
                 throw new Error('Failed to fetch profile');
             }
 

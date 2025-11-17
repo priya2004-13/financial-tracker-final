@@ -1,7 +1,36 @@
 ﻿import express from "express";
-import DebtModel from "../schema/debt";
+import DebtModel, { Debt } from "../schema/debt";
 
 const router = express.Router();
+
+// Explicitly type the data parameter
+const validateDebt = (data: Partial<Debt>) => {
+    const errors = [];
+
+    if (!data.userId || typeof data.userId !== "string") {
+        errors.push("Invalid or missing userId");
+    }
+    if (!data.name || typeof data.name !== "string") {
+        errors.push("Invalid or missing name");
+    }
+    if (typeof data.principal !== "number" || data.principal < 0) {
+        errors.push("Invalid or missing principal");
+    }
+    if (typeof data.remaining !== "number" || data.remaining < 0) {
+        errors.push("Invalid or missing remaining");
+    }
+    if (typeof data.interestRate !== "number" || data.interestRate < 0) {
+        errors.push("Invalid or missing interestRate");
+    }
+    if (typeof data.minimumPayment !== "number" || data.minimumPayment < 0) {
+        errors.push("Invalid or missing minimumPayment");
+    }
+    if (typeof data.monthlyPayment !== "number" || data.monthlyPayment < 0) {
+        errors.push("Invalid or missing monthlyPayment");
+    }
+
+    return errors;
+};
 
 // GET debts for a user
 router.get("/:userId", async (req, res) => {
@@ -17,6 +46,11 @@ router.get("/:userId", async (req, res) => {
 
 // POST a new debt
 router.post("/", async (req, res) => {
+    const errors = validateDebt(req.body);
+    if (errors.length > 0) {
+        return res.status(400).json({ errors });
+    }
+
     try {
         const newDebt = new DebtModel(req.body);
         const saved = await newDebt.save();
@@ -29,6 +63,11 @@ router.post("/", async (req, res) => {
 
 // PUT update a debt
 router.put("/:debtId", async (req, res) => {
+    const errors = validateDebt(req.body);
+    if (errors.length > 0) {
+        return res.status(400).json({ errors });
+    }
+
     try {
         const { debtId } = req.params;
         const updated = await DebtModel.findByIdAndUpdate(debtId, req.body, { new: true });

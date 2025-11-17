@@ -32,3 +32,4 @@ const debtSchema = new mongoose.Schema<Debt>(
 const DebtModel = mongoose.model<Debt>("Debt", debtSchema);
 
 export default DebtModel;
+export { Debt };

@@ -4,22 +4,89 @@ import UserModel from "../schema/user";
 
 const router = express.Router();
 
-// Get user profile with better error handling
+// Sync user data (create or update)
+router.post("/sync", async (req: Request, res: Response) => {
+    try {
+        const { clerkId, email, firstName, lastName, phoneNumber, avatar, username } = req.body;
+
+        if (!clerkId) {
+            return res.status(400).json({ error: "clerkId is required" });
+        }
+
+        console.log(`🔄 Syncing user: ${clerkId}`);
+
+        // Check if user exists
+        let user = await UserModel.findOne({ clerkId });
+
+        if (user) {
+            // Update existing user
+            user.email = email || user.email;
+            user.firstName = firstName || user.firstName;
+            user.lastName = lastName || user.lastName;
+            user.phoneNumber = phoneNumber || user.phoneNumber;
+            user.avatar = avatar || user.avatar;
+            user.username = username || user.username;
+            user.lastSignInAt = new Date();
+
+            await user.save();
+            console.log(`✅ User updated: ${clerkId}`);
+        } else {
+            // Create new user
+            user = new UserModel({
+                clerkId,
+                email: email || `user-${clerkId}@temp.local`,
+                firstName: firstName || "User",
+                lastName: lastName || "",
+                phoneNumber,
+                avatar,
+                username,
+                isOnboarded: false,
+                lastSignInAt: new Date()
+            });
+
+            await user.save();
+            console.log(`✅ User created: ${clerkId}`);
+        }
+
+        res.status(200).json(user);
+    } catch (err: any) {
+        console.error("❌ Error syncing user:", err);
+
+        // Handle duplicate key error
+        if (err.code === 11000) {
+            const existingUser = await UserModel.findOne({ clerkId: req.body.clerkId });
+            return res.status(200).json(existingUser);
+        }
+
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// Get user profile with automatic creation if not exists
 router.get("/:clerkId", async (req: Request, res: Response) => {
     try {
         const { clerkId } = req.params;
 
         console.log(`📥 Fetching user: ${clerkId}`);
 
-        const user = await UserModel.findOne({ clerkId });
+        let user = await UserModel.findOne({ clerkId });
 
         if (!user) {
-            console.log(`⚠️ User not found: ${clerkId}`);
-            return res.status(404).json({
-                error: "User not found",
+            console.log(`⚠️ User not found, creating new user: ${clerkId}`);
+
+            // For automatic creation, we need user data from Clerk
+            // Since we don't have webhook data, we'll create a minimal user
+            // In a real app, you'd want to get this data from Clerk's API
+            const newUser = new UserModel({
                 clerkId,
-                timestamp: new Date().toISOString()
+                email: `user-${clerkId}@temp.local`, // Temporary email
+                firstName: "User",
+                lastName: "",
+                isOnboarded: false
             });
+
+            user = await newUser.save();
+            console.log(`✅ User created automatically: ${clerkId}`);
         }
 
         console.log(`✅ User found: ${clerkId} (${user.email})`);

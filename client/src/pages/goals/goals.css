@@ -1,654 +1,237 @@
-﻿/* client/src/pages/goals/goals.css */
-
-.goals-page {
+﻿.goals-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 2rem;
-    max-width: 1600px;
-    margin: 0;
-    margin-left: var(--nav-width, 280px);
-    padding-right: 2rem;
-    animation: fadeIn 0.3s ease-in;
-    transition: margin-left 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    box-sizing: border-box;
 }
 
-.page-header {
-    margin-bottom: 2rem;
+.goals-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.95rem;
-    margin-bottom: 1rem;
-}
-
-.back-button:hover {
-    background: var(--hover-bg);
-    transform: translateX(-4px);
-}
-
-.header-content {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-.header-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 64px;
-    height: 64px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    border-radius: 16px;
-    color: white;
-}
-
-.header-text h1 {
-    font-size: 2rem;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-}
-
-.header-text p {
-    color: var(--text-secondary);
-    font-size: 1rem;
-}
-
-.goals-content {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-evenly;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 2rem;
-}
-
-.goals-section {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    margin-bottom: 2rem;
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.goals-section:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.section-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.5rem 2rem;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.section-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    border-radius: 12px;
-    color: white;
-    flex-shrink: 0;
-}
-
-.section-icon.recurring {
-    background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-}
-
-.section-icon.shared {
-    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-}
-
-.section-text h2 {
-    font-size: 1.5rem;
-    color: var(--text-primary);
-    margin-bottom: 0.25rem;
-}
-
-.section-text p {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-}
-
-/* Add Debt form styles */
-.add-debt-form-wrapper {
-    margin-top: 12px;
-    display: flex;
-    justify-content: center;
-}
-
-.add-debt-form {
-    width: 100%;
-    max-width: 860px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-}
-
-.form-row {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 8px;
-}
-
-.form-input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: border-color 0.3s;
-}
-
-.form-input:focus {
-    border-color: #007bff;
-    outline: none;
-}
-
-.add-debt-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.button:hover {
-    background-color: #0056b3;
-}
-
-.add-debt-actions .button {
-    width: 260px;
-}
-
-@media (max-width: 760px) {
-    .add-debt-actions .button {
-        width: 100%;
-    }
-}
-
-.form-error {
-    color: #d9534f;
-    font-size: 14px;
-    margin-top: 10px;
-    text-align: center;
-}
-
-.section-content {
-    padding: 2rem;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive Design */
-@media (max-width: 1023px) {
-    .goals-page {
-        margin-left: 0;
-        padding: 1rem;
-    }
-}
-
-/* ============================================
-   ENHANCED GOALS PAGE STYLES
-   ============================================ */
-
-/* Gamification Dashboard */
-.gamification-dashboard {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(99, 102, 241, 0.1));
-    border: 2px solid rgba(139, 92, 246, 0.3);
-    border-radius: 16px;
+/* --- Header & Tabs --- */
+.goals-header {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
     padding: 2rem;
     margin-bottom: 2rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    backdrop-filter: blur(10px);
 }
 
-.gamification-header {
+.goals-header-top {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
 
-.gamification-header h2 {
-    flex: 1;
-    font-size: 1.5rem;
-    color: var(--text-primary);
+.title-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
-.toggle-gamification {
-    padding: 0.5rem 1rem;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+.icon-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    flex-shrink: 0;
+}
+
+.title-text {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    margin: 0.5rem 0 0 0;
+    color: #64748b;
+    font-size: 1rem;
+}
+
+.tab-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.tab {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    color: #64748b;
+    font-size: 0.95rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.toggle-gamification:hover {
-    background: var(--hover-bg);
+.tab:hover {
+    background: rgba(0,0,0,0.05);
 }
 
-.gamification-grid {
+.tab-active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* --- Stat Cards (Overview) --- */
+.stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
-.gamification-card {
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-.gamification-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.gamification-card .card-icon {
-    flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #8b5cf6, #6366f1);
-    color: white;
-}
-
-.gamification-card .card-content h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.25rem;
-    color: var(--text-primary);
-}
-
-.gamification-card .card-content p {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-}
-
-.level-progress-bar {
-    width: 100%;
-    height: 8px;
-    background: var(--input-bg);
-    border-radius: 4px;
-    margin: 0.5rem 0;
+.stat-card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+    position: relative;
     overflow: hidden;
 }
 
-.level-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #8b5cf6, #6366f1);
-    transition: width 0.5s ease;
-    border-radius: 4px;
-}
-
-/* Achievements */
-.achievements-list h3 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-}
-
-.achievements-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-}
-
-.achievement-badge {
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1rem;
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.achievement-badge.locked {
-    opacity: 0.5;
-    filter: grayscale(100%);
-}
-
-.achievement-badge.unlocked {
-    border-color: #10b981;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.1));
-}
-
-.achievement-badge:hover {
-    transform: translateY(-2px);
-}
-
-.badge-icon {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    background: var(--input-bg);
-    color: #8b5cf6;
-}
-
-.achievement-badge.unlocked .badge-icon {
-    color: #10b981;
-}
-
-.badge-content h4 {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-    color: var(--text-primary);
-}
-
-.badge-content p {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    margin-bottom: 0.5rem;
-}
-
-.badge-points {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    background: #8b5cf6;
-    color: white;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.unlocked-check {
+.stat-card-before {
+    content: "";
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    color: #10b981;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
 }
 
-/* Stats Overview */
-.stats-overview {
-    padding: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    margin-bottom: 1rem;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-}
-
-.stat-card {
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
+.stat-header {
     display: flex;
-    gap: 1rem;
     align-items: center;
-    transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.stat-card.total {
-    border-color: #3b82f6;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.1));
-}
-
-.stat-card.active {
-    border-color: #8b5cf6;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.1));
-}
-
-.stat-card.completed {
-    border-color: #10b981;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.1));
-}
-
-.stat-card.at-risk {
-    border-color: #ef4444;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(239, 68, 68, 0.1));
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .stat-icon {
-    flex-shrink: 0;
     width: 48px;
     height: 48px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    background: var(--input-bg);
-}
-
-.stat-card.total .stat-icon {
-    color: #3b82f6;
-}
-
-.stat-card.active .stat-icon {
-    color: #8b5cf6;
-}
-
-.stat-card.completed .stat-icon {
-    color: #10b981;
-}
-
-.stat-card.at-risk .stat-icon {
-    color: #ef4444;
-}
-
-.stat-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    font-size: 1.5rem;
+    flex-shrink: 0;
 }
 
 .stat-label {
     font-size: 0.875rem;
-    color: var(--text-secondary);
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .stat-value {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--text-primary);
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0.5rem 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-.stat-progress {
+.stat-subtext {
     font-size: 0.875rem;
-    color: var(--text-secondary);
+    color: #94a3b8;
 }
 
-/* Recommendations */
-.recommendations {
-    padding: 1.5rem !important;
+/* --- Content Cards (Goals & Debt) --- */
+.content-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
 }
 
-.recommendations-list {
+.section-header {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
     gap: 1rem;
 }
 
-.recommendation-card {
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1rem;
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-}
-
-.recommendation-card.type-increase {
-    border-color: #10b981;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.1));
-}
-
-.recommendation-card.type-urgent {
-    border-color: #f59e0b;
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(245, 158, 11, 0.1));
-}
-
-.rec-icon {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
     display: flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    background: var(--input-bg);
+    gap: 0.75rem;
+    color: #1e293b;
 }
 
-.recommendation-card.type-increase .rec-icon {
-    color: #10b981;
-}
-
-.recommendation-card.type-urgent .rec-icon {
-    color: #f59e0b;
-}
-
-.rec-content {
-    flex: 1;
-}
-
-.rec-message {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-}
-
-.rec-action {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-}
-
-/* Enhanced Goals Grid */
-.add-goal-btn {
+.add-button {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    margin-left: auto;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
-.add-goal-btn:hover {
+.add-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
+/* --- Goals Tab --- */
 .goals-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 1.5rem;
-    padding: 2rem;
 }
 
 .goal-card {
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
     padding: 1.5rem;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s;
+    cursor: pointer;
 }
 
 .goal-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.goal-card.priority-high {
-    border-color: #ef4444;
-}
-
-.goal-card.priority-medium {
-    border-color: #f59e0b;
-}
-
-.goal-card.priority-low {
-    border-color: #3b82f6;
-}
-
-.goal-card.completed {
-    border-color: #10b981;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.1));
-}
-
-.goal-card.at-risk {
-    border-color: #ef4444;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(239, 68, 68, 0.1));
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    border-color: #667eea;
 }
 
 .goal-header {
@@ -658,240 +241,134 @@
     margin-bottom: 1rem;
 }
 
-.goal-header h3 {
-    font-size: 1.25rem;
-    color: var(--text-primary);
-    flex: 1;
+.goal-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1e293b;
 }
 
 .priority-badge {
     padding: 0.25rem 0.75rem;
-    border-radius: 12px;
+    border-radius: 8px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-}
-
-.priority-badge.high {
-    background: #ef4444;
     color: white;
 }
+.priority-high { background: #ef4444; }
+.priority-medium { background: #f59e0b; }
+.priority-low { background: #3b82f6; }
 
-.priority-badge.medium {
-    background: #f59e0b;
-    color: white;
-}
-
-.priority-badge.low {
-    background: #3b82f6;
-    color: white;
-}
-
-.goal-progress {
-    margin-bottom: 1rem;
-}
-
-.progress-header {
+.goal-amount {
     display: flex;
     justify-content: space-between;
+    font-size: 0.875rem;
+    color: #64748b;
     margin-bottom: 0.5rem;
 }
 
 .current-amount {
     font-weight: 700;
-    font-size: 1.125rem;
     color: #10b981;
-}
-
-.target-amount {
-    font-weight: 600;
     font-size: 1rem;
-    color: var(--text-secondary);
 }
 
-.progress-bar {
-    position: relative;
-    width: 100%;
-    height: 12px;
-    background: var(--input-bg);
-    border-radius: 6px;
-    overflow: visible;
-    margin-bottom: 0.5rem;
+.goal-meta {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 1rem;
 }
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #10b981, #059669);
-    border-radius: 6px;
-    transition: width 0.5s ease;
-}
-
-.milestone-marker {
-    position: absolute;
-    top: -4px;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 20px;
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 50%;
+.goal-meta-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    z-index: 2;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
-.milestone-marker.passed {
-    background: #10b981;
-    border-color: #10b981;
-    color: white;
-}
-
-.milestone-marker:hover {
-    transform: translateX(-50%) scale(1.2);
-}
-
-.progress-percentage {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-}
-
-.goal-details {
+/* --- Debt Tab --- */
+.strategy-bar {
     display: flex;
     gap: 1rem;
-    margin-bottom: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
 }
 
-.detail-item {
+.strategy-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-}
-
-.completion-banner,
-.risk-banner {
-    padding: 0.75rem;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 0.875rem;
-}
-
-.completion-banner {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-}
-
-.risk-banner {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-}
-
-/* Debt Section */
-.debt-section {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(239, 68, 68, 0.1));
-}
-
-.strategy-selector {
-    display: flex;
-    gap: 0.5rem;
-    margin-left: auto;
 }
 
 .strategy-btn {
-    padding: 0.5rem 1rem;
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
     cursor: pointer;
+    font-size: 0.95rem;
     font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.strategy-btn:hover {
-    background: var(--hover-bg);
-}
-
-.strategy-btn.active {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    border-color: transparent;
-}
-
-.debt-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    padding: 1.5rem 2rem;
-    background: var(--card-bg);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.debt-stat-card {
+    transition: all 0.3s;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 0.25rem;
 }
 
-.debt-stat-label {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
+.strategy-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
 }
 
-.debt-stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
+.strategy-btn-active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
 }
 
-.debt-stat-value.positive {
-    color: #10b981;
+.strategy-btn-active:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: transparent;
 }
 
-.debt-stat-progress {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-}
-
-.debts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.5rem;
-    padding: 2rem;
+.strategy-desc {
+    font-size: 0.75rem;
+    opacity: 0.8;
 }
 
 .debt-card {
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
+    background: white;
+    border-radius: 16px;
     padding: 1.5rem;
-    transition: all 0.3s ease;
+    border: 2px solid #e2e8f0;
+    margin-bottom: 1rem;
+    transition: all 0.3s;
 }
 
-.debt-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.debt-card.priority-debt {
+.debt-card-priority {
     border-color: #ef4444;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(239, 68, 68, 0.1));
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
 }
 
 .debt-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 1rem;
 }
 
-.debt-header h3 {
-    font-size: 1.25rem;
-    color: var(--text-primary);
+.debt-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .debt-badges {
@@ -899,12 +376,11 @@
     gap: 0.5rem;
 }
 
-.focus-badge,
-.order-badge {
+.badge {
     padding: 0.25rem 0.75rem;
-    border-radius: 12px;
+    border-radius: 8px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .focus-badge {
@@ -913,11 +389,11 @@
 }
 
 .order-badge {
-    background: var(--input-bg);
-    color: var(--text-secondary);
+    background: #e2e8f0;
+    color: #64748b;
 }
 
-.debt-info-grid {
+.debt-info {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
@@ -930,285 +406,254 @@
     gap: 0.25rem;
 }
 
-.info-label {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-}
-
-.info-value {
-    font-size: 1.125rem;
+.debt-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: uppercase;
     font-weight: 600;
-    color: var(--text-primary);
 }
 
-.debt-progress {
-    margin-bottom: 1rem;
+.debt-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
 }
 
-.debt-progress-bar {
+.debt-progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+}
+
+.recommendation {
+    background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: #5b21b6;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+/* --- Common Elements (Progress Bar, Buttons) --- */
+.progress-bar {
     width: 100%;
-    height: 10px;
-    background: var(--input-bg);
-    border-radius: 5px;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
     overflow: hidden;
     margin-bottom: 0.5rem;
 }
 
-.debt-progress-fill {
+.progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #10b981, #059669);
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
     transition: width 0.5s ease;
+    border-radius: 4px;
 }
 
-.debt-progress-text {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
+.progress-fill.debt {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
 }
 
-.debt-recommendation {
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: none;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    background: var(--input-bg);
-    border-radius: 8px;
-    font-size: 0.875rem;
-    color: var(--text-primary);
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.debt-recommendation svg {
-    color: #8b5cf6;
+.icon-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.8;
 }
 
-/* Original sections wrapper */
-.original-sections {
+.edit-btn {
+    background: #3b82f6;
+    color: white;
+}
+
+.delete-btn {
+    background: #ef4444;
+    color: white;
+}
+
+/* --- Form Modals --- */
+.form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.form-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 600px;
     width: 100%;
-    margin-top: 2rem;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    animation: form-fade-in 0.3s ease;
 }
 
-/* ============================================
-   MOBILE RESPONSIVE (340px - 450px)
-   ============================================ */
+@keyframes form-fade-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1e293b;
+}
+
+.close-btn {
+    background: #f1f5f9;
+    color: #64748b;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    background: #e2e8f0;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 0.5rem;
+}
+
+.input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    box-sizing: border-box; /* Ensures padding doesn't break width */
+}
+
+.input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    outline: none;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .goals-page {
-        padding: 1rem;
-        margin-left: 0;
-        padding-bottom: 80px;
+    .goals-header {
+        padding: 1.5rem;
     }
-
-    .header-content {
-        flex-direction: column;
-        align-items: flex-start;
+    .title-text {
+        font-size: 1.5rem;
     }
-
-    .header-icon {
+    .icon-circle {
         width: 48px;
         height: 48px;
+        border-radius: 16px;
     }
-
-    .header-text h1 {
-        font-size: 1.5rem;
+    .icon-circle > svg {
+        width: 24px;
+        height: 24px;
     }
-
-    .header-text p {
+    .tab {
+        padding: 0.5rem 1rem;
         font-size: 0.875rem;
     }
-
-    /* Gamification Mobile */
-    .gamification-dashboard {
-        padding: 1rem;
+    .content-card {
+        padding: 1.5rem;
     }
-
-    .gamification-header {
-        flex-wrap: wrap;
-    }
-
-    .gamification-header h2 {
-        font-size: 1.25rem;
-    }
-
-    .gamification-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .gamification-card {
-        padding: 1rem;
-    }
-
-    .achievements-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .achievement-badge {
-        padding: 0.875rem;
-    }
-
-    /* Stats Mobile */
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .stat-card {
-        padding: 1rem;
-    }
-
-    .stat-value {
-        font-size: 1.5rem;
-    }
-
-    /* Recommendations Mobile */
-    .recommendation-card {
-        padding: 0.875rem;
-    }
-
-    /* Goals Mobile */
-    .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 1rem;
-        gap: 0.75rem;
-    }
-
-    .add-goal-btn {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .goals-grid {
-        grid-template-columns: 1fr;
-        padding: 1rem;
-        gap: 1rem;
-    }
-
-    .goal-card {
-        padding: 1rem;
-    }
-
-    .goal-header h3 {
-        font-size: 1.125rem;
-    }
-
-    .current-amount {
-        font-size: 1rem;
-    }
-
-    .target-amount {
-        font-size: 0.875rem;
-    }
-
-    .goal-details {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    /* Debt Mobile */
-    .strategy-selector {
-        width: 100%;
-        margin-left: 0;
-    }
-
-    .strategy-btn {
-        flex: 1;
-        font-size: 0.875rem;
-    }
-
-    .debt-stats-grid {
-        grid-template-columns: 1fr;
-        padding: 1rem;
-    }
-
-    .debt-stat-value {
-        font-size: 1.25rem;
-    }
-
-    .debts-grid {
-        grid-template-columns: 1fr;
-        padding: 1rem;
-    }
-
-    .debt-card {
-        padding: 1rem;
-    }
-
-    .debt-info-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .section-content {
-        padding: 1rem;
-    }
-
-    .section-text h2 {
-        font-size: 1.25rem;
+    .form-card {
+        padding: 1.5rem;
     }
 }
 
-/* Extra Small Mobile (340px - 400px) */
-@media (max-width: 400px) {
-    .goals-page {
-        padding: 0.75rem;
+@media (max-width: 480px) {
+    .goals-container {
+        padding: 1rem;
     }
-
-    .back-button {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.85rem;
+    .debt-info {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
     }
-
-    .header-icon {
-        width: 40px;
-        height: 40px;
+    .title-section {
+        gap: 1rem;
     }
-
-    .header-text h1 {
-        font-size: 1.25rem;
-    }
-
-    .gamification-dashboard {
-        padding: 0.875rem;
-    }
-
-    .gamification-header h2 {
-        font-size: 1.125rem;
-    }
-
-    .gamification-card {
-        padding: 0.875rem;
-    }
-
-    .gamification-card .card-content h3 {
-        font-size: 1.25rem;
-    }
-
-    .stat-card {
-        padding: 0.875rem;
-    }
-
-    .stat-value {
-        font-size: 1.25rem;
-    }
-
-    .goal-card,
-    .debt-card {
-        padding: 0.875rem;
-    }
-
-    .goal-header h3,
-    .debt-header h3 {
-        font-size: 1rem;
-    }
-
-    .current-amount {
-        font-size: 0.95rem;
-    }
-
-    .achievement-badge {
+    .strategy-bar {
         flex-direction: column;
-        text-align: center;
-    }
-
-    .debt-recommendation {
-        font-size: 0.8rem;
-        padding: 0.625rem;
+        align-items: stretch;
     }
 }
