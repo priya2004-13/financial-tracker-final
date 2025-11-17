@@ -442,13 +442,13 @@ export const Dashboard = () => {
                     onClick={() => setActiveFeature(activeFeature === 'aiInsights' ? null : 'aiInsights')}
                   >
                     <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                      <BarChart3 size={24} />
+                      <BarChart3 size={20} />
                     </div>
                     <div className="feature-tab-content">
                       <h3 className="feature-tab-title">AI Insights</h3>
                       <p className="feature-tab-description">AI-powered financial analysis</p>
                     </div>
-                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'aiInsights' ? 'rotate' : ''}`} size={20} />
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'aiInsights' ? 'rotate' : ''}`} size={18} />
                   </button>
 
                   {/* AI Financial Advisor Tab */}
@@ -457,13 +457,13 @@ export const Dashboard = () => {
                     onClick={() => setActiveFeature(activeFeature === 'aiAdvisor' ? null : 'aiAdvisor')}
                   >
                     <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
-                      <Target size={24} />
+                      <Target size={20} />
                     </div>
                     <div className="feature-tab-content">
                       <h3 className="feature-tab-title">AI Financial Advisor</h3>
                       <p className="feature-tab-description">Get AI financial advice</p>
                     </div>
-                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'aiAdvisor' ? 'rotate' : ''}`} size={20} />
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'aiAdvisor' ? 'rotate' : ''}`} size={18} />
                   </button>
 
                   {/* Budget Manager Tab */}
@@ -472,13 +472,13 @@ export const Dashboard = () => {
                     onClick={() => setActiveFeature(activeFeature === 'budgetManager' ? null : 'budgetManager')}
                   >
                     <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}>
-                      <PiggyBank size={24} />
+                      <PiggyBank size={20} />
                     </div>
                     <div className="feature-tab-content">
                       <h3 className="feature-tab-title">Budget Manager</h3>
                       <p className="feature-tab-description">Monthly budget tracking</p>
                     </div>
-                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'budgetManager' ? 'rotate' : ''}`} size={20} />
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'budgetManager' ? 'rotate' : ''}`} size={18} />
                   </button>
 
                   {/* Savings Goals Tab */}
@@ -487,13 +487,13 @@ export const Dashboard = () => {
                     onClick={() => setActiveFeature(activeFeature === 'savingsGoals' ? null : 'savingsGoals')}
                   >
                     <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' }}>
-                      <Target size={24} />
+                      <Target size={20} />
                     </div>
                     <div className="feature-tab-content">
                       <h3 className="feature-tab-title">Savings Goals</h3>
                       <p className="feature-tab-description">Set and track your goals</p>
                     </div>
-                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'savingsGoals' ? 'rotate' : ''}`} size={20} />
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'savingsGoals' ? 'rotate' : ''}`} size={18} />
                   </button>
 
                   {/* Subscriptions Tab */}
@@ -502,13 +502,13 @@ export const Dashboard = () => {
                     onClick={() => setActiveFeature(activeFeature === 'subscriptions' ? null : 'subscriptions')}
                   >
                     <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' }}>
-                      <RefreshCw size={24} />
+                      <RefreshCw size={20} />
                     </div>
                     <div className="feature-tab-content">
                       <h3 className="feature-tab-title">Subscriptions</h3>
                       <p className="feature-tab-description">Bills & recurring payments</p>
                     </div>
-                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'subscriptions' ? 'rotate' : ''}`} size={20} />
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'subscriptions' ? 'rotate' : ''}`} size={18} />
                   </button>
 
                   {/* Reports Tab */}
@@ -517,13 +517,13 @@ export const Dashboard = () => {
                     onClick={() => setActiveFeature(activeFeature === 'reports' ? null : 'reports')}
                   >
                     <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)' }}>
-                      <Download size={24} />
+                      <Download size={20} />
                     </div>
                     <div className="feature-tab-content">
                       <h3 className="feature-tab-title">Download Reports</h3>
                       <p className="feature-tab-description">Generate PDF reports</p>
                     </div>
-                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'reports' ? 'rotate' : ''}`} size={20} />
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'reports' ? 'rotate' : ''}`} size={18} />
                   </button>
                 </div>
 
