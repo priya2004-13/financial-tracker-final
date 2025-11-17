@@ -73,6 +73,9 @@ export const Dashboard = () => {
     reportDownloads: true
   });
 
+  // Active feature tab state
+  const [activeFeature, setActiveFeature] = useState<string | null>(null);
+
   // Financial news state
   const [newsArticles, setNewsArticles] = useState<Array<{
     id: string;
@@ -188,6 +191,35 @@ export const Dashboard = () => {
   }, [records]);
 
   const balance = useMemo(() => totalIncome - totalExpenses, [totalIncome, totalExpenses]);
+
+  // Calculate last month expenses for comparison
+  const lastMonthExpenses = useMemo(() => {
+    const now = new Date();
+    const lastMonth = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
+    const lastYear = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+    return (records || [])
+      .filter((record) => {
+        const recordDate = new Date(record.date);
+        return (
+          recordDate.getMonth() === lastMonth &&
+          recordDate.getFullYear() === lastYear &&
+          record.category !== "Salary"
+        );
+      })
+      .reduce((total, record) => total + record.amount, 0);
+  }, [records]);
+
+  // Calculate month-over-month change
+  const expenseChange = useMemo(() => {
+    if (lastMonthExpenses === 0) return 0;
+    return ((currentMonthExpenses - lastMonthExpenses) / lastMonthExpenses) * 100;
+  }, [currentMonthExpenses, lastMonthExpenses]);
+
+  // Calculate average daily expenses
+  const averageDailyExpense = useMemo(() => {
+    const dayOfMonth = new Date().getDate();
+    return dayOfMonth > 0 ? currentMonthExpenses / dayOfMonth : 0;
+  }, [currentMonthExpenses]);
 
   const budgetAdherence = useMemo(() => {
     if (!budget || !budget.categoryBudgets) return 0;
@@ -395,6 +427,142 @@ export const Dashboard = () => {
                 </div>
                 <FinancialRecordList />
               </div>
+
+              {/* Modern Feature Tabs Section - Moved below Recent Transactions */}
+              <div className="modern-features-section">
+                <div className="features-header">
+                  <h2 className="features-title">Additional Features & Tools</h2>
+                  <p className="features-subtitle">Click on any feature to explore</p>
+                </div>
+
+                <div className="features-tabs-grid">
+                  {/* AI Insights Tab */}
+                  <button
+                    className={`feature-tab ${activeFeature === 'aiInsights' ? 'active' : ''}`}
+                    onClick={() => setActiveFeature(activeFeature === 'aiInsights' ? null : 'aiInsights')}
+                  >
+                    <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                      <BarChart3 size={24} />
+                    </div>
+                    <div className="feature-tab-content">
+                      <h3 className="feature-tab-title">AI Insights</h3>
+                      <p className="feature-tab-description">AI-powered financial analysis</p>
+                    </div>
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'aiInsights' ? 'rotate' : ''}`} size={20} />
+                  </button>
+
+                  {/* AI Financial Advisor Tab */}
+                  <button
+                    className={`feature-tab ${activeFeature === 'aiAdvisor' ? 'active' : ''}`}
+                    onClick={() => setActiveFeature(activeFeature === 'aiAdvisor' ? null : 'aiAdvisor')}
+                  >
+                    <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
+                      <Target size={24} />
+                    </div>
+                    <div className="feature-tab-content">
+                      <h3 className="feature-tab-title">AI Financial Advisor</h3>
+                      <p className="feature-tab-description">Get AI financial advice</p>
+                    </div>
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'aiAdvisor' ? 'rotate' : ''}`} size={20} />
+                  </button>
+
+                  {/* Budget Manager Tab */}
+                  <button
+                    className={`feature-tab ${activeFeature === 'budgetManager' ? 'active' : ''}`}
+                    onClick={() => setActiveFeature(activeFeature === 'budgetManager' ? null : 'budgetManager')}
+                  >
+                    <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}>
+                      <PiggyBank size={24} />
+                    </div>
+                    <div className="feature-tab-content">
+                      <h3 className="feature-tab-title">Budget Manager</h3>
+                      <p className="feature-tab-description">Monthly budget tracking</p>
+                    </div>
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'budgetManager' ? 'rotate' : ''}`} size={20} />
+                  </button>
+
+                  {/* Savings Goals Tab */}
+                  <button
+                    className={`feature-tab ${activeFeature === 'savingsGoals' ? 'active' : ''}`}
+                    onClick={() => setActiveFeature(activeFeature === 'savingsGoals' ? null : 'savingsGoals')}
+                  >
+                    <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' }}>
+                      <Target size={24} />
+                    </div>
+                    <div className="feature-tab-content">
+                      <h3 className="feature-tab-title">Savings Goals</h3>
+                      <p className="feature-tab-description">Set and track your goals</p>
+                    </div>
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'savingsGoals' ? 'rotate' : ''}`} size={20} />
+                  </button>
+
+                  {/* Subscriptions Tab */}
+                  <button
+                    className={`feature-tab ${activeFeature === 'subscriptions' ? 'active' : ''}`}
+                    onClick={() => setActiveFeature(activeFeature === 'subscriptions' ? null : 'subscriptions')}
+                  >
+                    <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' }}>
+                      <RefreshCw size={24} />
+                    </div>
+                    <div className="feature-tab-content">
+                      <h3 className="feature-tab-title">Subscriptions</h3>
+                      <p className="feature-tab-description">Bills & recurring payments</p>
+                    </div>
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'subscriptions' ? 'rotate' : ''}`} size={20} />
+                  </button>
+
+                  {/* Reports Tab */}
+                  <button
+                    className={`feature-tab ${activeFeature === 'reports' ? 'active' : ''}`}
+                    onClick={() => setActiveFeature(activeFeature === 'reports' ? null : 'reports')}
+                  >
+                    <div className="feature-tab-icon" style={{ background: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)' }}>
+                      <Download size={24} />
+                    </div>
+                    <div className="feature-tab-content">
+                      <h3 className="feature-tab-title">Download Reports</h3>
+                      <p className="feature-tab-description">Generate PDF reports</p>
+                    </div>
+                    <ChevronRight className={`feature-tab-arrow ${activeFeature === 'reports' ? 'rotate' : ''}`} size={20} />
+                  </button>
+                </div>
+
+                {/* Feature Content Display */}
+                {activeFeature && (
+                  <div className="feature-content-display">
+                    {activeFeature === 'aiInsights' && (
+                      <div className="feature-content-wrapper">
+                        <AIInsights />
+                      </div>
+                    )}
+                    {activeFeature === 'aiAdvisor' && (
+                      <div className="feature-content-wrapper">
+                        <AIAdvisor />
+                      </div>
+                    )}
+                    {activeFeature === 'budgetManager' && (
+                      <div className="feature-content-wrapper">
+                        <BudgetManager />
+                      </div>
+                    )}
+                    {activeFeature === 'savingsGoals' && (
+                      <div className="feature-content-wrapper">
+                        <SavingsGoals />
+                      </div>
+                    )}
+                    {activeFeature === 'subscriptions' && (
+                      <div className="feature-content-wrapper">
+                        <Subscriptions />
+                      </div>
+                    )}
+                    {activeFeature === 'reports' && (
+                      <div className="feature-content-wrapper">
+                        <ReportDownloads />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Right Column - Budget & Expenses */}
@@ -452,11 +620,13 @@ export const Dashboard = () => {
 
                   <div className="expense-stats-panel">
                     <div className="stat-highlight">
-                      <div className="stat-change-badge positive">
-                        <ArrowUp size={16} />
-                        <span className="change-value">12%</span>
+                      <div className={`stat-change-badge ${expenseChange >= 0 ? 'positive' : 'negative'}`}>
+                        {expenseChange >= 0 ? <ArrowUp size={16} /> : <TrendingDown size={16} />}
+                        <span className="change-value">{Math.abs(expenseChange).toFixed(1)}%</span>
                       </div>
-                      <p className="stat-description">Higher than last month</p>
+                      <p className="stat-description">
+                        {expenseChange >= 0 ? 'Higher' : 'Lower'} than last month
+                      </p>
                     </div>
 
                     <div className="expense-metrics">
@@ -466,11 +636,11 @@ export const Dashboard = () => {
                       </div>
                       <div className="metric-item">
                         <span className="metric-label">Last Month</span>
-                        <span className="metric-value secondary">₹{(currentMonthExpenses * 0.89).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+                        <span className="metric-value secondary">₹{lastMonthExpenses.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                       </div>
                       <div className="metric-item">
                         <span className="metric-label">Average Daily</span>
-                        <span className="metric-value secondary">₹{(currentMonthExpenses / new Date().getDate()).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+                        <span className="metric-value secondary">₹{averageDailyExpense.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                       </div>
                     </div>
 
@@ -520,111 +690,6 @@ export const Dashboard = () => {
               </div>
             </div>
           </div>
-
-          {/* Collapsible Additional Features Section */}
-          <details className="collapsible-section">
-            <summary className="section-toggle">
-              <span>Additional Features & Tools</span>
-              <ChevronRight className="chevron-icon" size={20} />
-            </summary>
-
-            <div className="additional-features-grid">
-              {/* Quick Actions Panel */}
-              {visibleWidgets.quickActions && (
-                <div className="modern-card">
-                  <div className="card-header-modern">
-                    <h3><Plus size={18} /> Quick Actions</h3>
-                    <button
-                      className="widget-toggle-btn"
-                      onClick={() => toggleWidget('quickActions')}
-                      title="Hide Quick Actions"
-                    >
-                      <EyeOff size={16} />
-                    </button>
-                  </div>
-                  <div className="quick-actions-grid">
-                    <Link to="/transactions" className="quick-action-card">
-                      <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                        <Plus size={20} />
-                      </div>
-                      <span>Add Transaction</span>
-                    </Link>
-
-                    <Link to="/budget" className="quick-action-card">
-                      <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
-                        <PiggyBank size={20} />
-                      </div>
-                      <span>Set Budget</span>
-                    </Link>
-
-                    <Link to="/goals" className="quick-action-card">
-                      <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}>
-                        <Target size={20} />
-                      </div>
-                      <span>Create Goal</span>
-                    </Link>
-
-                    <Link to="/analytics" className="quick-action-card">
-                      <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' }}>
-                        <TrendingUp size={20} />
-                      </div>
-                      <span>View Analytics</span>
-                    </Link>
-                  </div>
-                </div>
-              )}
-
-              {/* AI Tools */}
-              {visibleWidgets.aiInsights && (
-                <div className="modern-card">
-                  <div className="card-header-modern">
-                    <h3>AI Insights</h3>
-                  </div>
-                  <AIInsights />
-                </div>
-              )}
-
-              {visibleWidgets.aiAdvisor && (
-                <div className="modern-card">
-                  <div className="card-header-modern">
-                    <h3>AI Financial Advisor</h3>
-                  </div>
-                  <AIAdvisor />
-                </div>
-              )}
-
-              {/* Management Tools */}
-              <div className="modern-card">
-                <div className="card-header-modern">
-                  <h3>Budget Manager</h3>
-                </div>
-                <BudgetManager />
-              </div>
-
-              <div className="modern-card">
-                <div className="card-header-modern">
-                  <h3>Savings Goals</h3>
-                </div>
-                <SavingsGoals />
-              </div>
-
-              <div className="modern-card">
-                <div className="card-header-modern">
-                  <h3>Subscriptions</h3>
-                </div>
-                <Subscriptions />
-              </div>
-
-              {visibleWidgets.reportDownloads && (
-                <div className="modern-card">
-                  <div className="card-header-modern">
-                    <h3>Reports</h3>
-                  </div>
-                  <ReportDownloads />
-                </div>
-              )}
-            </div>
-          </details>
 
           {/* Financial News Panel */}
           {visibleWidgets.financialNews && newsArticles.length > 0 && (
