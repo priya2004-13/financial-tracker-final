@@ -26,7 +26,8 @@ import MobileLayout from "./pages/MobileLayout";
 import { useScreenSize } from "./hooks/useScreenSize";
 import { PageLoader } from "./components/PageLoader";
 import { Navigation } from "./components/Navigation";
-import CalculatorsPage from "./pages/calculators";
+import { FinancialCalculators } from "./pages/calculators";
+
 
 const ProtectedDashboardRoute = () => {
   const { isLoaded, isSignedIn } = useUser();
@@ -241,7 +242,7 @@ function AppContent() {
               path="/calculators"
               element={
                 <ErrorBoundary level="section">
-                  <CalculatorsPage />
+                  <FinancialCalculators />
                 </ErrorBoundary>
               }
             />
@@ -307,7 +308,7 @@ function AppContent() {
               path="/calculators"
               element={
                 <ErrorBoundary level="section">
-                  <CalculatorsPage />
+                  <FinancialCalculators />
                 </ErrorBoundary>
               }
             />
