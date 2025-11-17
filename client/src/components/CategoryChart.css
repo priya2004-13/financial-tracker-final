@@ -3,13 +3,15 @@
 .chart-container,
 .pie-chart-container {
     position: relative;
-    z-index: 1; /* Keep low - normal document flow */
+    z-index: 1;
+    /* Keep low - normal document flow */
 }
 
 .recharts-wrapper,
 .recharts-surface {
     position: relative;
-    z-index: 1 !important; /* Force low z-index */
+    z-index: 1 !important;
+    /* Force low z-index */
 }
 
 /* Prevent charts from creating stacking contexts that interfere */
@@ -26,67 +28,95 @@
 
 /* Fix for tooltips - they should be high but not as high as modals */
 .recharts-tooltip-wrapper {
-    z-index: 100 !important; /* High enough for tooltips, but way below modals */
+    z-index: 100 !important;
+    /* High enough for tooltips, but way below modals */
 }
 
 .recharts-legend-wrapper {
     z-index: 10 !important;
 }
+
 .pie-chart-container {
     /* Inherits chart-container styles */
     display: flex;
     flex-direction: column;
+    width: 100%;
+    align-items: center;
 }
 
 .chart-title {
-    font-size: 1.125rem; /* Consistent title size */
+    font-size: 1.125rem;
+    /* Consistent title size */
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 1.5rem; /* More space below title */
-    text-align: left; /* Align title left */
+    margin-bottom: 1.5rem;
+    /* More space below title */
+    text-align: left;
+    /* Align title left */
+    width: 100%;
 }
 
 /* Ensure ResponsiveContainer takes available space */
 .recharts-responsive-container {
     width: 100% !important;
-    height: 300px !important; /* Fixed height for consistency */
+    min-height: 300px !important;
+    /* Fixed height for consistency */
 }
 
 /* Legend Styling */
 .recharts-legend-wrapper {
-    width: auto !important; /* Allow legend to determine its width */
-    right: 0 !important; /* Position legend to the right */
+    width: auto !important;
+    /* Allow legend to determine its width */
+    right: 0 !important;
+    /* Position legend to the right */
     top: 50% !important;
     transform: translateY(-50%) !important;
-    padding-left: 1rem; /* Space between chart and legend */
+    padding-left: 1rem;
+    /* Space between chart and legend */
+    max-height: 250px !important;
+    overflow-y: auto !important;
 }
 
 .recharts-legend-item {
     display: flex !important;
     align-items: center !important;
-    margin-bottom: 0.5rem !important; /* Space between legend items */
+    margin-bottom: 0.5rem !important;
+    /* Space between legend items */
 }
 
 .recharts-legend-icon {
     margin-right: 0.5rem !important;
+    flex-shrink: 0 !important;
 }
 
 .recharts-legend-item-text {
-    font-size: 0.8rem !important; /* Smaller legend text */
+    font-size: 0.8rem !important;
+    /* Smaller legend text */
     color: var(--text-secondary) !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 100px; /* Limit legend text width */
+    max-width: 120px;
+    /* Limit legend text width */
+}
+
+/* Empty state styling */
+.chart-empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2rem;
+    font-size: 0.875rem;
 }
 
 /* Tooltip Styling */
 .recharts-tooltip-wrapper {
-    outline: none; /* Remove default outline */
+    outline: none;
+    /* Remove default outline */
 }
 
 .recharts-default-tooltip {
-    background-color: rgba(31, 41, 55, 0.9) !important; /* Darker tooltip */
+    background-color: rgba(31, 41, 55, 0.9) !important;
+    /* Darker tooltip */
     border: 1px solid var(--border-color) !important;
     border-radius: var(--radius-md) !important;
     box-shadow: var(--shadow-md) !important;
@@ -95,7 +125,8 @@
 
 .recharts-tooltip-label {
     font-weight: 600 !important;
-    color: #f9fafb !important; /* White text */
+    color: #f9fafb !important;
+    /* White text */
     margin-bottom: 0.25rem !important;
     font-size: 0.875rem !important;
 }
@@ -107,17 +138,20 @@
 
 .recharts-tooltip-item {
     font-size: 0.8rem !important;
-    color: #d1d5db !important; /* Light grey text */
+    color: #d1d5db !important;
+    /* Light grey text */
 }
 
 .recharts-tooltip-item-name,
 .recharts-tooltip-item-separator {
-     display: none; /* Hide default name and separator */
+    display: none;
+    /* Hide default name and separator */
 }
 
 .recharts-tooltip-item-value {
-     margin-left: 0 !important; /* Remove margin */
-     font-weight: 500;
+    margin-left: 0 !important;
+    /* Remove margin */
+    font-weight: 500;
 }
 
 
@@ -128,7 +162,8 @@
     color: var(--text-secondary);
     font-size: 0.875rem;
     font-style: italic;
-    min-height: 150px; /* Ensure some height for empty state */
+    min-height: 150px;
+    /* Ensure some height for empty state */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -137,25 +172,34 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .recharts-responsive-container {
-        height: 250px !important; /* Slightly smaller height on mobile */
+        height: 250px !important;
+        /* Slightly smaller height on mobile */
     }
 
     .recharts-legend-wrapper {
-         position: static !important; /* Static position below chart */
-         transform: none !important;
-         margin-top: 1rem !important;
-         padding-left: 0 !important;
-         display: flex;
-         flex-wrap: wrap; /* Allow wrapping */
-         justify-content: center; /* Center legend items */
-         gap: 0.5rem 1rem; /* Spacing for wrapped items */
-         width: 100% !important;
+        position: static !important;
+        /* Static position below chart */
+        transform: none !important;
+        margin-top: 1rem !important;
+        padding-left: 0 !important;
+        display: flex;
+        flex-wrap: wrap;
+        /* Allow wrapping */
+        justify-content: center;
+        /* Center legend items */
+        gap: 0.5rem 1rem;
+        /* Spacing for wrapped items */
+        width: 100% !important;
     }
-     .recharts-legend-item {
-        margin-bottom: 0 !important; /* Remove bottom margin when wrapped */
+
+    .recharts-legend-item {
+        margin-bottom: 0 !important;
+        /* Remove bottom margin when wrapped */
     }
-     .recharts-legend-item-text {
-        max-width: none; /* Allow full text on mobile legend */
+
+    .recharts-legend-item-text {
+        max-width: none;
+        /* Allow full text on mobile legend */
     }
 
 

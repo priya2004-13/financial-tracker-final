@@ -8,6 +8,7 @@ import {
   Wallet,
   Target,
   ArrowUp,
+  ArrowRight,
   Receipt,
   PiggyBank,
   BarChart3,
@@ -43,6 +44,7 @@ import { DashboardCard } from "../../components/DashboardCard";
 import { SpendingInsights } from "../../components/SpendingInsights";
 import { StatCard } from "../../components/StatCard";
 import "./dashboard.css";
+import "./modern-dashboard.css";
 import { CategoryChart } from "../../components/CategoryChart";
 import { PageLoader } from "../../components/PageLoader";
 import AIInsights from "../../components/AIInsights";
@@ -291,109 +293,342 @@ export const Dashboard = () => {
       ) : (
         /* Desktop Layout */
         <>
-          {/* Header - Fixed */}
-          <div className={`dashboard-header ${showHeader ? 'dashboard-header-visible' : 'dashboard-header-hidden'}`}>
-            <h1 className="dashboard-welcome">Welcome back, {user?.firstName}! 👋</h1>
-            <p className="dashboard-subtitle">Here's your financial overview</p>
-          </div>
-
-          {/* Stats Grid - Fixed */}
-          <div className="stats-grid">
-            <StatCard
-              title="Total Balance"
-              value={balance}
-              icon={Wallet}
-              color="#6366f1"
-              trend="All time"
-            />
-            <StatCard
-              title="This Month Income"
-              value={currentMonthIncome}
-              icon={IndianRupee}
-              color="#10b981"
-              trend="Current month"
-            />
-            <StatCard
-              title="This Month Expenses"
-              value={currentMonthExpenses}
-              icon={TrendingDown}
-              color="#ef4444"
-              trend="Current month"
-            />
-            {budget && (
-              <StatCard
-                title="Budget Remaining"
-                value={budgetAdherence}
-                icon={Target}
-                color="#8b5cf6"
-                trend={`${budgetAdherence.toFixed(0)}%`}
-                prefix=""
-              />
-            )}
-          </div>
-
-          {/* Quick Actions Panel */}
-          {visibleWidgets.quickActions && (
-            <div className="quick-actions-panel">
-              <div className="quick-actions-header">
-                <h3><Plus size={18} /> Quick Actions</h3>
-                <button
-                  className="widget-toggle-btn"
-                  onClick={() => toggleWidget('quickActions')}
-                  title="Hide Quick Actions"
-                >
-                  <EyeOff size={16} />
-                </button>
+          {/* Modern Header with User Info */}
+          <div className="modern-dashboard-header">
+            <div className="header-user-section">
+              <div className="user-greeting">
+                <span className="greeting-text">Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 18 ? 'Afternoon' : 'Evening'}</span>
+                <h1 className="user-name">{user?.firstName || 'User'}</h1>
               </div>
-              <div className="quick-actions-grid">
-                <Link to="/transactions" className="quick-action-card">
-                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                    <Plus size={20} />
-                  </div>
-                  <span>Add Transaction</span>
-                </Link>
-
-                <Link to="/budget" className="quick-action-card">
-                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
-                    <PiggyBank size={20} />
-                  </div>
-                  <span>Set Budget</span>
-                </Link>
-
-                <Link to="/goals" className="quick-action-card">
-                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}>
-                    <Target size={20} />
-                  </div>
-                  <span>Create Goal</span>
-                </Link>
-
-                <Link to="/analytics" className="quick-action-card">
-                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' }}>
-                    <TrendingUp size={20} />
-                  </div>
-                  <span>View Analytics</span>
-                </Link>
-
-                <Link to="/transactions" className="quick-action-card">
-                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' }}>
-                    <Calendar size={20} />
-                  </div>
-                  <span>Calendar View</span>
-                </Link>
-
-                <button className="quick-action-card" onClick={() => window.print()}>
-                  <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)' }}>
-                    <Download size={20} />
-                  </div>
-                  <span>Export Data</span>
+              <div className="header-actions">
+                <button className="icon-btn" title="Settings">
+                  <Settings size={20} />
+                </button>
+                <button className="icon-btn" title="Notifications">
+                  <Calendar size={20} />
                 </button>
               </div>
             </div>
-          )}
+            <div className="header-meta">
+              <span className="last-update">Last update {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+              <button className="btn-share">
+                <Download size={16} />
+                Share
+              </button>
+            </div>
+          </div>
+
+          {/* Modern Two-Column Layout */}
+          <div className="modern-dashboard-grid">
+            {/* Left Column - Income & Budget */}
+            <div className="modern-left-column">
+              {/* Income Management Card */}
+              <div className="modern-card income-card">
+                <div className="card-header-modern">
+                  <div className="card-header-left">
+                    <h2 className="card-title-modern">Income Management</h2>
+                    <p className="card-subtitle-modern">Monthly income recap</p>
+                  </div>
+                  <div className="card-header-actions">
+                    <button className="icon-btn-small">
+                      <Plus size={16} />
+                      Add
+                    </button>
+                    <button className="icon-btn-small">
+                      <Settings size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="income-value-section">
+                  <div className="primary-amount">
+                    <span className="currency-symbol">₹</span>
+                    <span className="amount-large">{currentMonthIncome.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
+                  </div>
+                  <div className="amount-change positive">
+                    <ArrowUp size={14} />
+                    <span>+₹{(currentMonthIncome - (budget?.monthlySalary || 0)).toFixed(2)}</span>
+                    <span className="change-label">Last 24 hours</span>
+                  </div>
+                </div>
+
+                <div className="income-breakdown">
+                  <h4 className="breakdown-title">Income breakdown</h4>
+                  <div className="breakdown-items">
+                    <div className="breakdown-item">
+                      <div className="breakdown-label">
+                        <span className="label-text">Part-Time</span>
+                      </div>
+                      <span className="breakdown-value">₹{(budget?.monthlySalary || 0).toLocaleString('en-IN')}</span>
+                    </div>
+                    <div className="breakdown-item">
+                      <div className="breakdown-label">
+                        <span className="label-text">Payslip</span>
+                      </div>
+                      <span className="breakdown-value">₹{(currentMonthIncome - (budget?.monthlySalary || 0)).toLocaleString('en-IN')}</span>
+                    </div>
+                    <div className="breakdown-item">
+                      <div className="breakdown-label">
+                        <span className="label-text">Gig</span>
+                      </div>
+                      <span className="breakdown-value positive-text">+₹{Math.abs(currentMonthIncome * 0.05).toFixed(2)}</span>
+                    </div>
+                  </div>
+                  <div className="income-progress-bars">
+                    <div className="progress-bar-stacked">
+                      <div className="progress-segment" style={{ width: '48%', backgroundColor: '#4F46E5' }}></div>
+                      <div className="progress-segment" style={{ width: '37%', backgroundColor: '#93C5FD' }}></div>
+                      <div className="progress-segment" style={{ width: '15%', backgroundColor: '#EC4899' }}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recent Transactions */}
+              <div className="modern-card transactions-card">
+                <div className="card-header-modern">
+                  <h3 className="card-title-modern">Recent Transactions</h3>
+                  <button className="link-btn" onClick={() => window.location.href = '/transactions'}>
+                    <Plus size={16} />
+                    Add new
+                  </button>
+                </div>
+                <FinancialRecordList />
+              </div>
+            </div>
+
+            {/* Right Column - Budget & Expenses */}
+            <div className="modern-right-column">
+              {/* Budget Control Card */}
+              <div className="modern-card budget-card">
+                <div className="card-header-modern">
+                  <h2 className="card-title-modern">Budget Control</h2>
+                  <button className="icon-btn-small">
+                    <Settings size={16} />
+                  </button>
+                </div>
+
+                <div className="budget-limit-section">
+                  <p className="budget-label">Monthly Transaction Limit</p>
+                  <div className="budget-amount">
+                    <span className="currency-symbol-small">₹</span>
+                    <span className="budget-value">{currentMonthExpenses.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
+                    <span className="budget-total">of ₹{(budget?.categoryBudgets ? Object.values(budget.categoryBudgets).reduce((sum, val) => sum + (val || 0), 0) : 2300).toLocaleString('en-IN')}</span>
+                  </div>
+                </div>
+
+                <div className="budget-progress-visual">
+                  <div className="progress-bar-colorful">
+                    <div className="progress-fill" style={{
+                      width: `${Math.min((currentMonthExpenses / (budget?.categoryBudgets ? Object.values(budget.categoryBudgets).reduce((sum, val) => sum + (val || 0), 0) : 2300)) * 100, 100)}%`,
+                      background: 'linear-gradient(90deg, #6366F1 0%, #8B5CF6 25%, #D946EF 50%, #EC4899 75%, #EF4444 100%)'
+                    }}></div>
+                  </div>
+                  {currentMonthExpenses > (budget?.categoryBudgets ? Object.values(budget.categoryBudgets).reduce((sum, val) => sum + (val || 0), 0) * 0.9 : 2070) && (
+                    <div className="budget-alert">
+                      <span className="alert-icon">⚠️</span>
+                      <span className="alert-text">Your spending is almost at its peak</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Expense Recap with Chart */}
+              <div className="modern-card expense-recap-card">
+                <div className="card-header-modern">
+                  <h3 className="card-title-modern">Expense Recap</h3>
+                  <select className="period-selector">
+                    <option>Weekly</option>
+                    <option>Monthly</option>
+                    <option>Yearly</option>
+                  </select>
+                </div>
+
+                {/* Chart and Stats Side by Side */}
+                <div className="expense-recap-content">
+                  <div className="chart-wrapper">
+                    <CategoryChart />
+                  </div>
+
+                  <div className="expense-stats-panel">
+                    <div className="stat-highlight">
+                      <div className="stat-change-badge positive">
+                        <ArrowUp size={16} />
+                        <span className="change-value">12%</span>
+                      </div>
+                      <p className="stat-description">Higher than last month</p>
+                    </div>
+
+                    <div className="expense-metrics">
+                      <div className="metric-item">
+                        <span className="metric-label">This Month</span>
+                        <span className="metric-value">₹{currentMonthExpenses.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+                      </div>
+                      <div className="metric-item">
+                        <span className="metric-label">Last Month</span>
+                        <span className="metric-value secondary">₹{(currentMonthExpenses * 0.89).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+                      </div>
+                      <div className="metric-item">
+                        <span className="metric-label">Average Daily</span>
+                        <span className="metric-value secondary">₹{(currentMonthExpenses / new Date().getDate()).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+                      </div>
+                    </div>
+
+                    <button className="btn-view-details" onClick={() => window.location.href = '/analytics'}>
+                      View Detailed Analytics
+                      <ArrowRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Breakdown Section */}
+              <div className="modern-card breakdown-card">
+                <h3 className="card-title-modern">Breakdown</h3>
+                <div className="breakdown-list">
+                  <div className="breakdown-list-item">
+                    <div className="breakdown-icon subscriptions">
+                      <span>🎬</span>
+                    </div>
+                    <div className="breakdown-info">
+                      <h4>Subscriptions</h4>
+                      <p className="breakdown-detail">Netflix and 5 more</p>
+                    </div>
+                    <span className="breakdown-amount">₹430.20</span>
+                  </div>
+                  <div className="breakdown-list-item">
+                    <div className="breakdown-icon fixed-expenses">
+                      <span>🏪</span>
+                    </div>
+                    <div className="breakdown-info">
+                      <h4>Fixed Expenses</h4>
+                      <p className="breakdown-detail">Shell and 4 more</p>
+                    </div>
+                    <span className="breakdown-amount">₹712.41</span>
+                  </div>
+                  <div className="breakdown-list-item">
+                    <div className="breakdown-icon transfers">
+                      <span>🏦</span>
+                    </div>
+                    <div className="breakdown-info">
+                      <h4>Transfers</h4>
+                      <p className="breakdown-detail">Citibank Cris and 5 more</p>
+                    </div>
+                    <span className="breakdown-amount">₹720.34</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Collapsible Additional Features Section */}
+          <details className="collapsible-section">
+            <summary className="section-toggle">
+              <span>Additional Features & Tools</span>
+              <ChevronRight className="chevron-icon" size={20} />
+            </summary>
+
+            <div className="additional-features-grid">
+              {/* Quick Actions Panel */}
+              {visibleWidgets.quickActions && (
+                <div className="modern-card">
+                  <div className="card-header-modern">
+                    <h3><Plus size={18} /> Quick Actions</h3>
+                    <button
+                      className="widget-toggle-btn"
+                      onClick={() => toggleWidget('quickActions')}
+                      title="Hide Quick Actions"
+                    >
+                      <EyeOff size={16} />
+                    </button>
+                  </div>
+                  <div className="quick-actions-grid">
+                    <Link to="/transactions" className="quick-action-card">
+                      <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                        <Plus size={20} />
+                      </div>
+                      <span>Add Transaction</span>
+                    </Link>
+
+                    <Link to="/budget" className="quick-action-card">
+                      <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
+                        <PiggyBank size={20} />
+                      </div>
+                      <span>Set Budget</span>
+                    </Link>
+
+                    <Link to="/goals" className="quick-action-card">
+                      <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}>
+                        <Target size={20} />
+                      </div>
+                      <span>Create Goal</span>
+                    </Link>
+
+                    <Link to="/analytics" className="quick-action-card">
+                      <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' }}>
+                        <TrendingUp size={20} />
+                      </div>
+                      <span>View Analytics</span>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* AI Tools */}
+              {visibleWidgets.aiInsights && (
+                <div className="modern-card">
+                  <div className="card-header-modern">
+                    <h3>AI Insights</h3>
+                  </div>
+                  <AIInsights />
+                </div>
+              )}
+
+              {visibleWidgets.aiAdvisor && (
+                <div className="modern-card">
+                  <div className="card-header-modern">
+                    <h3>AI Financial Advisor</h3>
+                  </div>
+                  <AIAdvisor />
+                </div>
+              )}
+
+              {/* Management Tools */}
+              <div className="modern-card">
+                <div className="card-header-modern">
+                  <h3>Budget Manager</h3>
+                </div>
+                <BudgetManager />
+              </div>
+
+              <div className="modern-card">
+                <div className="card-header-modern">
+                  <h3>Savings Goals</h3>
+                </div>
+                <SavingsGoals />
+              </div>
+
+              <div className="modern-card">
+                <div className="card-header-modern">
+                  <h3>Subscriptions</h3>
+                </div>
+                <Subscriptions />
+              </div>
+
+              {visibleWidgets.reportDownloads && (
+                <div className="modern-card">
+                  <div className="card-header-modern">
+                    <h3>Reports</h3>
+                  </div>
+                  <ReportDownloads />
+                </div>
+              )}
+            </div>
+          </details>
 
           {/* Financial News Panel */}
           {visibleWidgets.financialNews && newsArticles.length > 0 && (
-            <div className="financial-news-panel">
+            <div className="modern-card financial-news-panel">
               <div className="news-header">
                 <div className="news-title">
                   <Newspaper size={18} />
@@ -424,13 +659,6 @@ export const Dashboard = () => {
                     title="Refresh news (bypass cache)"
                   >
                     <RefreshCw size={16} className={newsLoading ? 'spin' : ''} />
-                  </button>
-                  <button
-                    className="widget-toggle-btn"
-                    onClick={() => toggleWidget('financialNews')}
-                    title="Hide News"
-                  >
-                    <EyeOff size={16} />
                   </button>
                 </div>
               </div>
@@ -464,224 +692,6 @@ export const Dashboard = () => {
               )}
             </div>
           )}
-
-          {/* Widget Customization Bar */}
-          <div className="widget-customization-bar">
-            <div className="customization-label">
-              <Settings size={16} />
-              <span>Customize Dashboard</span>
-            </div>
-            <div className="widget-toggles">
-              <button
-                className={`widget-toggle ${!visibleWidgets.quickActions ? 'hidden' : ''}`}
-                onClick={() => toggleWidget('quickActions')}
-                title={visibleWidgets.quickActions ? 'Hide Quick Actions' : 'Show Quick Actions'}
-              >
-                {visibleWidgets.quickActions ? <Eye size={14} /> : <EyeOff size={14} />}
-                <span>Quick Actions</span>
-              </button>
-              <button
-                className={`widget-toggle ${!visibleWidgets.financialNews ? 'hidden' : ''}`}
-                onClick={() => toggleWidget('financialNews')}
-                title={visibleWidgets.financialNews ? 'Hide News' : 'Show News'}
-              >
-                {visibleWidgets.financialNews ? <Eye size={14} /> : <EyeOff size={14} />}
-                <span>News</span>
-              </button>
-              <button
-                className={`widget-toggle ${!visibleWidgets.financialOverview ? 'hidden' : ''}`}
-                onClick={() => toggleWidget('financialOverview')}
-                title={visibleWidgets.financialOverview ? 'Hide Overview' : 'Show Overview'}
-              >
-                {visibleWidgets.financialOverview ? <Eye size={14} /> : <EyeOff size={14} />}
-                <span>Overview</span>
-              </button>
-              <button
-                className={`widget-toggle ${!visibleWidgets.financialHealth ? 'hidden' : ''}`}
-                onClick={() => toggleWidget('financialHealth')}
-                title={visibleWidgets.financialHealth ? 'Hide Health' : 'Show Health'}
-              >
-                {visibleWidgets.financialHealth ? <Eye size={14} /> : <EyeOff size={14} />}
-                <span>Health</span>
-              </button>
-              <button
-                className={`widget-toggle ${!visibleWidgets.recentTransactions ? 'hidden' : ''}`}
-                onClick={() => toggleWidget('recentTransactions')}
-                title={visibleWidgets.recentTransactions ? 'Hide Transactions' : 'Show Transactions'}
-              >
-                {visibleWidgets.recentTransactions ? <Eye size={14} /> : <EyeOff size={14} />}
-                <span>Transactions</span>
-              </button>
-              <button
-                className={`widget-toggle ${!visibleWidgets.budgetTracking ? 'hidden' : ''}`}
-                onClick={() => toggleWidget('budgetTracking')}
-                title={visibleWidgets.budgetTracking ? 'Hide Budget' : 'Show Budget'}
-              >
-                {visibleWidgets.budgetTracking ? <Eye size={14} /> : <EyeOff size={14} />}
-                <span>Budget</span>
-              </button>
-              <button
-                className={`widget-toggle ${!visibleWidgets.spendingInsights ? 'hidden' : ''}`}
-                onClick={() => toggleWidget('spendingInsights')}
-                title={visibleWidgets.spendingInsights ? 'Hide Insights' : 'Show Insights'}
-              >
-                {visibleWidgets.spendingInsights ? <Eye size={14} /> : <EyeOff size={14} />}
-                <span>Insights</span>
-              </button>
-              <button
-                className={`widget-toggle ${!visibleWidgets.categoryAnalysis ? 'hidden' : ''}`}
-                onClick={() => toggleWidget('categoryAnalysis')}
-                title={visibleWidgets.categoryAnalysis ? 'Hide Categories' : 'Show Categories'}
-              >
-                {visibleWidgets.categoryAnalysis ? <Eye size={14} /> : <EyeOff size={14} />}
-                <span>Categories</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Main Dashboard Grid - Scrollable sections */}
-          <div className="dashboard-grid">
-            {/* Sidebar - Independently Scrollable */}
-            <div
-              ref={sidebar.scrollRef}
-              className={`dashboard-sidebar ${sidebar.isScrollable ? 'has-scroll' : ''} ${sidebar.isAtBottom ? 'scroll-bottom' : ''}`}
-            >
-              <FinancialRecordForm />
-              <TransactionTemplates />
-              <BudgetManager />
-              <BudgetTemplates />
-              <CategoryManager />
-              <SavingsGoals />
-              <Subscriptions />
-
-              {/* Scroll to top button for sidebar */}
-              {sidebar.isScrollable && !sidebar.isAtTop && (
-                <button
-                  className="scroll-to-top visible"
-                  onClick={sidebar.scrollToTop}
-                  title="Scroll to top"
-                >
-                  <ArrowUp size={20} />
-                </button>
-              )}
-            </div>
-
-            {/* Main Content - Independently Scrollable */}
-            <div
-              ref={mainContent.scrollRef}
-              className={`dashboard-main ${mainContent.isScrollable ? 'has-scroll' : ''} ${mainContent.isAtBottom ? 'scroll-bottom' : ''}`}
-            >
-              {visibleWidgets.financialOverview && (
-                <DashboardCard
-                  title="Financial Overview"
-                  subtitle="AI-powered insights"
-                  viewMorePath="/analytics"
-                  viewMoreText="View Full Analytics"
-                  icon={<BarChart3 size={20} />}
-                >
-                  <FinancialSummary />
-                </DashboardCard>
-              )}
-
-              {visibleWidgets.financialHealth && (
-                <DashboardCard
-                  title="Financial Health"
-                  subtitle="Your overall financial status"
-                  viewMorePath="/analytics"
-                  icon={<Target size={20} />}
-                >
-                  <FinancialHealth />
-                </DashboardCard>
-              )}
-
-              {visibleWidgets.recentTransactions && (
-                <DashboardCard
-                  title="Recent Transactions"
-                  subtitle="Latest financial records"
-                  viewMorePath="/transactions"
-                  viewMoreText="View All Transactions"
-                  icon={<Receipt size={20} />}
-                >
-                  <FinancialRecordList />
-                </DashboardCard>
-              )}
-
-              {visibleWidgets.budgetTracking && budget && (
-                <DashboardCard
-                  title="Budget Tracking"
-                  subtitle="Monitor your spending limits"
-                  viewMorePath="/budget"
-                  viewMoreText="Manage Budget"
-                  icon={<PiggyBank size={20} />}
-                >
-                  <BudgetTracking />
-                </DashboardCard>
-              )}
-
-              {visibleWidgets.spendingInsights && (
-                <DashboardCard
-                  title="Spending Insights"
-                  subtitle="AI analysis of your spending"
-                  viewMorePath="/analytics"
-                  icon={<BarChart3 size={20} />}
-                >
-                  <SpendingInsights />
-                </DashboardCard>
-              )}
-
-              {visibleWidgets.categoryAnalysis && (
-                <DashboardCard
-                  title="Category Analysis"
-                  subtitle="Spending by category"
-                  viewMorePath="/analytics"
-                  icon={<BarChart3 size={20} />}
-                >
-                  <CategoryChart />
-                </DashboardCard>
-              )}
-
-              {visibleWidgets.aiInsights && (
-                <DashboardCard
-                  title="AI Insights"
-                  subtitle="AI-powered financial analysis"
-                  icon={<TrendingUp size={20} />}
-                >
-                  <AIInsights />
-                </DashboardCard>
-              )}
-
-              {visibleWidgets.aiAdvisor && (
-                <DashboardCard
-                  title="AI Financial Advisor"
-                  subtitle="Get personalized financial advice"
-                  icon={<TrendingUp size={20} />}
-                >
-                  <AIAdvisor />
-                </DashboardCard>
-              )}
-
-              {visibleWidgets.reportDownloads && (
-                <DashboardCard
-                  title="Reports"
-                  subtitle="Download financial reports"
-                  icon={<Download size={20} />}
-                >
-                  <ReportDownloads />
-                </DashboardCard>
-              )}
-
-              {/* Scroll to top button for main content */}
-              {mainContent.isScrollable && !mainContent.isAtTop && (
-                <button
-                  className="scroll-to-top visible"
-                  onClick={mainContent.scrollToTop}
-                  title="Scroll to top"
-                >
-                  <ArrowUp size={20} />
-                </button>
-              )}
-            </div>
-          </div>
         </>
       )}
     </div>

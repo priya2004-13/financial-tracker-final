@@ -16,12 +16,12 @@ export const AuthCard: React.FC<AuthCardProps> = ({ children }) => {
           <div className="auth-header">
             <div className="auth-logo-icon">
               {/* Use the existing logo for brand consistency */}
-              <img src={logo} alt="Financi Logo" />
+              <img src={logo} alt="MoneyFlow Logo" />
             </div>
-            <h1 className="auth-title">Welcome to Financi!</h1>
+            <h1 className="auth-title">Welcome to MoneyFlow!</h1>
             <p className="auth-subtitle">Your journey to financial control starts here.</p>
           </div>
-          
+
           <div className="auth-buttons-group">
             {children}
           </div>

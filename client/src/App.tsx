@@ -63,10 +63,10 @@ const Navbar = () => {
               <div className="navbar-left">
                 <a href="/" className="navbar-brand">
                   <div className="brand-logo-wrapper">
-                    <img src={logo} alt="Financi Logo" className="brand-logo-img" />
+                    <img src={logo} alt="MoneyFlow Logo" className="brand-logo-img" />
                   </div>
                   <div className="brand-info">
-                    <h1 className="brand-title">Financi</h1>
+                    <h1 className="brand-title">MoneyFlow</h1>
                     <span className="brand-subtitle">Smart Finance</span>
                   </div>
                 </a>
@@ -120,10 +120,10 @@ const Navbar = () => {
             <div className="navbar-left">
               <a href="/" className="navbar-brand">
                 <div className="brand-logo-wrapper">
-                  <img src={logo} alt="Financi Logo" className="brand-logo-img" />
+                  <img src={logo} alt="MoneyFlow Logo" className="brand-logo-img" />
                 </div>
                 <div className="brand-info">
-                  <h1 className="brand-title">Financi</h1>
+                  <h1 className="brand-title">MoneyFlow</h1>
                   <span className="brand-subtitle">Smart Finance</span>
                 </div>
               </a>

@@ -1,6 +1,6 @@
 ﻿// client/src/pages/dashboard/CategoryChart.tsx - Now using Pie Chart
-import   { useMemo } from "react";
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { useMemo } from "react";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { useFinancialRecords } from "../contexts/financial-record-context";
 import './CategoryChart.css'; // Add a CSS file for styling if needed
 
@@ -16,21 +16,21 @@ const DEFAULT_CATEGORY_COLORS: Record<string, string> = {
 
 // Function to generate shades for potentially many custom categories
 const generateColorShades = (baseColor: string, count: number): string[] => {
-    const colors: string[] = [];
-    // Basic shade generation (example) - replace with a better library if needed
-    let r = parseInt(baseColor.slice(1, 3), 16);
-    let g = parseInt(baseColor.slice(3, 5), 16);
-    let b = parseInt(baseColor.slice(5, 7), 16);
+  const colors: string[] = [];
+  // Basic shade generation (example) - replace with a better library if needed
+  let r = parseInt(baseColor.slice(1, 3), 16);
+  let g = parseInt(baseColor.slice(3, 5), 16);
+  let b = parseInt(baseColor.slice(5, 7), 16);
 
-    for (let i = 0; i < count; i++) {
-        // Simple darkening effect
-        const factor = 1 - (i * 0.1);
-        const nr = Math.max(0, Math.min(255, Math.round(r * factor)));
-        const ng = Math.max(0, Math.min(255, Math.round(g * factor)));
-        const nb = Math.max(0, Math.min(255, Math.round(b * factor)));
-        colors.push(`#${nr.toString(16).padStart(2, '0')}${ng.toString(16).padStart(2, '0')}${nb.toString(16).padStart(2, '0')}`);
-    }
-    return colors;
+  for (let i = 0; i < count; i++) {
+    // Simple darkening effect
+    const factor = 1 - (i * 0.1);
+    const nr = Math.max(0, Math.min(255, Math.round(r * factor)));
+    const ng = Math.max(0, Math.min(255, Math.round(g * factor)));
+    const nb = Math.max(0, Math.min(255, Math.round(b * factor)));
+    colors.push(`#${nr.toString(16).padStart(2, '0')}${ng.toString(16).padStart(2, '0')}${nb.toString(16).padStart(2, '0')}`);
+  }
+  return colors;
 };
 
 
@@ -54,39 +54,39 @@ export const CategoryChart = () => {
 
   }, [records]);
 
-    // Assign colors dynamically, prioritizing defaults
-    const categoryColors = useMemo(() => {
-        const colors: Record<string, string> = { ...DEFAULT_CATEGORY_COLORS };
-        const customColorBase = '#6b7280'; // Grey base for custom ones without default
-        const uncoloredCategories = chartData
-            .map(d => d.name)
-            .filter(name => !colors[name]);
+  // Assign colors dynamically, prioritizing defaults
+  const categoryColors = useMemo(() => {
+    const colors: Record<string, string> = { ...DEFAULT_CATEGORY_COLORS };
+    const customColorBase = '#6b7280'; // Grey base for custom ones without default
+    const uncoloredCategories = chartData
+      .map(d => d.name)
+      .filter(name => !colors[name]);
 
-        const shades = generateColorShades(customColorBase, uncoloredCategories.length);
+    const shades = generateColorShades(customColorBase, uncoloredCategories.length);
 
-        uncoloredCategories.forEach((name, index) => {
-            colors[name] = shades[index % shades.length]; // Assign generated shades
-        });
-        return colors;
-    }, [chartData]);
+    uncoloredCategories.forEach((name, index) => {
+      colors[name] = shades[index % shades.length]; // Assign generated shades
+    });
+    return colors;
+  }, [chartData]);
 
 
   const RADIAN = Math.PI / 180;
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
-      const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-      const x = cx + radius * Math.cos(-midAngle * RADIAN);
-      const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-       // Only show label if percentage is significant enough
-       if ((percent * 100) < 5) {
-           return null;
-       }
+    // Only show label if percentage is significant enough
+    if ((percent * 100) < 5) {
+      return null;
+    }
 
-      return (
-          <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize="10px" fontWeight="bold">
-               {`${(percent * 100).toFixed(0)}%`}
-          </text>
-      );
+    return (
+      <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize="10px" fontWeight="bold">
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
   };
 
 
@@ -94,7 +94,7 @@ export const CategoryChart = () => {
     <div className="chart-container pie-chart-container">
       <h2 className="chart-title">Expense Breakdown</h2>
       {chartData.length > 0 ? (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="60%" height='50%' minHeight='40%'>
           <PieChart>
             <Pie
               data={chartData}
@@ -102,17 +102,27 @@ export const CategoryChart = () => {
               cy="50%"
               labelLine={false}
               label={renderCustomizedLabel}
-              outerRadius={80} // Adjust radius as needed
+              outerRadius={60} // Larger outer radius
+              innerRadius={5} // Solid pie chart, no donut hole
               fill="#8884d8"
               dataKey="value"
               nameKey="name"
+              paddingAngle={4} // Small gap between segments
             >
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={categoryColors[entry.name] || '#8884d8'} />
               ))}
             </Pie>
-            <Tooltip formatter={(value: number) => `₹${value.toFixed(2)}`} />
-             <Legend layout="vertical" verticalAlign="middle" align="right" iconType="circle"/>
+            <Tooltip
+              formatter={(value: number) => `₹${value.toFixed(2)}`}
+              contentStyle={{
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                border: '1px solid #e5e7eb',
+                borderRadius: '0.5rem',
+                padding: '0.5rem 0.75rem',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+              }}
+            />
           </PieChart>
         </ResponsiveContainer>
       ) : (
