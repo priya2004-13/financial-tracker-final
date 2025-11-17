@@ -59,6 +59,12 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobile = false }) => {
             label: "Goals & Subscriptions",
             icon: Target,
             description: "Track Progress"
+        },
+        {
+            path: "/calculators",
+            label: "Calculators",
+            icon: BarChart3,
+            description: "Financial Tools"
         }
     ];
 
@@ -79,7 +85,7 @@ export const Navigation: React.FC<NavigationProps> = ({ isMobile = false }) => {
                 {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
             </button>
 
-         
+
             <ul className="nav-list">
                 {navItems.map((item) => {
                     const Icon = item.icon;

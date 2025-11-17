@@ -7,6 +7,7 @@ import './SavingsGoals.css';
 // Define Prop and State types for the class component
 interface SavingsGoalsProps {
   userId: string;
+  onGoalsChange?: (goals: SavingsGoalType[]) => void;
 }
 
 interface SavingsGoalsState {
@@ -38,6 +39,8 @@ class SavingsGoalsClass extends Component<SavingsGoalsProps, SavingsGoalsState> 
       this.setState({ isLoading: true, error: null });
       const goals = await fetchSavingsGoals(this.props.userId);
       this.setState({ goals, isLoading: false });
+      // Notify parent (if provided) of initial goals list
+      if (this.props.onGoalsChange) this.props.onGoalsChange(goals);
     } catch (err) {
       this.setState({ error: 'Failed to load savings goals.', isLoading: false });
       console.error(err);
@@ -71,6 +74,7 @@ class SavingsGoalsClass extends Component<SavingsGoalsProps, SavingsGoalsState> 
         targetAmount: '',
         targetDate: '',
       }));
+      if (this.props.onGoalsChange) this.props.onGoalsChange([...this.state.goals, addedGoal]);
     } catch (err) {
       console.error("Failed to add goal:", err);
       this.setState({ error: 'Failed to add the new goal.' });
@@ -86,13 +90,14 @@ class SavingsGoalsClass extends Component<SavingsGoalsProps, SavingsGoalsState> 
         this.setState((prevState) => ({
           goals: prevState.goals.filter((goal) => goal._id !== goalId),
         }));
+        if (this.props.onGoalsChange) this.props.onGoalsChange(this.state.goals.filter((goal) => goal._id !== goalId));
       } catch (err) {
         console.error("Failed to delete goal:", err);
         this.setState({ error: 'Failed to delete the goal.' });
       }
     }
   };
-  
+
   // Note: The 'contributeToGoal' functionality would require another form/modal.
   // This is a placeholder for where you might add it.
 
@@ -134,7 +139,7 @@ class SavingsGoalsClass extends Component<SavingsGoalsProps, SavingsGoalsState> 
             />
           </div>
           <div className="form-field">
-             <input
+            <input
               type="date"
               name="targetDate"
               className='input form-input form-input-animated'
@@ -188,10 +193,10 @@ class SavingsGoalsClass extends Component<SavingsGoalsProps, SavingsGoalsState> 
 }
 
 // Functional wrapper to inject the user ID from the useUser hook
-const SavingsGoals = () => {
+const SavingsGoals = (props: { onGoalsChange?: (goals: SavingsGoalType[]) => void }) => {
   const { user } = useUser();
   if (!user) return null;
-  return <SavingsGoalsClass userId={user.id} />;
+  return <SavingsGoalsClass userId={user.id} onGoalsChange={props.onGoalsChange} />;
 };
 
 export default SavingsGoals;

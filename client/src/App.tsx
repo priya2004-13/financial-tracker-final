@@ -26,6 +26,7 @@ import MobileLayout from "./pages/MobileLayout";
 import { useScreenSize } from "./hooks/useScreenSize";
 import { PageLoader } from "./components/PageLoader";
 import { Navigation } from "./components/Navigation";
+import CalculatorsPage from "./pages/calculators";
 
 const ProtectedDashboardRoute = () => {
   const { isLoaded, isSignedIn } = useUser();
@@ -236,6 +237,14 @@ function AppContent() {
                 </ErrorBoundary>
               }
             />
+            <Route
+              path="/calculators"
+              element={
+                <ErrorBoundary level="section">
+                  <CalculatorsPage />
+                </ErrorBoundary>
+              }
+            />
             <Route path="/auth" element={<Auth />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
@@ -291,6 +300,14 @@ function AppContent() {
                   <FinancialRecordsProvider>
                     <ProfilePage />
                   </FinancialRecordsProvider>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/calculators"
+              element={
+                <ErrorBoundary level="section">
+                  <CalculatorsPage />
                 </ErrorBoundary>
               }
             />

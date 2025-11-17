@@ -324,6 +324,43 @@ export const deleteSavingsGoal = async (goalId: string): Promise<SavingsGoal> =>
 };
 
 // ============================================
+// DEBTS API
+// ============================================
+
+export interface Debt {
+  _id?: string;
+  userId: string;
+  name: string;
+  principal: number;
+  remaining: number;
+  interestRate: number; // yearly
+  minimumPayment: number;
+  monthlyPayment: number;
+  type?: string;
+  startDate?: Date;
+}
+
+export const fetchDebts = async (userId: string): Promise<Debt[]> => {
+  return await apiGet<Debt[]>(`/debts/${userId}`);
+};
+
+export const addDebt = async (debt: Debt): Promise<Debt> => {
+  return await apiPost<Debt>('/debts', debt);
+};
+
+export const updateDebt = async (debtId: string, debt: Partial<Debt>): Promise<Debt> => {
+  return await apiPut<Debt>(`/debts/${debtId}`, debt);
+};
+
+export const payDebt = async (debtId: string, amount: number): Promise<Debt> => {
+  return await apiPut<Debt>(`/debts/${debtId}/pay`, { amount });
+};
+
+export const deleteDebt = async (debtId: string): Promise<Debt> => {
+  return await apiDelete<Debt>(`/debts/${debtId}`);
+};
+
+// ============================================
 // RECURRING PAYMENTS API
 // ============================================
 

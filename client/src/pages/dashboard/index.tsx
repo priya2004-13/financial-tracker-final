@@ -3,13 +3,13 @@ import { useUser } from "@clerk/clerk-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import {
-  IndianRupee,
+
   TrendingDown,
   Wallet,
   Target,
   ArrowUp,
   ArrowRight,
-  Receipt,
+
   PiggyBank,
   BarChart3,
   Plus,
@@ -17,8 +17,7 @@ import {
   Calendar,
   Download,
   Settings,
-  Eye,
-  EyeOff,
+
   Newspaper,
   ExternalLink,
   RefreshCw,
@@ -29,20 +28,11 @@ import {
 import { useScrollDetection } from "../../hooks/useScrollDetection";
 import { useScreenSize } from "../../hooks/useScreenSize";
 // Import components
-import { FinancialRecordForm } from "./financial-record-form";
 import { FinancialRecordList } from "./financial-record-list";
 import { BudgetManager } from "../../components/BudgetManager";
 import { BudgetTracking } from "../../components/BudgetTracking";
-import { FinancialSummary } from "../../components/FinancialSummary";
 import { Subscriptions } from "../../components/Subscriptions";
 import SavingsGoals from "../../components/SavingsGoals";
-import { CategoryManager } from "../../components/CategoryManager";
-import { FinancialHealth } from "../../components/FinancialHealth";
-import { TransactionTemplates } from "../../components/TransactionTemplates";
-import { BudgetTemplates } from "../../components/BudgetTemplates";
-import { DashboardCard } from "../../components/DashboardCard";
-import { SpendingInsights } from "../../components/SpendingInsights";
-import { StatCard } from "../../components/StatCard";
 import "./dashboard.css";
 import "./modern-dashboard.css";
 import { CategoryChart } from "../../components/CategoryChart";
@@ -57,7 +47,6 @@ export const Dashboard = () => {
   const [showHeader, setShowHeader] = React.useState(true);
   const screenSize = useScreenSize();
   const isMobile = screenSize === "xs";
-
   // Widget customization state
   const [visibleWidgets, setVisibleWidgets] = useState({
     financialOverview: true,
@@ -72,10 +61,8 @@ export const Dashboard = () => {
     aiAdvisor: true,
     reportDownloads: true
   });
-
   // Active feature tab state
   const [activeFeature, setActiveFeature] = useState<string | null>(null);
-
   // Income management state
   const [showIncomeModal, setShowIncomeModal] = useState(false);
   const [editingSalaryInline, setEditingSalaryInline] = useState(false);
@@ -87,7 +74,6 @@ export const Dashboard = () => {
     type: 'fixed' | 'variable';
     isActive: boolean;
   } | null>(null);
-
   // Financial news state
   const [newsArticles, setNewsArticles] = useState<Array<{
     id: string;
@@ -347,31 +333,34 @@ export const Dashboard = () => {
       ) : (
         /* Desktop Layout */
         <>
-          {/* Modern Header with User Info */}
-          <div className="modern-dashboard-header">
-            <div className="header-user-section">
-              <div className="user-greeting">
-                <span className="greeting-text">Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 18 ? 'Afternoon' : 'Evening'}</span>
-                <h1 className="user-name">{user?.firstName || 'User'}</h1>
-              </div>
-              <div className="header-actions">
-                <button className="icon-btn" title="Settings">
-                  <Settings size={20} />
-                </button>
-                <button className="icon-btn" title="Notifications">
-                  <Calendar size={20} />
-                </button>
-              </div>
-            </div>
-            <div className="header-meta">
-              <span className="last-update">Last update {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
-              <button className="btn-share">
-                <Download size={16} />
-                Share
-              </button>
-            </div>
-          </div>
 
+          {/* Modern Header with User Info */}
+          {showHeader &&
+            (
+              <div className="modern-dashboard-header">
+                <div className="header-user-section">
+                  <div className="user-greeting">
+                    <span className="greeting-text">Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 18 ? 'Afternoon' : 'Evening'}</span>
+                    <h1 className="user-name">{user?.firstName || 'User'}</h1>
+                  </div>
+                  <div className="header-actions">
+                    <button className="icon-btn" title="Settings">
+                      <Settings size={20} />
+                    </button>
+                    <button className="icon-btn" title="Notifications">
+                      <Calendar size={20} />
+                    </button>
+                  </div>
+                </div>
+                <div className="header-meta">
+                  <span className="last-update">Last update {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                  <button className="btn-share">
+                    <Download size={16} />
+                    Share
+                  </button>
+                </div>
+              </div>
+            )}
           {/* Modern Two-Column Layout */}
           <div className="modern-dashboard-grid">
             {/* Left Column - Income & Budget */}

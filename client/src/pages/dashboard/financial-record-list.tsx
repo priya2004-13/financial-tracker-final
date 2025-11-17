@@ -214,19 +214,20 @@ export const FinancialRecordList = ({
                 className="search-input"
               />
             </div>
+            <div className="filter-group">
+              <Filter size={16} />
+              <select
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className="filter-select"
+              >
+                {allCategories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
             <div className="filter-controls">
-              <div className="filter-group">
-                <Filter size={16} />
-                <select
-                  value={filterCategory}
-                  onChange={(e) => setFilterCategory(e.target.value)}
-                  className="filter-select"
-                >
-                  {allCategories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-              </div>
+
 
               <div className="sort-group">
                 <button

@@ -5,10 +5,10 @@ import {
     TransactionTemplate as TemplateType,
     fetchTransactionTemplates,
     deleteTransactionTemplate,
-   
+
 } from '../../services/api';
 import { useFinancialRecords } from '../contexts/financial-record-context'; // To trigger UI update
-import { PlusCircle, Trash2, LayoutTemplate,   Loader } from 'lucide-react';
+import { PlusCircle, Trash2, LayoutTemplate, Loader } from 'lucide-react';
 import './TransactionTemplates.css';
 
 export const TransactionTemplates: React.FC = () => {
@@ -62,25 +62,25 @@ export const TransactionTemplates: React.FC = () => {
                 paymentMethod: template.paymentMethod,
             };
             await addRecord(newRecord); // Use the context function
-             // Optionally add a success message here
+            // Optionally add a success message here
             console.log(`Applied template: ${template.templateName}`);
         } catch (err) {
             console.error("Error applying template:", err);
             setError("Failed to apply template.");
         } finally {
-             setIsApplying(null);
+            setIsApplying(null);
         }
     };
 
     return (
         <div className="transaction-templates-container">
             <div className="templates-header">
-                 <div className="header-left">
-                     <div className="templates-icon">
-                         <LayoutTemplate size={20} />
-                     </div>
-                     <h2 className="templates-title">Transaction Templates</h2>
-                 </div>
+                <div className="header-left">
+                    <div className="templates-icon">
+                        <LayoutTemplate size={20} />
+                    </div>
+                    <h2 className="templates-title">Transaction Templates</h2>
+                </div>
             </div>
 
             {error && <p className="error-message">{error}</p>}
@@ -96,7 +96,7 @@ export const TransactionTemplates: React.FC = () => {
                             <div className="template-info">
                                 <span className="template-name">{template.templateName}</span>
                                 <span className="template-details">
-                                     {template.description} - ₹{template.amount.toFixed(2)} ({template.category})
+                                    {template.description} - ₹{template.amount.toFixed(2)} ({template.category})
                                 </span>
                             </div>
                             <div className="template-actions">
@@ -106,7 +106,7 @@ export const TransactionTemplates: React.FC = () => {
                                     title="Apply Template"
                                     disabled={isApplying === template._id}
                                 >
-                                     {isApplying === template._id ? <Loader size={16} className="spinner"/> : <PlusCircle size={16} />}
+                                    {isApplying === template._id ? <Loader size={16} className="spinner" /> : <PlusCircle size={16} />}
                                 </button>
                                 <button
                                     onClick={() => handleDelete(template._id!)}

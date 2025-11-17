@@ -2,8 +2,10 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
+import { useUser } from '@clerk/clerk-react';
 import { PageLoader } from "../../components/PageLoader";
 import SavingsGoals from "../../components/SavingsGoals";
+import { fetchDebts, addDebt, deleteDebt } from '../../../services/api';
 import { Subscriptions } from "../../components/Subscriptions";
 import { SharedExpenses } from "../../components/SharedExpenses";
 import { ArrowLeft, Target, Repeat, Users, TrendingUp, CreditCard, Trophy, Zap, Calendar, IndianRupee, Award, Star, CheckCircle2, AlertCircle, Sparkles, Plus, BarChart3, Percent } from "lucide-react";
@@ -19,82 +21,15 @@ export const GoalsPage = () => {
     const [showGamification, setShowGamification] = useState(true);
     const [selectedDebtStrategy, setSelectedDebtStrategy] = useState<"snowball" | "avalanche">("snowball");
 
-    // Mock data for goals (in real app, this would come from context/API)
-    const [goals, setGoals] = useState([
-        {
-            id: 1,
-            name: "Emergency Fund",
-            type: "savings",
-            target: 100000,
-            current: 45000,
-            deadline: "2024-12-31",
-            monthlyContribution: 5000,
-            priority: "high",
-            milestones: [25000, 50000, 75000, 100000],
-            createdAt: "2024-01-01"
-        },
-        {
-            id: 2,
-            name: "Vacation to Japan",
-            type: "savings",
-            target: 150000,
-            current: 80000,
-            deadline: "2024-06-30",
-            monthlyContribution: 10000,
-            priority: "medium",
-            milestones: [50000, 100000, 150000],
-            createdAt: "2024-02-01"
-        },
-        {
-            id: 3,
-            name: "New Laptop",
-            type: "savings",
-            target: 80000,
-            current: 78000,
-            deadline: "2024-03-31",
-            monthlyContribution: 10000,
-            priority: "medium",
-            milestones: [40000, 80000],
-            createdAt: "2024-01-15"
-        }
-    ]);
+    // Real goals will come from the server via the SavingsGoals component
+    const [goals, setGoals] = useState<any[]>([]);
 
-    // Mock debt data
-    const [debts, setDebts] = useState([
-        {
-            id: 1,
-            name: "Credit Card",
-            type: "credit_card",
-            principal: 50000,
-            remaining: 35000,
-            interestRate: 18,
-            minimumPayment: 2000,
-            monthlyPayment: 3000,
-            startDate: "2023-06-01"
-        },
-        {
-            id: 2,
-            name: "Personal Loan",
-            type: "personal_loan",
-            principal: 200000,
-            remaining: 150000,
-            interestRate: 12,
-            minimumPayment: 5000,
-            monthlyPayment: 8000,
-            startDate: "2023-01-01"
-        },
-        {
-            id: 3,
-            name: "Student Loan",
-            type: "education",
-            principal: 300000,
-            remaining: 280000,
-            interestRate: 8,
-            minimumPayment: 6000,
-            monthlyPayment: 7000,
-            startDate: "2022-08-01"
-        }
-    ]);
+    const [debts, setDebts] = useState<any[]>([]);
+    const { user } = useUser();
+
+    interface DebtForm { name: string; principal: number; remaining?: number; interestRate: number; minimumPayment?: number; monthlyPayment?: number; type?: string; startDate?: string }
+    const [newDebt, setNewDebt] = useState<DebtForm>({ name: '', principal: 0, interestRate: 0, minimumPayment: 0, monthlyPayment: 0, type: '', startDate: '' });
+    const [debtFormError, setDebtFormError] = useState<string | null>(null);
 
     // Calculate goal statistics
     const goalStats = useMemo(() => {
@@ -171,11 +106,25 @@ export const GoalsPage = () => {
         }
     }, [debts, selectedDebtStrategy]);
 
+    // Fetch debts once on mount
+    React.useEffect(() => {
+        if (!user?.id) return;
+
+        (async () => {
+            try {
+                const list = await fetchDebts(user.id);
+                setDebts(list);
+            } catch (err) {
+                console.error('Failed to fetch debts', err);
+            }
+        })();
+    }, [user?.id]);
+
     // Gamification stats
     const gamificationStats = useMemo(() => {
         const streakDays = 45; // Mock data
         const totalPoints = goals.reduce((sum, goal) => {
-            const milestonesPassed = goal.milestones.filter(m => goal.current >= m).length;
+            const milestonesPassed = goal.milestones.filter((m: any) => goal.current >= m).length;
             return sum + (milestonesPassed * 100) + (goal.current >= goal.target ? 500 : 0);
         }, 0);
 
@@ -325,7 +274,7 @@ export const GoalsPage = () => {
 
             <div className="goals-content">
                 {/* Gamification Stats Dashboard */}
-                {showGamification && (
+                {!showGamification && (
                     <section className="gamification-dashboard">
                         <div className="gamification-header">
                             <Trophy size={24} />
@@ -491,95 +440,6 @@ export const GoalsPage = () => {
                         </div>
                     </section>
                 )}
-
-                {/* Enhanced Goals with Milestones */}
-                <section className="goals-section">
-                    <div className="section-header">
-                        <div className="section-icon">
-                            <Target size={24} />
-                        </div>
-                        <div className="section-text">
-                            <h2>Savings Goals</h2>
-                            <p>Track progress with milestone rewards</p>
-                        </div>
-                        <button className="add-goal-btn">
-                            <Plus size={20} />
-                            New Goal
-                        </button>
-                    </div>
-
-                    <div className="goals-grid">
-                        {goals.map(goal => {
-                            const progress = (goal.current / goal.target) * 100;
-                            const daysRemaining = Math.floor((new Date(goal.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-                            const isCompleted = goal.current >= goal.target;
-                            const isAtRisk = !isCompleted && daysRemaining < 30 && progress < 75;
-
-                            return (
-                                <div key={goal.id} className={`goal-card priority-${goal.priority} ${isCompleted ? 'completed' : ''} ${isAtRisk ? 'at-risk' : ''}`}>
-                                    <div className="goal-header">
-                                        <h3>{goal.name}</h3>
-                                        <span className={`priority-badge ${goal.priority}`}>
-                                            {goal.priority}
-                                        </span>
-                                    </div>
-
-                                    <div className="goal-progress">
-                                        <div className="progress-header">
-                                            <span className="current-amount">₹{goal.current.toLocaleString()}</span>
-                                            <span className="target-amount">₹{goal.target.toLocaleString()}</span>
-                                        </div>
-                                        <div className="progress-bar">
-                                            <div
-                                                className="progress-fill"
-                                                style={{ width: `${Math.min(progress, 100)}%` }}
-                                            />
-                                            {showMilestones && goal.milestones.map((milestone, idx) => {
-                                                const milestonePercent = (milestone / goal.target) * 100;
-                                                const isPassed = goal.current >= milestone;
-                                                return (
-                                                    <div
-                                                        key={idx}
-                                                        className={`milestone-marker ${isPassed ? 'passed' : ''}`}
-                                                        style={{ left: `${milestonePercent}%` }}
-                                                        title={`Milestone: ₹${milestone.toLocaleString()}`}
-                                                    >
-                                                        {isPassed && <CheckCircle2 size={16} />}
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                        <span className="progress-percentage">{progress.toFixed(0)}%</span>
-                                    </div>
-
-                                    <div className="goal-details">
-                                        <div className="detail-item">
-                                            <Calendar size={16} />
-                                            <span>{daysRemaining > 0 ? `${daysRemaining} days left` : isCompleted ? 'Completed!' : 'Overdue'}</span>
-                                        </div>
-                                        <div className="detail-item">
-                                            <IndianRupee size={16} />
-                                            <span>₹{goal.monthlyContribution.toLocaleString()}/month</span>
-                                        </div>
-                                    </div>
-
-                                    {isCompleted && (
-                                        <div className="completion-banner">
-                                            🎉 Goal Achieved! +500 XP
-                                        </div>
-                                    )}
-
-                                    {isAtRisk && !isCompleted && (
-                                        <div className="risk-banner">
-                                            ⚠️ Behind schedule
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                </section>
-
                 {/* Debt Payoff Tracker */}
                 <section className="goals-section debt-section">
                     <div className="section-header">
@@ -604,6 +464,72 @@ export const GoalsPage = () => {
                                 Avalanche
                             </button>
                         </div>
+                    </div>
+                    <div className="add-debt-form-wrapper">
+                        <form className="add-debt-form" onSubmit={async (e) => {
+                            e.preventDefault();
+                            if (!user?.id) return;
+                            // Basic validation
+                            if (!newDebt.name || newDebt.principal <= 0 || newDebt.interestRate < 0) {
+                                setDebtFormError('Please fill name, principal and interest rate correctly.');
+                                return;
+                            }
+                            setDebtFormError(null);
+                            try {
+                                const created = await addDebt({
+                                    userId: user.id,
+                                    name: newDebt.name,
+                                    principal: Number(newDebt.principal),
+                                    remaining: newDebt.remaining ? Number(newDebt.remaining) : Number(newDebt.principal),
+                                    interestRate: Number(newDebt.interestRate),
+                                    minimumPayment: Number(newDebt.minimumPayment),
+                                    monthlyPayment: Number(newDebt.monthlyPayment),
+                                    type: newDebt.type,
+                                    startDate: newDebt.startDate ? new Date(newDebt.startDate) : undefined
+                                });
+                                setDebts(prev => [...prev, created]);
+                                setNewDebt({ name: '', principal: 0, interestRate: 0, minimumPayment: 0, monthlyPayment: 0, type: '', startDate: '' });
+                            } catch (err) {
+                                console.error('Add debt failed', err);
+                            }
+                        }}>
+                            <div className="form-grid">
+                                <div className="form-row">
+                                    <label className="form-label" htmlFor="debt-name">Debt Name</label>
+                                    <input id="debt-name" className="form-input" type="text" placeholder="e.g., Credit Card" value={newDebt.name} onChange={(e) => setNewDebt(prev => ({ ...prev, name: e.target.value }))} required />
+                                </div>
+
+                                <div className="form-row">
+                                    <label className="form-label" htmlFor="principal">Principal (₹)</label>
+                                    <input id="principal" className="form-input" type="number" placeholder="Enter principal amount" value={newDebt.principal} onChange={(e) => setNewDebt(prev => ({ ...prev, principal: Number(e.target.value || 0) }))} required />
+                                </div>
+
+                                <div className="form-row">
+                                    <label className="form-label" htmlFor="remaining">Remaining (₹)</label>
+                                    <input id="remaining" className="form-input" type="number" placeholder="Optional remaining amount" value={newDebt.remaining ?? ''} onChange={(e) => setNewDebt(prev => ({ ...prev, remaining: e.target.value ? Number(e.target.value) : undefined }))} />
+                                </div>
+
+                                <div className="form-row">
+                                    <label className="form-label" htmlFor="interest-rate">Interest Rate (%)</label>
+                                    <input id="interest-rate" className="form-input" type="number" step="0.01" placeholder="Enter interest rate" value={newDebt.interestRate} onChange={(e) => setNewDebt(prev => ({ ...prev, interestRate: Number(e.target.value || 0) }))} required />
+                                </div>
+
+                                <div className="form-row">
+                                    <label className="form-label" htmlFor="minimum-payment">Minimum Payment (₹)</label>
+                                    <input id="minimum-payment" className="form-input" type="number" placeholder="Enter minimum payment" value={newDebt.minimumPayment} onChange={(e) => setNewDebt(prev => ({ ...prev, minimumPayment: Number(e.target.value || 0) }))} />
+                                </div>
+
+                                <div className="form-row">
+                                    <label className="form-label" htmlFor="monthly-payment">Monthly Payment (₹)</label>
+                                    <input id="monthly-payment" className="form-input" type="number" placeholder="Enter monthly payment" value={newDebt.monthlyPayment} onChange={(e) => setNewDebt(prev => ({ ...prev, monthlyPayment: Number(e.target.value || 0) }))} />
+                                </div>
+
+                            </div>
+                            {debtFormError && <div className="form-error">{debtFormError}</div>}
+                            <div className="add-debt-actions">
+                                <button className="button" type="submit" disabled={!newDebt.name || newDebt.principal <= 0}>Add debt</button>
+                            </div>
+                        </form>
                     </div>
 
                     {/* Debt Overview Stats */}
@@ -680,6 +606,16 @@ export const GoalsPage = () => {
                                         <Sparkles size={16} />
                                         <span>{debt.recommendation}</span>
                                     </div>
+                                    <div className="debt-controls">
+                                        <button className="button small" onClick={async () => {
+                                            try {
+                                                await deleteDebt(debt._id || debt.id);
+                                                setDebts(prev => prev.filter(d => (d._id || d.id) !== (debt._id || debt.id)));
+                                            } catch (err) {
+                                                console.error('Delete debt failed', err);
+                                            }
+                                        }}>Delete</button>
+                                    </div>
                                 </div>
                             );
                         })}
@@ -700,7 +636,7 @@ export const GoalsPage = () => {
                             </div>
                         </div>
                         <div className="section-content">
-                            <SavingsGoals />
+                            <SavingsGoals onGoalsChange={(list: any) => setGoals(list)} />
                         </div>
                     </section>
 
