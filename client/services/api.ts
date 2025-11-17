@@ -204,10 +204,19 @@ export const suggestCategory = async (description: string): Promise<{ category: 
 // BUDGET API
 // ============================================
 
+export interface IncomeSource {
+  _id?: string;
+  name: string;
+  amount: number;
+  type: 'fixed' | 'variable';
+  isActive: boolean;
+}
+
 export interface UserBudget {
   _id?: string;
   userId: string;
   monthlySalary: number;
+  incomeSources?: IncomeSource[];
   categoryBudgets: {
     [key: string]: number;
   };

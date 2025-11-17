@@ -340,13 +340,13 @@ export const GlobalFeatures: React.FC = () => {
                 <Database size={20} />
             </button>
 
-            {/* Search Modal */}
+            {/* Search global-modal */}
             {searchOpen && (
-                <div className="modal-overlay" onClick={() => setSearchOpen(false)}>
-                    <div className="modal-content search-modal" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
+                <div className="global-modal-overlay" onClick={() => setSearchOpen(false)}>
+                    <div className="global-modal-content search-global-modal" onClick={e => e.stopPropagation()}>
+                        <div className="global-modal-header">
                             <h3><Search size={20} /> Global Search</h3>
-                            <button className="modal-close" onClick={() => setSearchOpen(false)}>
+                            <button className="global-modal-close" onClick={() => setSearchOpen(false)}>
                                 <X size={20} />
                             </button>
                         </div>
@@ -404,13 +404,13 @@ export const GlobalFeatures: React.FC = () => {
                 </div>
             )}
 
-            {/* Export Modal */}
+            {/* Export global-modal */}
             {exportOpen && (
-                <div className="modal-overlay" onClick={() => setExportOpen(false)}>
-                    <div className="modal-content export-modal" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
+                <div className="global-modal-overlay" onClick={() => setExportOpen(false)}>
+                    <div className="global-modal-content export-global-modal" onClick={e => e.stopPropagation()}>
+                        <div className="global-modal-header">
                             <h3><Download size={20} /> Export Center</h3>
-                            <button className="modal-close" onClick={() => setExportOpen(false)}>
+                            <button className="global-modal-close" onClick={() => setExportOpen(false)}>
                                 <X size={20} />
                             </button>
                         </div>
@@ -484,11 +484,11 @@ export const GlobalFeatures: React.FC = () => {
                 </div>
             )}
 
-            {/* Notifications Modal */}
+            {/* Notifications global-modal */}
             {notificationsOpen && (
-                <div className="modal-overlay" onClick={() => setNotificationsOpen(false)}>
-                    <div className="modal-content notifications-modal" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
+                <div className="global-modal-overlay" onClick={() => setNotificationsOpen(false)}>
+                    <div className="global-modal-content notifications-global-modal" onClick={e => e.stopPropagation()}>
+                        <div className="global-modal-header">
                             <h3>
                                 <Bell size={20} />
                                 Notifications
@@ -499,7 +499,7 @@ export const GlobalFeatures: React.FC = () => {
                                     <Trash2 size={16} />
                                     Clear All
                                 </button>
-                                <button className="modal-close" onClick={() => setNotificationsOpen(false)}>
+                                <button className="global-modal-close" onClick={() => setNotificationsOpen(false)}>
                                     <X size={20} />
                                 </button>
                             </div>
@@ -540,13 +540,13 @@ export const GlobalFeatures: React.FC = () => {
                 </div>
             )}
 
-            {/* Backup Modal */}
+            {/* Backup global-modal */}
             {backupOpen && (
-                <div className="modal-overlay" onClick={() => setBackupOpen(false)}>
-                    <div className="modal-content backup-modal" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
+                <div className="global-modal-overlay" onClick={() => setBackupOpen(false)}>
+                    <div className="global-modal-content backup-global-modal" onClick={e => e.stopPropagation()}>
+                        <div className="global-modal-header">
                             <h3><Database size={20} /> Backup & Restore</h3>
-                            <button className="modal-close" onClick={() => setBackupOpen(false)}>
+                            <button className="global-modal-close" onClick={() => setBackupOpen(false)}>
                                 <X size={20} />
                             </button>
                         </div>

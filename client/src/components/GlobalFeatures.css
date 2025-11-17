@@ -58,8 +58,8 @@
     border: 2px solid white;
 }
 
-/* Modal Overlay */
-.modal-overlay {
+/* global-modal Overlay */
+.global-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -75,7 +75,7 @@
     animation: fadeIn 0.2s ease-out;
 }
 
-.modal-content {
+.global-modal-content {
     background: var(--card-background);
     border-radius: var(--radius-lg);
     max-width: 600px;
@@ -86,7 +86,7 @@
     animation: slideUp 0.3s ease-out;
 }
 
-.modal-header {
+.global-modal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -98,7 +98,7 @@
     z-index: 1;
 }
 
-.modal-header h3 {
+.global-modal-header h3 {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -108,7 +108,7 @@
     margin: 0;
 }
 
-.modal-close {
+.global-modal-close {
     background: transparent;
     border: none;
     color: var(--text-secondary);
@@ -121,7 +121,7 @@
     justify-content: center;
 }
 
-.modal-close:hover {
+.global-modal-close:hover {
     background: var(--hover-background);
     color: var(--text-primary);
 }
@@ -153,7 +153,7 @@
     border-color: var(--error-color);
 }
 
-/* Search Modal */
+/* Search global-modal */
 .search-input-wrapper {
     display: flex;
     align-items: center;
@@ -254,7 +254,7 @@
     white-space: nowrap;
 }
 
-/* Export Modal */
+/* Export global-modal */
 .export-options {
     padding: 1.5rem;
 }
@@ -355,8 +355,8 @@
     background: var(--hover-background);
 }
 
-/* Notifications Modal */
-.notifications-modal {
+/* Notifications global-modal */
+.notifications-global-modal {
     max-width: 500px;
 }
 
@@ -474,7 +474,7 @@
     right: 1rem;
 }
 
-/* Backup Modal */
+/* Backup global-modal */
 .backup-section {
     padding: 1.5rem;
     display: grid;
@@ -572,19 +572,19 @@
         height: 45px;
     }
 
-    .modal-overlay {
+    .global-modal-overlay {
         padding: 0.5rem;
     }
 
-    .modal-content {
+    .global-modal-content {
         max-height: 90vh;
     }
 
-    .modal-header {
+    .global-modal-header {
         padding: 1rem;
     }
 
-    .modal-header h3 {
+    .global-modal-header h3 {
         font-size: 1.1rem;
     }
 
@@ -619,7 +619,7 @@
 
 /* Dark mode adjustments */
 @media (prefers-color-scheme: dark) {
-    .modal-overlay {
+    .global-modal-overlay {
         background: rgba(0, 0, 0, 0.8);
     }
 }

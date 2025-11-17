@@ -53,7 +53,7 @@ import ReportDownloads from "../../components/ReportDownloads";
 import { Link } from "react-router-dom";
 export const Dashboard = () => {
   const { user } = useUser();
-  const { records, budget, isLoading } = useFinancialRecords();
+  const { records, budget, isLoading, updateBudget } = useFinancialRecords();
   const [showHeader, setShowHeader] = React.useState(true);
   const screenSize = useScreenSize();
   const isMobile = screenSize === "xs";
@@ -76,6 +76,16 @@ export const Dashboard = () => {
   // Active feature tab state
   const [activeFeature, setActiveFeature] = useState<string | null>(null);
 
+  // Income management state
+  const [showIncomeModal, setShowIncomeModal] = useState(false);
+  const [editingIncomeSource, setEditingIncomeSource] = useState<{
+    _id?: string;
+    name: string;
+    amount: number;
+    type: 'fixed' | 'variable';
+    isActive: boolean;
+  } | null>(null);
+
   // Financial news state
   const [newsArticles, setNewsArticles] = useState<Array<{
     id: string;
@@ -93,7 +103,10 @@ export const Dashboard = () => {
 
   // Load financial news from Marketaux API
   useEffect(() => {
-    loadNews();
+    loadNews().catch(err => {
+      console.error('Failed to load news on mount:', err);
+      // Don't break the app if news fails to load
+    });
   }, []);
 
   const loadNews = async (forceRefresh: boolean = false) => {
@@ -116,6 +129,8 @@ export const Dashboard = () => {
       setNewsArticles(transformedArticles);
     } catch (error) {
       console.error('Error loading financial news:', error);
+      // Set empty array so the news section doesn't show
+      setNewsArticles([]);
     } finally {
       setNewsLoading(false);
     }
@@ -159,7 +174,16 @@ export const Dashboard = () => {
         );
       })
       .reduce((total, record) => total + record.amount, 0);
-    return (budget?.monthlySalary || 0) + additionalIncome;
+
+    // Calculate total from income sources
+    const incomeSourcesTotal = (budget?.incomeSources || [])
+      .filter(source => source.isActive)
+      .reduce((total, source) => total + source.amount, 0);
+
+    // Use income sources if available, otherwise fall back to monthlySalary
+    const baseIncome = incomeSourcesTotal > 0 ? incomeSourcesTotal : (budget?.monthlySalary || 0);
+
+    return baseIncome + additionalIncome;
   }, [records, budget]);
 
   const currentMonthExpenses = useMemo(() => {
@@ -362,7 +386,13 @@ export const Dashboard = () => {
                     <p className="card-subtitle-modern">Monthly income recap</p>
                   </div>
                   <div className="card-header-actions">
-                    <button className="icon-btn-small">
+                    <button
+                      className="icon-btn-small"
+                      onClick={() => {
+                        setEditingIncomeSource({ name: '', amount: 0, type: 'fixed', isActive: true });
+                        setShowIncomeModal(true);
+                      }}
+                    >
                       <Plus size={16} />
                       Add
                     </button>
@@ -380,39 +410,81 @@ export const Dashboard = () => {
                   <div className="amount-change positive">
                     <ArrowUp size={14} />
                     <span>+₹{(currentMonthIncome - (budget?.monthlySalary || 0)).toFixed(2)}</span>
-                    <span className="change-label">Last 24 hours</span>
+                    <span className="change-label">Additional income</span>
                   </div>
                 </div>
 
                 <div className="income-breakdown">
                   <h4 className="breakdown-title">Income breakdown</h4>
                   <div className="breakdown-items">
-                    <div className="breakdown-item">
-                      <div className="breakdown-label">
-                        <span className="label-text">Part-Time</span>
+                    {(budget?.incomeSources || []).length > 0 ? (
+                      <>
+                        {budget!.incomeSources!.filter(s => s.isActive).map((source, index) => (
+                          <div className="breakdown-item" key={source._id || index}>
+                            <div className="breakdown-label">
+                              <span className="label-text">{source.name}</span>
+                              <span className={`source-type-badge ${source.type}`}>
+                                {source.type === 'fixed' ? '🔒' : '📊'} {source.type}
+                              </span>
+                            </div>
+                            <div className="breakdown-value-actions">
+                              <span className="breakdown-value">
+                                ₹{source.amount.toLocaleString('en-IN')}
+                              </span>
+                              <button
+                                className="edit-source-btn"
+                                onClick={() => {
+                                  setEditingIncomeSource(source);
+                                  setShowIncomeModal(true);
+                                }}
+                                title="Edit"
+                              >
+                                ✏️
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    ) : (
+                      <div className="empty-income-state">
+                        <p>No income sources added yet.</p>
+                        <button
+                          className="btn-add-income"
+                          onClick={() => {
+                            setEditingIncomeSource({ name: '', amount: 0, type: 'fixed', isActive: true });
+                            setShowIncomeModal(true);
+                          }}
+                        >
+                          <Plus size={16} /> Add Income Source
+                        </button>
                       </div>
-                      <span className="breakdown-value">₹{(budget?.monthlySalary || 0).toLocaleString('en-IN')}</span>
-                    </div>
-                    <div className="breakdown-item">
-                      <div className="breakdown-label">
-                        <span className="label-text">Payslip</span>
-                      </div>
-                      <span className="breakdown-value">₹{(currentMonthIncome - (budget?.monthlySalary || 0)).toLocaleString('en-IN')}</span>
-                    </div>
-                    <div className="breakdown-item">
-                      <div className="breakdown-label">
-                        <span className="label-text">Gig</span>
-                      </div>
-                      <span className="breakdown-value positive-text">+₹{Math.abs(currentMonthIncome * 0.05).toFixed(2)}</span>
-                    </div>
+                    )}
                   </div>
-                  <div className="income-progress-bars">
-                    <div className="progress-bar-stacked">
-                      <div className="progress-segment" style={{ width: '48%', backgroundColor: '#4F46E5' }}></div>
-                      <div className="progress-segment" style={{ width: '37%', backgroundColor: '#93C5FD' }}></div>
-                      <div className="progress-segment" style={{ width: '15%', backgroundColor: '#EC4899' }}></div>
+                  {(budget?.incomeSources || []).length > 0 && (
+                    <div className="income-progress-bars">
+                      <div className="progress-bar-stacked">
+                        {budget!.incomeSources!.filter(s => s.isActive).map((source, index) => {
+                          const totalIncome = budget!.incomeSources!
+                            .filter(s => s.isActive)
+                            .reduce((sum, s) => sum + s.amount, 0);
+                          const percentage = (source.amount / totalIncome) * 100;
+                          const colors = ['#4F46E5', '#93C5FD', '#EC4899', '#F59E0B', '#10B981'];
+
+                          return (
+                            <div
+                              key={source._id || index}
+                              className="progress-segment"
+                              style={{
+                                width: `${percentage}%`,
+                                backgroundColor: colors[index % colors.length]
+                              }}
+                              title={`${source.name}: ${percentage.toFixed(1)}%`}
+                            ></div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
@@ -755,6 +827,181 @@ export const Dashboard = () => {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Income Source Modal */}
+          {showIncomeModal && editingIncomeSource && (
+            <div className="modal-overlay" onClick={() => {
+              setShowIncomeModal(false);
+              setEditingIncomeSource(null);
+            }}>
+              <div className="modal-content income-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <div>
+                    <h3>{editingIncomeSource._id ? 'Edit Income Source' : 'Add New Income Source'}</h3>
+                    <p className="modal-subtitle">Track your monthly income streams</p>
+                  </div>
+                  <button className="modal-close" onClick={() => {
+                    setShowIncomeModal(false);
+                    setEditingIncomeSource(null);
+                  }}>×</button>
+                </div>
+
+                <div className="modal-body">
+                  <div className="form-group">
+                    <label>Source Name *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Salary, Freelance, Part-time"
+                      value={editingIncomeSource.name}
+                      onChange={(e) => setEditingIncomeSource({ ...editingIncomeSource, name: e.target.value })}
+                      className="form-input"
+                      autoFocus
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Monthly Amount *</label>
+                    <div className="input-with-icon">
+                      <span className="input-icon">₹</span>
+                      <input
+                        type="number"
+                        placeholder="0.00"
+                        min="0"
+                        step="0.01"
+                        value={editingIncomeSource.amount || ''}
+                        onChange={(e) => setEditingIncomeSource({ ...editingIncomeSource, amount: parseFloat(e.target.value) || 0 })}
+                        className="form-input"
+                      />
+                    </div>
+                    <small className="form-hint">Enter the expected monthly amount for this income source</small>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Income Type *</label>
+                    <div className="radio-group">
+                      <label className={`radio-option ${editingIncomeSource.type === 'fixed' ? 'selected' : ''}`}>
+                        <input
+                          type="radio"
+                          name="incomeType"
+                          checked={editingIncomeSource.type === 'fixed'}
+                          onChange={() => setEditingIncomeSource({ ...editingIncomeSource, type: 'fixed' })}
+                        />
+                        <div className="radio-content">
+                          <span className="radio-icon">🔒</span>
+                          <div>
+                            <span className="radio-title">Fixed</span>
+                            <span className="radio-desc">Regular salary, pension</span>
+                          </div>
+                        </div>
+                      </label>
+                      <label className={`radio-option ${editingIncomeSource.type === 'variable' ? 'selected' : ''}`}>
+                        <input
+                          type="radio"
+                          name="incomeType"
+                          checked={editingIncomeSource.type === 'variable'}
+                          onChange={() => setEditingIncomeSource({ ...editingIncomeSource, type: 'variable' })}
+                        />
+                        <div className="radio-content">
+                          <span className="radio-icon">📊</span>
+                          <div>
+                            <span className="radio-title">Variable</span>
+                            <span className="radio-desc">Freelance, commissions, gigs</span>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={editingIncomeSource.isActive}
+                        onChange={(e) => setEditingIncomeSource({ ...editingIncomeSource, isActive: e.target.checked })}
+                      />
+                      <div className="checkbox-content">
+                        <span className="checkbox-title">Active Income Source</span>
+                        <span className="checkbox-desc">Include this in your total monthly income calculations</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="modal-footer">
+                  {editingIncomeSource._id && (
+                    <button
+                      className="btn-delete"
+                      onClick={async () => {
+                        if (window.confirm('Are you sure you want to delete this income source?')) {
+                          if (!budget || !user) return;
+                          const updatedSources = (budget?.incomeSources || []).filter(s => s._id !== editingIncomeSource._id);
+                          await updateBudget({
+                            userId: budget.userId || user.id,
+                            monthlySalary: budget.monthlySalary || 0,
+                            categoryBudgets: budget.categoryBudgets || {},
+                            incomeSources: updatedSources
+                          });
+                          setShowIncomeModal(false);
+                          setEditingIncomeSource(null);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
+                  <div className="modal-actions">
+                    <button className="btn-cancel" onClick={() => {
+                      setShowIncomeModal(false);
+                      setEditingIncomeSource(null);
+                    }}>
+                      Cancel
+                    </button>
+                    <button
+                      className="btn-save"
+                      onClick={async () => {
+                        if (!editingIncomeSource.name.trim()) {
+                          alert('Please enter an income source name');
+                          return;
+                        }
+                        if (editingIncomeSource.amount <= 0) {
+                          alert('Please enter a valid amount greater than 0');
+                          return;
+                        }
+                        if (!user) return;
+
+                        const existingSources = budget?.incomeSources || [];
+                        let updatedSources;
+
+                        if (editingIncomeSource._id) {
+                          // Update existing
+                          updatedSources = existingSources.map(s =>
+                            s._id === editingIncomeSource._id ? editingIncomeSource : s
+                          );
+                        } else {
+                          // Add new with a proper ID
+                          updatedSources = [...existingSources, {
+                            ...editingIncomeSource,
+                            _id: `temp_${Date.now()}` // Temporary ID until saved to DB
+                          }];
+                        }
+
+                        await updateBudget({
+                          userId: budget?.userId || user.id,
+                          monthlySalary: budget?.monthlySalary || 0,
+                          categoryBudgets: budget?.categoryBudgets || {},
+                          incomeSources: updatedSources
+                        });
+                        setShowIncomeModal(false);
+                        setEditingIncomeSource(null);
+                      }}
+                    >
+                      {editingIncomeSource._id ? 'Update' : 'Save'}
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </>

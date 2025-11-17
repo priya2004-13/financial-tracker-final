@@ -186,6 +186,10 @@ export const fetchFinancialNews = async (options: {
             headers: {
                 'Accept': 'application/json',
             },
+        }).catch((fetchError) => {
+            // Handle network errors (CORS, etc.)
+            console.warn('⚠️ Network error accessing Marketaux API:', fetchError.message);
+            throw new Error('CORS or network error');
         });
 
         if (!response.ok) {
