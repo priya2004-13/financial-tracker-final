@@ -9,23 +9,13 @@ import recurringPaymentRouter from "./routes/recurring-payments";
 import aiInsightsRouter from "./routes/ai-insights";
 import categoryRouter from "./routes/category";
 import transactionTemplateRouter from "./routes/transaction-template";
-import sharedExpenseRouter from "./routes/shared-expense"; // ✅ ADDED
-import reportsRouter from "./routes/reports"; // ✅ ADDED - PDF Reports
+import sharedExpenseRouter from "./routes/shared-expense";  
+import reportsRouter from "./routes/reports";
+import authRouter from "./routes/auth";
 import cors from "cors";
-// Webhook functionality disabled - using manual sync instead
-// import webhookRouter from "./routes/webhooks";
-// import { webhookMiddleware } from "./middleware/webhooks";
-// import { startWebhookRetryWorker } from "./utils/webhook-retry";
 import 'dotenv/config'
-// Webhook secret not needed since we're using manual sync
-// const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
-// if (!WEBHOOK_SECRET) {
-//   console.error("❌ CLERK_WEBHOOK_SECRET is not set in environment variables");
-//   process.exit(1);
-// }
 const app: Express = express();
-// webhookMiddleware(app);
 const port = process.env.PORT || 3001;
 
 app.use(express.json());
@@ -38,10 +28,6 @@ mongoose
   .then(() => {
     console.log("✅ CONNECTED TO MONGODB!");
 
-    // Start webhook retry worker after successful DB connection
-    // Using manual sync, so no need to start the worker
-    // startWebhookRetryWorker(60000); // Run every 60 seconds
-    // console.log("🔄 Webhook retry worker started (60s interval)");
   })
   .catch((err) => console.error("❌ Failed to Connect to MongoDB:", err));
 
@@ -52,7 +38,6 @@ app.get("/health", (req, res) => {
 });
 
 // Routes
-// app.use("/webhooks", webhookRouter);
 app.use("/financial-records", financialRecordRouter);
 app.use("/budget", budgetRouter);
 app.use("/savings-goals", savingsGoalRouter);
@@ -62,8 +47,9 @@ app.use("/ai", aiInsightsRouter);
 app.use("/categories", categoryRouter);
 app.use("/transaction-templates", transactionTemplateRouter);
 app.use("/shared-expenses", sharedExpenseRouter);
-app.use("/reports", reportsRouter); // ✅ NEW - PDF Reports
-
+app.use("/reports", reportsRouter);
+app.use("/auth", authRouter);
+ 
 // 404 handler
 app.use((req, res) => {
   res.status(404).send({ error: "Route not found" });

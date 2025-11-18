@@ -1,6 +1,5 @@
 // client/src/pages/auth/AuthCard.tsx
 import React from 'react';
-import { SignedOut } from "@clerk/clerk-react";
 import logo from "../../assets/brand_logo.png";
 import './AuthCard.css'; // Make sure this is linked
 
@@ -12,7 +11,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ children }) => {
   return (
     <div className="auth-card-container">
       <div className="auth-card">
-        <SignedOut>
+      
           <div className="auth-header">
             <div className="auth-logo-icon">
               {/* Use the existing logo for brand consistency */}
@@ -25,7 +24,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ children }) => {
           <div className="auth-buttons-group">
             {children}
           </div>
-        </SignedOut>
+    
       </div>
     </div>
   );
