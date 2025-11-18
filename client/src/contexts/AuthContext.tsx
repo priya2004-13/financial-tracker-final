@@ -6,7 +6,14 @@ interface User {
     email: string;
     firstName: string;
     lastName: string;
-    // ... other user fields
+    phoneNumber?: string;
+    avatar?: string;
+    createdAt?: string;
+    preferences?: {
+        theme?: 'light' | 'dark';
+        currency?: string;
+        language?: string;
+    };
 }
 
 interface AuthContextType {
@@ -17,6 +24,7 @@ interface AuthContextType {
     login: (email: string, password: string) => Promise<void>;
     register: (data: any) => Promise<void>;
     logout: () => void;
+    updateProfile: (data: Partial<User>) => Promise<void>; // ✅ Added
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -30,24 +38,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
-    // Load user if token exists on mount
     useEffect(() => {
         const loadUser = async () => {
             if (token) {
-                try {
-                    // You need a route like /auth/me to fetch user by token
-                    // Or store user in localStorage (less secure but easier for Phase 1)
-                    // For now, let's assume we decoded JWT or stored user in localstorage
-                    const storedUser = localStorage.getItem("user");
-                    if (storedUser) setUser(JSON.parse(storedUser));
-                } catch (err) {
-                    logout();
-                }
+                const storedUser = localStorage.getItem("user");
+                if (storedUser) setUser(JSON.parse(storedUser));
             }
             setLoading(false);
         };
         loadUser();
-    }, []);
+    }, [token]);
 
     const login = async (email: string, password: string) => {
         try {
@@ -93,6 +93,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
+    // ✅ New Function to Update Profile
+    const updateProfile = async (data: Partial<User>) => {
+        if (!user?._id || !token) return;
+
+        try {
+            setError(null);
+            const res = await fetch(`${API_URL}/users/${user._id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}` // Ensure you use this on backend if middleware exists
+                },
+                body: JSON.stringify(data),
+            });
+
+            const updatedUser = await res.json();
+            if (!res.ok) throw new Error(updatedUser.error || "Update failed");
+
+            // Update State and LocalStorage
+            setUser(prev => ({ ...prev, ...updatedUser }));
+            localStorage.setItem("user", JSON.stringify({ ...user, ...updatedUser }));
+
+        } catch (err: any) {
+            console.error("Profile update error:", err);
+            throw err;
+        }
+    };
+
     const logout = () => {
         setUser(null);
         setToken(null);
@@ -102,7 +130,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, loading, error, login, register, logout }}>
+        <AuthContext.Provider value={{ user, token, loading, error, login, register, logout, updateProfile }}>
             {children}
         </AuthContext.Provider>
     );

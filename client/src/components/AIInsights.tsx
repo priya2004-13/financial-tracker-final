@@ -1,6 +1,6 @@
 ﻿// client/src/components/AIInsights.tsx
 import React, { useState, useEffect } from 'react';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import {
     getComprehensiveInsights,
     AIInsight,
@@ -15,7 +15,7 @@ interface AIInsightsProps {
 }
 
 const AIInsights: React.FC<AIInsightsProps> = ({ startDate, endDate, autoLoad = true }) => {
-    const { user } = useUser();
+    const { user } = useAuth();
     const [insights, setInsights] = useState<AIInsight[]>([]);
     const [summary, setSummary] = useState<ComprehensiveInsightsResponse['summary'] | null>(null);
     const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ const AIInsights: React.FC<AIInsightsProps> = ({ startDate, endDate, autoLoad = 
         setError(null);
 
         try {
-            const data = await getComprehensiveInsights(user.id, startDate, endDate);
+            const data = await getComprehensiveInsights(user._id, startDate, endDate);
             setInsights(data.insights);
             setSummary(data.summary);
         } catch (err) {

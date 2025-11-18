@@ -1,6 +1,6 @@
 ﻿// client/src/components/TransactionTemplates.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import {
     TransactionTemplate as TemplateType,
     fetchTransactionTemplates,
@@ -12,7 +12,7 @@ import { PlusCircle, Trash2, LayoutTemplate, Loader } from 'lucide-react';
 import './TransactionTemplates.css';
 
 export const TransactionTemplates: React.FC = () => {
-    const { user } = useUser();
+    const { user } = useAuth();
     const { addRecord } = useFinancialRecords(); // Get addRecord to update list after applying template
     const [templates, setTemplates] = useState<TemplateType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +24,7 @@ export const TransactionTemplates: React.FC = () => {
         try {
             setIsLoading(true);
             setError(null);
-            const fetchedTemplates = await fetchTransactionTemplates(user.id);
+            const fetchedTemplates = await fetchTransactionTemplates(user._id);
             setTemplates(fetchedTemplates);
         } catch (err) {
             console.error("Error fetching templates:", err);
@@ -54,7 +54,7 @@ export const TransactionTemplates: React.FC = () => {
         setIsApplying(template._id ?? null);
         try {
             const newRecord = {
-                userId: user.id,
+                userId: user._id,
                 date: new Date(), // Use current date when applying
                 description: template.description,
                 amount: template.amount,

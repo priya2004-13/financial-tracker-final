@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { AuthCard } from "./AuthCard";
 import { useAuth } from "../../contexts/AuthContext";
-import "./AuthForms.css"; // Import separate CSS
+import "./AuthForms.css";  
 
 export const Login = () => {
     const [email, setEmail] = useState("");

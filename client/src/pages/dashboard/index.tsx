@@ -1,5 +1,4 @@
 // client/src/pages/dashboard/index.tsx - Updated with Scroll Detection
-import { useUser } from "@clerk/clerk-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import {
@@ -41,8 +40,9 @@ import AIInsights from "../../components/AIInsights";
 import AIAdvisor from "../../components/AIAdvisor";
 import ReportDownloads from "../../components/ReportDownloads";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 export const Dashboard = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { records, budget, isLoading, updateBudget, setUserSalary } = useFinancialRecords();
   const [showHeader, setShowHeader] = React.useState(true);
   const screenSize = useScreenSize();
@@ -427,7 +427,7 @@ export const Dashboard = () => {
                         await setUserSalary(salaryInput, false);
                         // Persist full budget
                         await updateBudget({
-                          userId: budget?.userId || user?.id || '',
+                          userId: budget?.userId || user?._id || '',
                           monthlySalary: salaryInput,
                           categoryBudgets: budget?.categoryBudgets || {}
                         });
@@ -978,7 +978,7 @@ export const Dashboard = () => {
 
                           try {
                             await updateBudget({
-                              userId: budget.userId || user.id,
+                              userId: budget.userId || user._id,
                               monthlySalary: budget.monthlySalary || 0,
                               categoryBudgets: budget.categoryBudgets || {},
                               incomeSources: cleanedSources
@@ -1043,7 +1043,7 @@ export const Dashboard = () => {
                           updatedSources,
                           cleanedSources,
                           budgetData: {
-                            userId: budget?.userId || user.id,
+                            userId: budget?.userId || user._id,
                             monthlySalary: budget?.monthlySalary || 0,
                             categoryBudgets: budget?.categoryBudgets || {},
                             incomeSources: cleanedSources
@@ -1052,7 +1052,7 @@ export const Dashboard = () => {
 
                         try {
                           await updateBudget({
-                            userId: budget?.userId || user.id,
+                            userId: budget?.userId || user._id,
                             monthlySalary: budget?.monthlySalary || 0,
                             categoryBudgets: budget?.categoryBudgets || {},
                             incomeSources: cleanedSources

@@ -1,6 +1,6 @@
 ﻿// client/src/components/SharedExpenses.tsx - Improved with API utilities
 import React, { useState, useEffect, useCallback } from 'react';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import { Users, Plus, Check, X, TrendingUp, TrendingDown, Loader } from 'lucide-react';
 import './SharedExpenses.css';
 import {
@@ -45,7 +45,7 @@ const GROUPS: Group[] = [
 ];
 
 export const SharedExpenses: React.FC = () => {
-    const { user } = useUser();
+    const { user } = useAuth();
     const [expenses, setExpenses] = useState<SharedExpense[]>([]);
     const [balance, setBalance] = useState<BalanceSummary>({
         totalOwed: 0,
@@ -68,7 +68,7 @@ export const SharedExpenses: React.FC = () => {
         splitType: 'equal' as 'equal' | 'custom' | 'percentage',
         participants: [
             {
-                userId: user?.id || '',
+                userId: user?._id || '',
                 userName: user?.firstName || 'Me',
                 percentage: 50,
                 customAmount: ''
@@ -92,7 +92,7 @@ export const SharedExpenses: React.FC = () => {
     const loadBalance = useCallback(async () => {
         if (!user) return;
         try {
-            const data = await getSharedExpenseBalance(selectedGroup, user.id);
+            const data = await getSharedExpenseBalance(selectedGroup, user._id);
             setBalance(data);
         } catch (err: any) {
             console.error('Error loading balance:', err);
@@ -198,14 +198,14 @@ export const SharedExpenses: React.FC = () => {
             const newExpense = {
                 groupId: selectedGroup,
                 groupName: formData.groupName,
-                createdBy: user.id,
+                createdBy: user._id,
                 createdByName: user.firstName || 'User',
                 date: new Date(),
                 description: formData.description,
                 totalAmount: totalAmount,
                 category: formData.category,
                 paymentMethod: formData.paymentMethod,
-                paidBy: user.id,
+                paidBy: user._id,
                 paidByName: user.firstName || 'User',
                 splitType: formData.splitType,
                 participants: formData.participants.map(p => ({
@@ -215,7 +215,7 @@ export const SharedExpenses: React.FC = () => {
                         ? parseFloat(p.customAmount || '0')
                         : 0,
                     percentage: formData.splitType === 'percentage' ? p.percentage : undefined,
-                    hasPaid: p.userId === user.id
+                    hasPaid: p.userId === user._id
                 }))
             };
 
@@ -255,7 +255,7 @@ export const SharedExpenses: React.FC = () => {
             splitType: 'equal',
             participants: [
                 {
-                    userId: user?.id || '',
+                    userId: user?._id || '',
                     userName: user?.firstName || 'Me',
                     percentage: 50,
                     customAmount: ''
@@ -554,7 +554,7 @@ export const SharedExpenses: React.FC = () => {
                                                     <span className="status-badge paid">
                                                         <Check size={12} /> Paid
                                                     </span>
-                                                ) : p.userId === user.id ? (
+                                                ) : p.userId === user._id ? (
                                                     <button
                                                         onClick={() => expense._id && markAsPaid(expense._id, p.userId)}
                                                         className="btn-mark-paid"

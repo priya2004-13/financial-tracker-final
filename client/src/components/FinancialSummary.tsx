@@ -1,12 +1,12 @@
 ﻿// client/src/components/FinancialSummary.tsx
 import { useState } from 'react';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth} from "../contexts/AuthContext";
 import { getFinancialSummary } from '../../services/api';
 import { Sparkles, TrendingUp, TrendingDown, IndianRupee, Loader } from 'lucide-react';
 import './FinancialSummary.css';
 
 export const FinancialSummary = () => {
-    const { user } = useUser();
+    const { user } = useAuth();
     const [summary, setSummary] = useState<string | null>(null);
     const [data, setData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +18,7 @@ export const FinancialSummary = () => {
         try {
             setIsLoading(true);
             setError(null);
-            const result = await getFinancialSummary(user.id);
+            const result = await getFinancialSummary(user._id);
             setSummary(result.summary);
             setData(result.data);
         } catch (err) {

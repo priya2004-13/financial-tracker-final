@@ -1,54 +1,87 @@
 ﻿// client/src/pages/ProfilePage.tsx
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUser, useClerk } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext'; // ✅ Custom Auth
 import { useTheme } from '../contexts/themeContext';
 import { useFinancialRecords } from '../contexts/financial-record-context';
 import {
-    User,
-    Mail,
-    Calendar,
-    LogOut,
-    Moon,
-    Sun,
-    HelpCircle,
-    ChevronRight,
-    Bell,
-    Shield,
-    CreditCard,
-    FileText,
-    Settings,
-    TrendingUp,
-    DollarSign,
-    Target,
-    Activity,
-    Award,
-    Clock,
-    MapPin,
-    Phone,
-    Edit2,
-    Download,
-    Upload,
-    Trash2
+    User, Mail, Calendar, LogOut, Moon, Sun, HelpCircle,
+    ChevronRight, Bell, Shield, CreditCard, FileText,
+    Settings, TrendingUp, DollarSign, Target, Activity,
+    Award, Clock, MapPin, Phone, Edit2, Download, Upload,
+    Trash2, Save, X
 } from 'lucide-react';
 import { CategoryManager } from '../components/CategoryManager';
 import './ProfilePage.css';
 
 export const ProfilePage = () => {
-    const { user } = useUser();
-    const { signOut } = useClerk();
+    const { user, logout, updateProfile } = useAuth();
     const navigate = useNavigate();
     const { theme, toggleTheme } = useTheme();
     const { records } = useFinancialRecords();
+
+    // State management
     const [isSigningOut, setIsSigningOut] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [activeTab, setActiveTab] = useState<'overview' | 'settings' | 'security' | 'categories'>('overview');
 
-    // Calculate user statistics
+    // Form State
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: ''
+    });
+
+    // Initialize form data when user loads
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                firstName: user.firstName || '',
+                lastName: user.lastName || '',
+                email: user.email || '',
+                phoneNumber: user.phoneNumber || ''
+            });
+        }
+    }, [user]);
+
+    // Handle Input Changes
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    // Save Profile Changes
+    const handleSaveProfile = async () => {
+        setIsSaving(true);
+        try {
+            await updateProfile(formData);
+            setIsEditing(false);
+        } catch (error) {
+            alert("Failed to update profile. Please try again.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    // Cancel Editing
+    const handleCancelEdit = () => {
+        if (user) {
+            setFormData({
+                firstName: user.firstName || '',
+                lastName: user.lastName || '',
+                email: user.email || '',
+                phoneNumber: user.phoneNumber || ''
+            });
+        }
+        setIsEditing(false);
+    };
+
+    // Stats Calculation
     const totalTransactions = records?.length || 0;
-    const totalIncome = records?.filter(r => r.category === 'Income')
-        .reduce((sum, r) => sum + r.amount, 0) || 0;
-    const totalExpenses = records?.filter(r => r.category !== 'Income')
-        .reduce((sum, r) => sum + r.amount, 0) || 0;
+    const totalIncome = records?.filter(r => r.category === 'Income').reduce((sum, r) => sum + r.amount, 0) || 0;
+    const totalExpenses = records?.filter(r => r.category !== 'Income').reduce((sum, r) => sum + r.amount, 0) || 0;
     const netBalance = totalIncome - totalExpenses;
 
     const accountAge = user?.createdAt
@@ -56,39 +89,31 @@ export const ProfilePage = () => {
         : 0;
 
     const handleSignOut = async () => {
-        if (!window.confirm('Are you sure you want to sign out?')) {
-            return;
-        }
-
+        if (!window.confirm('Are you sure you want to sign out?')) return;
         setIsSigningOut(true);
-
-        try {
-            await signOut({ redirectUrl: '/auth' });
-            navigate('/auth', { replace: true });
-        } catch (error) {
-            console.error('Sign out error:', error);
-            navigate('/auth', { replace: true });
-        } finally {
-            setTimeout(() => setIsSigningOut(false), 500);
-        }
+        setTimeout(() => {
+            logout();
+            navigate('/auth');
+        }, 800);
     };
 
     return (
         <div className="profile-page-wrapper">
-            {/* Desktop Sidebar / Mobile Header */}
+            {/* Sidebar */}
             <div className="profile-sidebar">
                 <div className="profile-hero-card">
                     <div className="profile-hero-bg"></div>
                     <div className="profile-hero-content">
                         <div className="profile-avatar-container">
                             <div className="profile-avatar-large">
-                                {user?.imageUrl ? (
-                                    <img src={user.imageUrl} alt={user.firstName || 'User'} />
+                                {user?.avatar ? (
+                                    <img src={user.avatar} alt="Profile" />
                                 ) : (
                                     <User size={48} />
                                 )}
                             </div>
-                            <button className="profile-avatar-edit">
+                            {/* Avatar Edit could be implemented with file upload later */}
+                            <button className="profile-avatar-edit" title="Change Avatar (Coming Soon)">
                                 <Edit2 size={14} />
                             </button>
                         </div>
@@ -96,184 +121,172 @@ export const ProfilePage = () => {
                             <h2 className="profile-user-name">
                                 {user?.firstName} {user?.lastName}
                             </h2>
-                            <p className="profile-user-email">
-                                {user?.primaryEmailAddress?.emailAddress}
-                            </p>
+                            <p className="profile-user-email">{user?.email}</p>
                             <div className="profile-badges">
                                 <span className="profile-badge primary">
-                                    <Award size={12} />
-                                    Premium Member
+                                    <Award size={12} /> Premium
                                 </span>
                                 <span className="profile-badge">
-                                    <Clock size={12} />
-                                    {accountAge} days
+                                    <Clock size={12} /> {accountAge} days
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Stats Overview */}
+                {/* Quick Stats */}
                 <div className="profile-quick-stats">
                     <div className="quick-stat-item">
-                        <div className="quick-stat-icon income">
-                            <TrendingUp size={20} />
-                        </div>
+                        <div className="quick-stat-icon income"><TrendingUp size={20} /></div>
                         <div className="quick-stat-content">
-                            <span className="quick-stat-label">Total Income</span>
-                            <span className="quick-stat-value">${totalIncome.toFixed(2)}</span>
+                            <span className="quick-stat-label">Income</span>
+                            <span className="quick-stat-value">${totalIncome.toFixed(0)}</span>
                         </div>
                     </div>
                     <div className="quick-stat-item">
-                        <div className="quick-stat-icon expense">
-                            <DollarSign size={20} />
-                        </div>
+                        <div className="quick-stat-icon expense"><DollarSign size={20} /></div>
                         <div className="quick-stat-content">
-                            <span className="quick-stat-label">Total Expenses</span>
-                            <span className="quick-stat-value">${totalExpenses.toFixed(2)}</span>
-                        </div>
-                    </div>
-                    <div className="quick-stat-item">
-                        <div className="quick-stat-icon balance">
-                            <Target size={20} />
-                        </div>
-                        <div className="quick-stat-content">
-                            <span className="quick-stat-label">Net Balance</span>
-                            <span className="quick-stat-value">${netBalance.toFixed(2)}</span>
-                        </div>
-                    </div>
-                    <div className="quick-stat-item">
-                        <div className="quick-stat-icon transactions">
-                            <Activity size={20} />
-                        </div>
-                        <div className="quick-stat-content">
-                            <span className="quick-stat-label">Transactions</span>
-                            <span className="quick-stat-value">{totalTransactions}</span>
+                            <span className="quick-stat-label">Expense</span>
+                            <span className="quick-stat-value">${totalExpenses.toFixed(0)}</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Tab Navigation */}
+                {/* Navigation Tabs */}
                 <div className="profile-tabs">
-                    <button
-                        className={`profile-tab ${activeTab === 'overview' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('overview')}
-                    >
-                        <User size={18} />
-                        <span>Overview</span>
-                    </button>
-                    <button
-                        className={`profile-tab ${activeTab === 'settings' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('settings')}
-                    >
-                        <Settings size={18} />
-                        <span>Settings</span>
-                    </button>
-                    <button
-                        className={`profile-tab ${activeTab === 'security' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('security')}
-                    >
-                        <Shield size={18} />
-                        <span>Security</span>
-                    </button>
-                    <button
-                        className={`profile-tab ${activeTab === 'categories' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('categories')}
-                    >
-                        <FileText size={18} />
-                        <span>Categories</span>
-                    </button>
+                    {[
+                        { id: 'overview', icon: User, label: 'Overview' },
+                        { id: 'settings', icon: Settings, label: 'Settings' },
+                        { id: 'security', icon: Shield, label: 'Security' },
+                        { id: 'categories', icon: FileText, label: 'Categories' }
+                    ].map(tab => (
+                        <button
+                            key={tab.id}
+                            className={`profile-tab ${activeTab === tab.id ? 'active' : ''}`}
+                            onClick={() => setActiveTab(tab.id as any)}
+                        >
+                            <tab.icon size={18} />
+                            <span>{tab.label}</span>
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            {/* Main Content Area */}
+            {/* Main Content */}
             <div className="profile-main-content">
 
-                {/* Overview Tab */}
+                {/* OVERVIEW TAB with Edit Functionality */}
                 {activeTab === 'overview' && (
                     <div className="profile-content-section">
-                        <h2 className="section-main-title">Account Information</h2>
+                        <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                            <h2 className="section-main-title" style={{ margin: 0 }}>Account Information</h2>
+
+                            {!isEditing ? (
+                                <button className="btn-base btn-edit-profile" onClick={() => setIsEditing(true)}>
+                                    <Edit2 size={16} /> Edit Profile
+                                </button>
+                            ) : (
+                                <div className="edit-actions" style={{ display: 'flex', gap: '0.5rem' }}>
+                                    <button className="btn-base btn-cancel" onClick={handleCancelEdit} disabled={isSaving}>
+                                        <X size={16} /> Cancel
+                                    </button>
+                                    <button className="btn-base btn-save" onClick={handleSaveProfile} disabled={isSaving}>
+                                        {isSaving ? <div className="spinner-small" /> : <Save size={16} />} Save
+                                    </button>
+                                </div>
+                            )}
+                        </div>
 
                         <div className="profile-grid">
-                            <div className="profile-info-card">
-                                <div className="profile-info-icon">
-                                    <User size={20} />
-                                </div>
+                            {/* First Name */}
+                            <div className={`profile-info-card ${isEditing ? 'editing' : ''}`}>
+                                <div className="profile-info-icon"><User size={20} /></div>
                                 <div className="profile-info-content">
-                                    <span className="profile-info-label">Full Name</span>
-                                    <span className="profile-info-value">{user?.firstName} {user?.lastName}</span>
+                                    <span className="profile-info-label">First Name</span>
+                                    {isEditing ? (
+                                        <input
+                                            name="firstName"
+                                            className="profile-input"
+                                            value={formData.firstName}
+                                            onChange={handleInputChange}
+                                        />
+                                    ) : (
+                                        <span className="profile-info-value">{user?.firstName}</span>
+                                    )}
                                 </div>
-                                <button className="profile-edit-btn">
-                                    <Edit2 size={16} />
-                                </button>
                             </div>
 
-                            <div className="profile-info-card">
-                                <div className="profile-info-icon">
-                                    <Mail size={20} />
+                            {/* Last Name */}
+                            <div className={`profile-info-card ${isEditing ? 'editing' : ''}`}>
+                                <div className="profile-info-icon"><User size={20} /></div>
+                                <div className="profile-info-content">
+                                    <span className="profile-info-label">Last Name</span>
+                                    {isEditing ? (
+                                        <input
+                                            name="lastName"
+                                            className="profile-input"
+                                            value={formData.lastName}
+                                            onChange={handleInputChange}
+                                        />
+                                    ) : (
+                                        <span className="profile-info-value">{user?.lastName}</span>
+                                    )}
                                 </div>
+                            </div>
+
+                            {/* Email */}
+                            <div className={`profile-info-card ${isEditing ? 'editing' : ''}`}>
+                                <div className="profile-info-icon"><Mail size={20} /></div>
                                 <div className="profile-info-content">
                                     <span className="profile-info-label">Email Address</span>
-                                    <span className="profile-info-value">{user?.primaryEmailAddress?.emailAddress}</span>
+                                    {isEditing ? (
+                                        <input
+                                            name="email"
+                                            className="profile-input"
+                                            value={formData.email}
+                                            onChange={handleInputChange}
+                                        />
+                                    ) : (
+                                        <span className="profile-info-value">{user?.email}</span>
+                                    )}
                                 </div>
-                                <button className="profile-edit-btn">
-                                    <Edit2 size={16} />
-                                </button>
                             </div>
 
-                            <div className="profile-info-card">
-                                <div className="profile-info-icon">
-                                    <Phone size={20} />
-                                </div>
+                            {/* Phone */}
+                            <div className={`profile-info-card ${isEditing ? 'editing' : ''}`}>
+                                <div className="profile-info-icon"><Phone size={20} /></div>
                                 <div className="profile-info-content">
                                     <span className="profile-info-label">Phone Number</span>
-                                    <span className="profile-info-value">
-                                        {user?.primaryPhoneNumber?.phoneNumber || 'Not provided'}
-                                    </span>
+                                    {isEditing ? (
+                                        <input
+                                            name="phoneNumber"
+                                            className="profile-input"
+                                            placeholder="Add phone number"
+                                            value={formData.phoneNumber}
+                                            onChange={handleInputChange}
+                                        />
+                                    ) : (
+                                        <span className="profile-info-value">{user?.phoneNumber || 'Not provided'}</span>
+                                    )}
                                 </div>
-                                <button className="profile-edit-btn">
-                                    <Edit2 size={16} />
-                                </button>
                             </div>
 
+                            {/* Static Fields */}
                             <div className="profile-info-card">
-                                <div className="profile-info-icon">
-                                    <Calendar size={20} />
-                                </div>
+                                <div className="profile-info-icon"><Calendar size={20} /></div>
                                 <div className="profile-info-content">
                                     <span className="profile-info-label">Member Since</span>
                                     <span className="profile-info-value">
-                                        {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        }) : 'N/A'}
+                                        {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
                                     </span>
                                 </div>
                             </div>
 
                             <div className="profile-info-card">
-                                <div className="profile-info-icon">
-                                    <MapPin size={20} />
-                                </div>
+                                <div className="profile-info-icon"><MapPin size={20} /></div>
                                 <div className="profile-info-content">
                                     <span className="profile-info-label">Location</span>
-                                    <span className="profile-info-value">Not set</span>
-                                </div>
-                                <button className="profile-edit-btn">
-                                    <Edit2 size={16} />
-                                </button>
-                            </div>
-
-                            <div className="profile-info-card">
-                                <div className="profile-info-icon">
-                                    <Clock size={20} />
-                                </div>
-                                <div className="profile-info-content">
-                                    <span className="profile-info-label">Last Updated</span>
-                                    <span className="profile-info-value">
-                                        {user?.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : 'N/A'}
-                                    </span>
+                                    <span className="profile-info-value">Global</span>
                                 </div>
                             </div>
                         </div>
@@ -283,27 +296,21 @@ export const ProfilePage = () => {
                             <button className="profile-action-card">
                                 <Download size={24} />
                                 <span>Export Data</span>
-                                <p>Download all your financial data</p>
-                            </button>
-                            <button className="profile-action-card">
-                                <Upload size={24} />
-                                <span>Import Data</span>
-                                <p>Upload transactions from file</p>
+                                <p>Download CSV/PDF</p>
                             </button>
                             <button className="profile-action-card danger">
                                 <Trash2 size={24} />
                                 <span>Delete Account</span>
-                                <p>Permanently remove your account</p>
+                                <p>Permanent Action</p>
                             </button>
                         </div>
                     </div>
                 )}
 
-                {/* Settings Tab */}
+                {/* SETTINGS TAB */}
                 {activeTab === 'settings' && (
                     <div className="profile-content-section">
                         <h2 className="section-main-title">Preferences</h2>
-
                         <div className="settings-list">
                             <button className="profile-settings-item" onClick={toggleTheme}>
                                 <div className="settings-item-left">
@@ -317,45 +324,17 @@ export const ProfilePage = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <ChevronRight size={18} className="settings-item-arrow" />
+                                <div className={`toggle-switch ${theme === 'dark' ? 'active' : ''}`}>
+                                    <div className="toggle-slider"></div>
+                                </div>
                             </button>
 
                             <button className="profile-settings-item">
                                 <div className="settings-item-left">
-                                    <div className="settings-item-icon">
-                                        <Bell size={20} />
-                                    </div>
+                                    <div className="settings-item-icon"><Bell size={20} /></div>
                                     <div className="settings-item-content">
                                         <span className="settings-item-label">Notifications</span>
-                                        <span className="settings-item-desc">Email, push, and alerts</span>
-                                    </div>
-                                </div>
-                                <div className="toggle-switch">
-                                    <div className="toggle-slider"></div>
-                                </div>
-                            </button>
-
-                            <button className="profile-settings-item">
-                                <div className="settings-item-left">
-                                    <div className="settings-item-icon">
-                                        <DollarSign size={20} />
-                                    </div>
-                                    <div className="settings-item-content">
-                                        <span className="settings-item-label">Currency</span>
-                                        <span className="settings-item-desc">USD ($)</span>
-                                    </div>
-                                </div>
-                                <ChevronRight size={18} className="settings-item-arrow" />
-                            </button>
-
-                            <button className="profile-settings-item">
-                                <div className="settings-item-left">
-                                    <div className="settings-item-icon">
-                                        <Calendar size={20} />
-                                    </div>
-                                    <div className="settings-item-content">
-                                        <span className="settings-item-label">Date Format</span>
-                                        <span className="settings-item-desc">MM/DD/YYYY</span>
+                                        <span className="settings-item-desc">Manage alerts</span>
                                     </div>
                                 </div>
                                 <ChevronRight size={18} className="settings-item-arrow" />
@@ -364,112 +343,15 @@ export const ProfilePage = () => {
                     </div>
                 )}
 
-                {/* Security Tab */}
-                {activeTab === 'security' && (
-                    <div className="profile-content-section">
-                        <h2 className="section-main-title">Security & Privacy</h2>
-
-                        <div className="settings-list">
-                            <button className="profile-settings-item">
-                                <div className="settings-item-left">
-                                    <div className="settings-item-icon">
-                                        <Shield size={20} />
-                                    </div>
-                                    <div className="settings-item-content">
-                                        <span className="settings-item-label">Two-Factor Authentication</span>
-                                        <span className="settings-item-desc">Add extra security to your account</span>
-                                    </div>
-                                </div>
-                                <div className="toggle-switch">
-                                    <div className="toggle-slider"></div>
-                                </div>
-                            </button>
-
-                            <button className="profile-settings-item">
-                                <div className="settings-item-left">
-                                    <div className="settings-item-icon">
-                                        <CreditCard size={20} />
-                                    </div>
-                                    <div className="settings-item-content">
-                                        <span className="settings-item-label">Payment Methods</span>
-                                        <span className="settings-item-desc">Manage saved payment cards</span>
-                                    </div>
-                                </div>
-                                <ChevronRight size={18} className="settings-item-arrow" />
-                            </button>
-
-                            <button className="profile-settings-item">
-                                <div className="settings-item-left">
-                                    <div className="settings-item-icon">
-                                        <FileText size={20} />
-                                    </div>
-                                    <div className="settings-item-content">
-                                        <span className="settings-item-label">Privacy Settings</span>
-                                        <span className="settings-item-desc">Control your data sharing</span>
-                                    </div>
-                                </div>
-                                <ChevronRight size={18} className="settings-item-arrow" />
-                            </button>
-
-                            <button className="profile-settings-item">
-                                <div className="settings-item-left">
-                                    <div className="settings-item-icon">
-                                        <Activity size={20} />
-                                    </div>
-                                    <div className="settings-item-content">
-                                        <span className="settings-item-label">Login Activity</span>
-                                        <span className="settings-item-desc">View recent login history</span>
-                                    </div>
-                                </div>
-                                <ChevronRight size={18} className="settings-item-arrow" />
-                            </button>
-                        </div>
-
-                        <h2 className="section-main-title" style={{ marginTop: '2rem' }}>Support</h2>
-                        <div className="settings-list">
-                            <button className="profile-settings-item">
-                                <div className="settings-item-left">
-                                    <div className="settings-item-icon">
-                                        <HelpCircle size={20} />
-                                    </div>
-                                    <div className="settings-item-content">
-                                        <span className="settings-item-label">Help Center</span>
-                                        <span className="settings-item-desc">FAQs and support articles</span>
-                                    </div>
-                                </div>
-                                <ChevronRight size={18} className="settings-item-arrow" />
-                            </button>
-
-                            <button className="profile-settings-item">
-                                <div className="settings-item-left">
-                                    <div className="settings-item-icon">
-                                        <FileText size={20} />
-                                    </div>
-                                    <div className="settings-item-content">
-                                        <span className="settings-item-label">Terms & Privacy Policy</span>
-                                        <span className="settings-item-desc">Legal information</span>
-                                    </div>
-                                </div>
-                                <ChevronRight size={18} className="settings-item-arrow" />
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {/* Categories Tab */}
+                {/* Other tabs remain mostly static or use other components */}
                 {activeTab === 'categories' && (
                     <div className="profile-content-section">
                         <h2 className="section-main-title">Category Management</h2>
-                        <p className="section-description">
-                            Customize your transaction categories to better organize your finances
-                        </p>
-                        <div className="profile-category-manager">
-                            <CategoryManager />
-                        </div>
+                        <CategoryManager />
                     </div>
                 )}
 
-                {/* Sign Out Button */}
+                {/* Sign Out */}
                 <button
                     className="profile-signout-button"
                     onClick={handleSignOut}
@@ -477,21 +359,17 @@ export const ProfilePage = () => {
                 >
                     {isSigningOut ? (
                         <>
-                            <div className="signout-spinner" />
-                            Signing Out...
+                            <div className="signout-spinner" /> Signing Out...
                         </>
                     ) : (
                         <>
-                            <LogOut size={20} />
-                            Sign Out
+                            <LogOut size={20} /> Sign Out
                         </>
                     )}
                 </button>
 
-                {/* Footer */}
                 <div className="profile-footer">
-                    <p>Financial Tracker v1.0.0</p>
-                    <p>© 2025 All rights reserved</p>
+                    <p>MoneyFlow v1.0.0</p>
                 </div>
             </div>
         </div>

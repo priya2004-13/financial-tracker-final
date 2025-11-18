@@ -1,6 +1,6 @@
 // client/src/pages/dashboard/financial-record-form.tsx - FIXED WITH ATTACHMENTS
 import React, { useState, useEffect, useMemo } from "react";
-import { useUser } from "@clerk/clerk-react";
+import { useAuth } from "../../contexts/AuthContext";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import {
   suggestCategory as apiSuggestCategory,
@@ -35,7 +35,7 @@ export const FinancialRecordForm = () => {
   const [notes, setNotes] = useState<string>("");
 
   const { addRecord, categories } = useFinancialRecords();
-  const { user } = useUser();
+  const { user } = useAuth();
 
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [anomalyWarning, setAnomalyWarning] = useState<string | null>(null);
@@ -81,7 +81,7 @@ export const FinancialRecordForm = () => {
   const checkAnomaly = async (numAmount: number, cat: string) => {
     if (!user) return;
     try {
-      const result = await detectSpendingAnomaly(user.id, numAmount, cat);
+      const result = await detectSpendingAnomaly(user._id, numAmount, cat);
       if (result.isAnomaly) {
         setAnomalyWarning(result.message);
       } else {
@@ -110,7 +110,7 @@ export const FinancialRecordForm = () => {
     if (!user) return;
 
     const newRecord = {
-      userId: user.id,
+      userId: user._id,
       date: new Date(),
       description: description,
       amount: parseFloat(amount),
@@ -128,7 +128,7 @@ export const FinancialRecordForm = () => {
     if (!user) return;
 
     const recordsToSave = splits.map((item) => ({
-      userId: user.id,
+      userId: user._id,
       date: new Date(),
       description: item.description || description || "Split Transaction",
       amount: parseFloat(item.amount),
@@ -148,7 +148,7 @@ export const FinancialRecordForm = () => {
     if (!templateName || !user) return;
     try {
       await addTransactionTemplate({
-        userId: user.id,
+        userId: user._id,
         templateName,
         description,
         amount: parseFloat(amount),

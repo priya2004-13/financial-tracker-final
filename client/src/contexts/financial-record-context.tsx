@@ -1,5 +1,4 @@
 // client/src/contexts/financial-record-context.tsx - Updated for Offline Mode & Categories
-import { useUser } from "@clerk/clerk-react";
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import {
   FinancialRecord as FinancialRecordType,
@@ -20,6 +19,7 @@ import {
   Category,
   Attachment,
 } from "../../services/api";
+import { useAuth } from "./AuthContext";
 
 export interface FinancialRecord extends FinancialRecordType { }
 
@@ -54,7 +54,7 @@ export const FinancialRecordsProvider = ({
   const [categories, setCategories] = useState<Category[]>([]); // State for categories
   const [isLoading, setIsLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const { user } = useUser();
+  const { user } = useAuth();
 
   // Sync offline records
   const syncOfflineRecords = useCallback(async () => {
@@ -70,7 +70,7 @@ export const FinancialRecordsProvider = ({
         // Assuming addFinancialRecord can handle single record submission
         // If you have a bulk endpoint, use that instead.
         // Assign the correct userId before sending
-        record.userId = user.id;
+        record.userId = user._id;
         await addFinancialRecord(record);
       }
       clearOfflineRecords(); // Clear local storage after successful sync
@@ -89,9 +89,9 @@ export const FinancialRecordsProvider = ({
     setIsLoading(true);
     try {
       await Promise.all([
-        fetchFinancialRecords(user.id, 1, 50).then(response => setRecords(response.records)).catch(console.error),
-        fetchBudget(user.id).then(setBudget).catch(console.error),
-        fetchCategories(user.id).then(setCategories).catch(console.error), // Fetch categories
+        fetchFinancialRecords(user._id, 1, 50).then(response => setRecords(response.records)).catch(console.error),
+        fetchBudget(user._id).then(setBudget).catch(console.error),
+        fetchCategories(user._id).then(setCategories).catch(console.error), // Fetch categories
       ]);
       await syncOfflineRecords(); // Attempt sync after fetching initial data
     } catch (error) {
@@ -131,7 +131,7 @@ export const FinancialRecordsProvider = ({
     // Ensure userId is set for all records being added
     const recordsToAdd = (Array.isArray(recordData) ? recordData : [recordData]).map(r => ({
       ...r,
-      userId: user?.id ?? "", // Ensure userId is present
+      userId: user?._id ?? "", // Ensure userId is present
     }));
 
     if (!isOnline) {
@@ -217,7 +217,7 @@ export const FinancialRecordsProvider = ({
         }
       }
       console.log('📤 Sending budget update to server:', budgetData);
-      const updatedBudget = await apiUpdateBudget(user.id, budgetData);
+      const updatedBudget = await apiUpdateBudget(user._id, budgetData);
       console.log('📥 Received updated budget from server:', updatedBudget);
       setBudget(updatedBudget);
     } catch (err) {
@@ -233,7 +233,7 @@ export const FinancialRecordsProvider = ({
     // Create a default budget object if not present
     const updatedBudget: UserBudget = {
       _id: budget?._id,
-      userId: budget?.userId || user.id,
+      userId: budget?.userId || user._id,
       monthlySalary: salary,
       categoryBudgets: budget?.categoryBudgets || {}
     };
@@ -257,7 +257,7 @@ export const FinancialRecordsProvider = ({
     if (!user || !isOnline) return; // Add online check
     try {
       // Ensure userId is set
-      const categoryToAdd = { ...category, userId: user.id };
+      const categoryToAdd = { ...category, userId: user._id };
       const newCategory = await apiAddCategory(categoryToAdd);
       setCategories((prev) => [...prev, newCategory].sort((a, b) => a.name.localeCompare(b.name))); // Keep sorted
     } catch (err) {

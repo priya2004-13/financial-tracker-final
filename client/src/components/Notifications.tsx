@@ -1,6 +1,6 @@
 ﻿// client/src/components/Notifications.tsx
 import { useState, useEffect } from 'react';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import {
     Notification as NotificationType,
     fetchNotifications,
@@ -13,7 +13,7 @@ import { Bell, AlertCircle, CheckCircle, Info, AlertTriangle, X, Check } from 'l
 import './Notifications.css';
 
 export const Notifications = () => {
-    const { user } = useUser();
+    const { user } = useAuth();
     const [notifications, setNotifications] = useState<NotificationType[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
@@ -30,7 +30,7 @@ export const Notifications = () => {
         if (!user) return;
         try {
             setIsLoading(true);
-            const data = await fetchNotifications(user.id);
+            const data = await fetchNotifications(user._id);
             setNotifications(data);
         } catch (error) {
             console.error('Failed to load notifications:', error);
@@ -42,7 +42,7 @@ export const Notifications = () => {
     const loadUnreadCount = async () => {
         if (!user) return;
         try {
-            const { count } = await getUnreadCount(user.id);
+            const { count } = await getUnreadCount(user._id);
             setUnreadCount(count);
         } catch (error) {
             console.error('Failed to load unread count:', error);
@@ -62,7 +62,7 @@ export const Notifications = () => {
     const handleMarkAllAsRead = async () => {
         if (!user) return;
         try {
-            await markAllNotificationsAsRead(user.id);
+            await markAllNotificationsAsRead(user._id);
             await loadNotifications();
             await loadUnreadCount();
         } catch (error) {
@@ -118,7 +118,7 @@ export const Notifications = () => {
                 className="notification-bell"
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <Bell   size={20} />
+                <Bell size={20} />
                 {unreadCount > 0 && (
                     <span className="notification-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
                 )}
@@ -174,7 +174,7 @@ export const Notifications = () => {
                                             </button>
                                         )}
                                         <button
-                                        className="btn-delete-notif"
+                                            className="btn-delete-notif"
                                             onClick={() => handleDelete(notification._id!)}
                                             title="Delete"
                                         >

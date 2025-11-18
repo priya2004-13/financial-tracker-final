@@ -1,12 +1,13 @@
 ﻿// client/src/components/ReportDownloads.tsx
 import React, { useState } from 'react';
-import { useUser } from '@clerk/clerk-react';
+ 
 import {
     downloadFinancialReport,
     downloadMonthlySummary,
     getReportSummaryData
 } from '../../services/report-service';
 import './ReportDownloads.css';
+import { useAuth } from '../contexts/AuthContext';
 
 interface ReportDownloadsProps {
     startDate?: string;
@@ -14,7 +15,7 @@ interface ReportDownloadsProps {
 }
 
 const ReportDownloads: React.FC<ReportDownloadsProps> = ({ startDate, endDate }) => {
-    const { user } = useUser();
+    const { user } = useAuth();
     const [loadingReport, setLoadingReport] = useState(false);
     const [loadingSummary, setLoadingSummary] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -28,7 +29,7 @@ const ReportDownloads: React.FC<ReportDownloadsProps> = ({ startDate, endDate })
         setSuccess(null);
 
         try {
-            await downloadFinancialReport(user.id, startDate || '', endDate || '');
+            await downloadFinancialReport(user._id, startDate || '', endDate || '');
             setSuccess('Financial report downloaded successfully!');
             setTimeout(() => setSuccess(null), 3000);
         } catch (err) {
@@ -47,7 +48,7 @@ const ReportDownloads: React.FC<ReportDownloadsProps> = ({ startDate, endDate })
         setSuccess(null);
 
         try {
-            await downloadMonthlySummary(user.id, startDate || '', endDate || '');
+            await downloadMonthlySummary(user._id, startDate || '', endDate || '');
             setSuccess('Monthly summary downloaded successfully!');
             setTimeout(() => setSuccess(null), 3000);
         } catch (err) {

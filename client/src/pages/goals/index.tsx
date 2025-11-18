@@ -1,5 +1,5 @@
 ﻿import React, { useState, useMemo, useEffect } from 'react';
-import { useAuth } from '@clerk/clerk-react'; // CORRECTED: Import useAuth instead of useUser
+import { useAuth } from '../../contexts/AuthContext';  
 import {
     Target, CreditCard, TrendingUp, Calendar,
     Plus, X, Edit2, Trash2,
@@ -40,7 +40,7 @@ const AddGoalForm: React.FC<{
     onClose: () => void;
     onAddGoal: (goal: IGoal) => void;
 }> = ({ onClose, onAddGoal }) => {
-    const { getToken, userId } = useAuth();
+    const { token, user } = useAuth();
     const [formData, setFormData] = useState({
         name: '',
         target: '',
@@ -59,7 +59,6 @@ const AddGoalForm: React.FC<{
         setError(null);
 
         try {
-            const token = await getToken();
             const res = await fetch("/api/savings-goals", {
                 method: "POST",
                 headers: {
@@ -67,7 +66,7 @@ const AddGoalForm: React.FC<{
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    userId,
+                    userId: user?._id,
                     name: formData.name,
                     targetAmount: parseFloat(formData.target),
                     currentAmount: parseFloat(formData.current) || 0,
@@ -145,7 +144,7 @@ const AddDebtForm: React.FC<{
     onClose: () => void;
     onAddDebt: (debt: IDebt) => void;
 }> = ({ onClose, onAddDebt }) => {
-    const { getToken, userId } = useAuth(); // CORRECTED: Use useAuth()
+    const { token, user } = useAuth();
     const [formData, setFormData] = useState({
         name: '',
         principal: '',
@@ -165,7 +164,6 @@ const AddDebtForm: React.FC<{
         setError(null);
 
         try {
-            const token = await getToken();
             const res = await fetch("/api/debts", {
                 method: "POST",
                 headers: {
@@ -173,7 +171,7 @@ const AddDebtForm: React.FC<{
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    userId,
+                    userId: user?._id,
                     name: formData.name,
                     principal: parseFloat(formData.principal),
                     remaining: parseFloat(formData.remaining),
@@ -250,7 +248,7 @@ const AddDebtForm: React.FC<{
 
 // --- Main Page Component ---
 export const GoalsPage = () => {
-    const { getToken, userId } = useAuth(); // CORRECTED: Use useAuth()
+    const { token, user } = useAuth(); // CORRECTED: Use useAuth()
     const [activeTab, setActiveTab] = useState('overview');
 
     const [goals, setGoals] = useState<IGoal[]>([]);
@@ -269,10 +267,9 @@ export const GoalsPage = () => {
             setIsLoading(true);
             setError(null);
             try {
-                const token = await getToken();
                 const [goalsResponse, debtsResponse] = await Promise.all([
-                    fetch(`/api/savings-goals/${userId}`, { headers: { Authorization: `Bearer ${token}` } }),
-                    fetch(`/api/debts/${userId}`, { headers: { Authorization: `Bearer ${token}` } })
+                    fetch(`/api/savings-goals/${user?._id}`, { headers: { Authorization: `Bearer ${token}` } }),
+                    fetch(`/api/debts/${user?._id}`, { headers: { Authorization: `Bearer ${token}` } })
                 ]);
 
                 if (!goalsResponse.ok || !debtsResponse.ok) {
@@ -292,10 +289,10 @@ export const GoalsPage = () => {
             }
         };
 
-        if (userId) {
+        if (user?._id && token) {
             loadData();
         }
-    }, [getToken, userId]);
+    }, [token, user?._id]);
 
 
     // --- Memos (Calculations) ---

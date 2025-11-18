@@ -1,8 +1,9 @@
 ﻿import React, { Component } from 'react';
-import { useUser } from '@clerk/clerk-react';
+ 
 import { SavingsGoal as SavingsGoalType, fetchSavingsGoals, addSavingsGoal, deleteSavingsGoal } from '../../services/api';
 import { PiggyBank, Trash2, PlusCircle } from 'lucide-react';
 import './SavingsGoals.css';
+import { useAuth } from '../contexts/AuthContext';
 
 // Define Prop and State types for the class component
 interface SavingsGoalsProps {
@@ -192,11 +193,9 @@ class SavingsGoalsClass extends Component<SavingsGoalsProps, SavingsGoalsState> 
   }
 }
 
-// Functional wrapper to inject the user ID from the useUser hook
 const SavingsGoals = (props: { onGoalsChange?: (goals: SavingsGoalType[]) => void }) => {
-  const { user } = useUser();
-  if (!user) return null;
-  return <SavingsGoalsClass userId={user.id} onGoalsChange={props.onGoalsChange} />;
+  const { user } = useAuth();
+  return <SavingsGoalsClass userId={user?._id ?? ''} onGoalsChange={props.onGoalsChange} />;
 };
 
 export default SavingsGoals;

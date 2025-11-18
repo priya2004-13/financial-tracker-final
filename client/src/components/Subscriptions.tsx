@@ -1,6 +1,6 @@
 ﻿// client/src/components/Subscriptions.tsx - Enhanced for Bill Reminders & Paid Status
 import React, { useState, useEffect} from 'react';
-import { useUser } from '@clerk/clerk-react';
+ 
 import {
     RecurringPayment,
     fetchRecurringPayments,
@@ -10,9 +10,10 @@ import {
 } from '../../services/api';
 import { Calendar, Repeat, Trash2, Plus, Edit2, Check, X, Bell } from 'lucide-react'; // Added Bell
 import './Subscriptions.css';
+import { useAuth } from '../contexts/AuthContext';
 
 export const Subscriptions = () => {
-    const { user } = useUser();
+    const { user } = useAuth();
     const [payments, setPayments] = useState<RecurringPayment[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -36,7 +37,7 @@ export const Subscriptions = () => {
         if (!user) return;
         try {
             setIsLoading(true);
-            const data = await fetchRecurringPayments(user.id);
+            const data = await fetchRecurringPayments(user._id);
             setPayments(data.sort((a, b) => new Date(a.nextPaymentDate).getTime() - new Date(b.nextPaymentDate).getTime())); // Sort by next payment date
         } catch (error) {
             console.error('Failed to load recurring payments:', error);
@@ -51,7 +52,7 @@ export const Subscriptions = () => {
 
         try {
             const paymentData: Omit<RecurringPayment, '_id' | 'userId'> & { userId: string } = { // Ensure userId is included
-                userId: user.id,
+                userId: user._id,
                 name: formData.name,
                 amount: parseFloat(formData.amount),
                 billingCycle: formData.billingCycle,

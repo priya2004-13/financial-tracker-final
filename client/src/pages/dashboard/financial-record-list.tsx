@@ -29,7 +29,8 @@ import {
 } from "lucide-react";
 import "./recordList.css";
 import { FinancialRecord, fetchFinancialRecords, PaginatedRecordsResponse } from "../../../services/api";
-import { useUser } from "@clerk/clerk-react";
+ 
+import { useAuth } from "../../contexts/AuthContext";
 
 const CATEGORY_COLORS: Record<string, string> = {
   Salary: '#10b981',
@@ -55,7 +56,7 @@ export const FinancialRecordList = ({
   onToggleSelect,
   enableSelection = false
 }: FinancialRecordListProps) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { records, updateRecord, deleteRecord, categories } = useFinancialRecords();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<FinancialRecord>>({});
@@ -83,11 +84,11 @@ export const FinancialRecordList = ({
     }
 
     const loadRecords = async () => {
-      if (!user?.id) return;
+      if (!user?._id) return;
 
       setIsLoadingPage(true);
       try {
-        const response = await fetchFinancialRecords(user.id, currentPage, pageSize);
+        const response = await fetchFinancialRecords(user._id, currentPage, pageSize);
         setAllRecords(response.records);
         setPaginationInfo(response.pagination);
       } catch (error) {
@@ -98,7 +99,7 @@ export const FinancialRecordList = ({
     };
 
     loadRecords();
-  }, [user?.id, currentPage, pageSize, filteredRecords]);
+  }, [user?._id, currentPage, pageSize, filteredRecords]);
 
   const allCategories = useMemo(() => {
     const defaultCategories = ["All", "Food", "Rent", "Salary", "Utilities", "Entertainment", "Other"];

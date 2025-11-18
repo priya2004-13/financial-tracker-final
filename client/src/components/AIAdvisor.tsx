@@ -1,6 +1,6 @@
 ﻿// client/src/components/AIAdvisor.tsx
 import React, { useState } from 'react';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import { getPersonalizedAdvice } from '../../services/ai-service';
 import './AIAdvisor.css';
 
@@ -10,7 +10,7 @@ interface AIAdvisorProps {
 }
 
 const AIAdvisor: React.FC<AIAdvisorProps> = ({ startDate, endDate }) => {
-    const { user } = useUser();
+    const { user } = useAuth();
     const [advice, setAdvice] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -23,7 +23,7 @@ const AIAdvisor: React.FC<AIAdvisorProps> = ({ startDate, endDate }) => {
         setError(null);
 
         try {
-            const data = await getPersonalizedAdvice(user.id, startDate, endDate);
+            const data = await getPersonalizedAdvice(user._id, startDate, endDate);
             setAdvice(data.advice);
             setIsOpen(true);
         } catch (err) {

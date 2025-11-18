@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useUserProfile } from '../contexts/userContext';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export const OnboardingFlow: React.FC = () => {
-    const { user } = useUser();
+    const { user } = useAuth();
     const { profile, markAsOnboarded, loading } = useUserProfile();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,7 +42,7 @@ export const OnboardingFlow: React.FC = () => {
                 textAlign: 'center'
             }}>
                 <img
-                    src={user?.imageUrl}
+                    src={user?.avatar}
                     alt="Profile"
                     style={{
                         width: '100px',
@@ -64,7 +64,7 @@ export const OnboardingFlow: React.FC = () => {
                     marginBottom: '2rem',
                     textAlign: 'left'
                 }}>
-                    <p>✓ Email verified: {user?.primaryEmailAddress?.emailAddress}</p>
+                    <p>✓ Email verified: {user?.email}</p>
                     <p>✓ Profile: {user?.firstName} {user?.lastName}</p>
                 </div>
 
