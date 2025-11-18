@@ -2,7 +2,7 @@
 /* Base Page Styling */
 .calc-page-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--bg-gradient);
     padding: 2rem;
     box-sizing: border-box;
     /* Ensures padding doesn't break layout */
@@ -22,15 +22,15 @@
 .calc-header h1 {
     font-size: 3rem;
     font-weight: 800;
-    color: white;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    text-shadow: var(--shadow-sm);
     margin-top: 0;
 }
 
 .calc-header p {
     font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-secondary);
     margin: 0;
 }
 
@@ -44,18 +44,18 @@
 /* Calculator Card */
 .calc-card {
     /* --calc-color is passed from the inline style */
-    background: white;
+    background: var(--text-inverse);;
     border-radius: 1.5rem;
     padding: 2rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
     border: 2px solid transparent;
 }
 
 .calc-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg);
     border-color: var(--calc-color);
 }
 
@@ -70,7 +70,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 1.5rem;
-    box-shadow: 0 8px 16px #00000040;
+    box-shadow: var(--shadow-md);
     /* Simplified shadow */
 }
 
@@ -78,13 +78,13 @@
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    color: #1f2937;
+    color: var(--text-primary);;
     margin-top: 0;
 }
 
 .calc-card-desc {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--text-secondary);
     margin: 0 0 1rem 0;
 }
 
@@ -99,20 +99,21 @@
 
 /* Calculator Content Page */
 .calc-back-button {
-    background: white;
+    background: var(--text-primary);
+    color: var(--text-inverse);
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
     margin-bottom: 2rem;
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     transition: all 0.2s ease;
 }
 
 .calc-back-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
 }
 
 .calc-content-grid {
@@ -125,10 +126,10 @@
 /* Input Section */
 .calc-input-section {
     /* --calc-color is passed from the inline style */
-    background: white;
+    background: var(--text-primary);;
     border-radius: 1rem;
     padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .calc-input-header {
@@ -194,7 +195,7 @@
 .calc-input-field:focus,
 .calc-select-field:focus {
     border-color: var(--calc-color);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+    box-shadow: var(--shadow-sm);
     /* Simplified shadow */
 }
 
@@ -203,33 +204,33 @@
     /* --calc-color is inherited */
     width: 100%;
     padding: 1rem;
-    background: linear-gradient(135deg, var(--), #4f46e5);
+    background: linear-gradient(135deg, var(--calc-color), #4f46e5);
     /* Simplified */
-    color: white;
+    color: var(--text-primary);;
     border: none;
     border-radius: 0.5rem;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     margin-top: 1rem;
-    box-shadow: 0 4px 12px #00000060;
+    box-shadow: var(--shadow-md);
     /* Simplified shadow */
     transition: all 0.2s ease;
 }
 
 .calc-calculate-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px #00000060;
+    box-shadow: var(--shadow-lg);
     /* Simplified shadow */
 }
 
 /* Result Section */
 .calc-result-placeholder {
-    background: white;
+    background: var(--text-primary);;
     border-radius: 1rem;
     padding: 3rem;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     height: 100%;
     /* Fill grid area */
     display: flex;
@@ -251,10 +252,10 @@
 }
 
 .calc-result-box {
-    background: white;
+    background: var(--text-primary);;
     border-radius: 1rem;
     padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .calc-result-box h3 {
