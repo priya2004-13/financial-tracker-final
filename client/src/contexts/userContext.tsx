@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { API_BASE_URL } from '../../services/api-utils';
 
 interface UserProfile {
     _id: string;
@@ -17,7 +18,7 @@ export const useUserProfile = () => {
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+ 
 
     useEffect(() => {
         let mounted = true;

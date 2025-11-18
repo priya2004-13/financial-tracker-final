@@ -1,5 +1,6 @@
 ﻿import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../services/api-utils";
 
 interface User {
     _id: string;
@@ -36,8 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
-
+   
     useEffect(() => {
         const loadUser = async () => {
             if (token) {
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const login = async (email: string, password: string) => {
         try {
             setError(null);
-            const res = await fetch(`${API_URL}/auth/login`, {
+            const res = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const register = async (formData: any) => {
         try {
             setError(null);
-            const res = await fetch(`${API_URL}/auth/register`, {
+            const res = await fetch(`${API_BASE_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         try {
             setError(null);
-            const res = await fetch(`${API_URL}/users/${user._id}`, {
+            const res = await fetch(`${API_BASE_URL}/users/${user._id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

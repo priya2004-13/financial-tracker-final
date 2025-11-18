@@ -1,5 +1,5 @@
 ﻿// client/services/report-service.ts
-import { apiPost } from './api-utils';
+import { API_BASE_URL, apiPost } from './api-utils';
 
 export interface ReportSummaryData {
     period: {
@@ -47,8 +47,6 @@ export const generateFinancialReport = async (
     endDate?: string,
     includeTransactions: boolean = true
 ): Promise<Blob> => {
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
-
     const response = await fetch(`${API_BASE_URL}/reports/generate-pdf`, {
         method: 'POST',
         headers: {
