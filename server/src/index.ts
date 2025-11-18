@@ -9,7 +9,7 @@ import recurringPaymentRouter from "./routes/recurring-payments";
 import aiInsightsRouter from "./routes/ai-insights";
 import categoryRouter from "./routes/category";
 import transactionTemplateRouter from "./routes/transaction-template";
-import sharedExpenseRouter from "./routes/shared-expense";  
+import sharedExpenseRouter from "./routes/shared-expense";
 import reportsRouter from "./routes/reports";
 import authRouter from "./routes/auth";
 import cors from "cors";
@@ -20,14 +20,30 @@ const port = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(cors());
-
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
+  next();
+});
 const mongoURI: string = process.env.MONGO_URI || 'mongodb://localhost:27017/financial-tracker';
 
 mongoose
   .connect(mongoURI)
-  .then(() => {
+  .then(async () => {
     console.log("✅ CONNECTED TO MONGODB!");
-
+    try {
+      const collection = mongoose.connection.db?.collection("users");
+      if (collection) {
+        // Attempt to drop the specific index causing the crash
+        await collection.dropIndex("clerkId_1");
+        console.log("🗑️ Successfully removed legacy 'clerkId' index.");
+      }
+    } catch (error: any) {
+      // Ignore error if the index is already gone (Error Code 27)
+      if (error.code !== 27) {
+        console.log("ℹ️ Note: clerkId index check:", error.message);
+      }
+    }
   })
   .catch((err) => console.error("❌ Failed to Connect to MongoDB:", err));
 
@@ -49,7 +65,7 @@ app.use("/transaction-templates", transactionTemplateRouter);
 app.use("/shared-expenses", sharedExpenseRouter);
 app.use("/reports", reportsRouter);
 app.use("/auth", authRouter);
- 
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).send({ error: "Route not found" });

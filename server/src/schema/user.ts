@@ -1,14 +1,15 @@
-﻿// server/src/schema/user.ts
-import mongoose from "mongoose";
+﻿import mongoose from "mongoose";
 
 interface User {
     email: string;
-    password?: string; // Optional for future OAuth, required for email auth
+    password?: string; // Optional for Google users
+    googleId?: string; // ✅ Added
     firstName: string;
     lastName: string;
     phoneNumber?: string;
     avatar?: string;
     username?: string;
+
     createdAt: Date;
     updatedAt: Date;
     lastSignInAt?: Date;
@@ -22,8 +23,22 @@ interface User {
 
 const userSchema = new mongoose.Schema<User>(
     {
-        email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-        password: { type: String, select: false }, // Exclude password from queries by default
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            lowercase: true,
+            trim: true
+        },
+        password: {
+            type: String,
+            select: false
+        },
+        googleId: {
+            type: String,
+            unique: true,
+            sparse: true
+        }, // ✅ Added
         firstName: { type: String, required: true },
         lastName: { type: String, required: true },
         phoneNumber: { type: String },

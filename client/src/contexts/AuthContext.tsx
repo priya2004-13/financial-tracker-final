@@ -25,7 +25,8 @@ interface AuthContextType {
     login: (email: string, password: string) => Promise<void>;
     register: (data: any) => Promise<void>;
     logout: () => void;
-    updateProfile: (data: Partial<User>) => Promise<void>; // ✅ Added
+    updateProfile: (data: Partial<User>) => Promise<void>;
+    googleLogin: (credential: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
-   
+
     useEffect(() => {
         const loadUser = async () => {
             if (token) {
@@ -92,7 +93,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setError(err.message);
         }
     };
+    const googleLogin = async (credential: string) => {
+        try {
+            setError(null);
+            const res = await fetch(`${API_BASE_URL}/auth/google`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: credential }),
+            });
 
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.error || "Google login failed");
+
+            setToken(data.token);
+            setUser(data.user);
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            navigate("/");
+        } catch (err: any) {
+            console.error("Google Login Error:", err);
+            setError(err.message);
+        }
+    };
     // ✅ New Function to Update Profile
     const updateProfile = async (data: Partial<User>) => {
         if (!user?._id || !token) return;
@@ -130,7 +153,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, loading, error, login, register, logout, updateProfile }}>
+        <AuthContext.Provider value={{ user, token, loading, error, login, register, logout, updateProfile,googleLogin }}>
             {children}
         </AuthContext.Provider>
     );

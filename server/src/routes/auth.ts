@@ -4,10 +4,11 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import UserModel from "../schema/user";
 import { registerSchema, loginSchema } from "../schema/validation";
-
+import { OAuth2Client } from "google-auth-library";
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_key";
-
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID; // Add this to your .env
+const client = new OAuth2Client(GOOGLE_CLIENT_ID); // ✅ Google Client
 // Helper for Zod errors
 const formatZodError = (error: any) => {
     return error.errors.map((e: any) => e.message).join(", ");
@@ -84,6 +85,61 @@ router.post("/login", async (req: Request, res: Response) => {
         res.json({ token, user: userResponse });
     } catch (err) {
         res.status(500).json({ error: "Server Error" });
+    }
+});
+router.post("/google", async (req: Request, res: Response) => {
+    try {
+        const { token } = req.body;
+
+        // 1. Verify Google Token
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+
+        if (!payload || !payload.email) {
+            return res.status(400).json({ error: "Invalid Google Token" });
+        }
+
+        const { email, sub: googleId, given_name, family_name, picture } = payload;
+
+        // 2. Check if user exists
+        let user = await UserModel.findOne({ email });
+
+        if (user) {
+            // Link Google ID if not already linked
+            if (!user.googleId) {
+                user.avatar = picture || user.avatar;
+                user.firstName = given_name || user.firstName;
+                user.lastName = family_name || user.lastName;
+                user.googleId = googleId;
+                await user.save();
+            }
+        } else {
+            // Create new user
+            user = new UserModel({
+                email,
+                googleId,
+                firstName: given_name || "User",
+                lastName: family_name || "",
+                avatar: picture,
+                isOnboarded: false,
+            });
+            await user.save();
+        }
+
+        // 3. Update Last Sign In
+        user.lastSignInAt = new Date();
+        await user.save();
+
+        // 4. Generate Token
+        const jwtToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+
+        res.json({ token: jwtToken, user });
+    } catch (err: any) {
+        console.error("Google Auth Error:", err);
+        res.status(500).json({ error: "Google Authentication Failed" });
     }
 });
 

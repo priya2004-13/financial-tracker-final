@@ -1,5 +1,6 @@
 ﻿import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google"; // ✅ Added
 import { AuthCard } from "./AuthCard";
 import { useAuth } from "../../contexts/AuthContext";
 import "./AuthForms.css";
@@ -12,7 +13,8 @@ export const Register = () => {
         lastName: ""
     });
 
-    const { register, error, loading } = useAuth();
+    // ✅ Get googleLogin from context
+    const { register, googleLogin, error, loading } = useAuth();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,6 +31,33 @@ export const Register = () => {
                 <h2 className="auth-title">Create Account</h2>
 
                 {error && <div className="auth-error-banner">{error}</div>}
+
+                {/* ✅ Google Button Section */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                    <GoogleLogin
+                        onSuccess={credentialResponse => {
+                            if (credentialResponse.credential) {
+                                googleLogin(credentialResponse.credential);
+                            }
+                        }}
+                        onError={() => {
+                            console.log('Sign Up Failed');
+                        }}
+                        text="signup_with" // Specific text for register page
+                        theme="filled_blue"
+                        shape="pill"
+                        width="350"
+                    />
+                </div>
+
+                {/* ✅ Divider */}
+                <div className="divider" style={{
+                    display: 'flex', alignItems: 'center', margin: '1rem 0', color: 'var(--text-secondary)'
+                }}>
+                    <span style={{ flex: 1, borderBottom: '1px solid var(--border-color)' }}></span>
+                    <span style={{ padding: '0 10px', fontSize: '0.875rem' }}>OR</span>
+                    <span style={{ flex: 1, borderBottom: '1px solid var(--border-color)' }}></span>
+                </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">

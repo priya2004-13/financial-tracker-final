@@ -107,9 +107,24 @@ export const ProfilePage = () => {
                         <div className="profile-avatar-container">
                             <div className="profile-avatar-large">
                                 {user?.avatar ? (
-                                    <img src={user.avatar} alt="Profile" />
+                                    <img
+                                        src={user.avatar}
+                                        alt="Profile"
+                                        onError={(e) => {
+                                            e.currentTarget.style.display = 'none';
+                                            e.currentTarget.parentElement?.classList.add('fallback-active');
+                                        }}
+                                    />
                                 ) : (
                                     <User size={48} />
+                                )}
+                                {/* Ensure the icon shows up if the image is hidden via error */}
+                                {user?.avatar && (
+                                    <User
+                                        size={48}
+                                        className="fallback-icon"
+                                        style={{ display: 'none' }}
+                                    />
                                 )}
                             </div>
                             {/* Avatar Edit could be implemented with file upload later */}
