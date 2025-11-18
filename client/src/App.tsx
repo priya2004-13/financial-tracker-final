@@ -13,7 +13,7 @@ import { ThemeProvider, useTheme } from "./contexts/themeContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { GlobalFeatures } from "./components/GlobalFeatures";
 import { AuthProvider, useAuth } from "./contexts/AuthContext"; // ✅ Custom Auth Hook
-import { Sun, Moon, LogOut } from "lucide-react";
+import { Sun, Moon, LogOut, User } from "lucide-react";
 import logo from "./assets/brand_logo.png";
 import MobileLayout from "./pages/MobileLayout";
 import { useScreenSize } from "./hooks/useScreenSize";
@@ -43,17 +43,23 @@ const ProtectedDashboardRoute = () => {
   );
 };
 
-// ✅ Custom Navbar (No Clerk)
+
+// 2. Add 'useState' to react imports
+import { useState } from "react"; 
+
 const Navbar = () => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const screenSize = useScreenSize();
   const isMobile = screenSize === "xs";
+  
+  // State for dropdown visibility
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
     <nav className="navbar-enhanced">
       <div className="navbar-content">
-        {/* Brand */}
+        {/* Brand Logo (Left) */}
         <div className="navbar-left">
           <Link to="/" className="navbar-brand">
             <div className="brand-logo-wrapper">
@@ -66,7 +72,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Controls */}
+        {/* Right Controls */}
         <div className="navbar-right">
           <button
             className="theme-toggle-btn"
@@ -79,26 +85,71 @@ const Navbar = () => {
           {/* Auth Controls */}
           {user ? (
             !isMobile && (
-              <div className="user-profile-section">
-                <div className="user-info-display">
-                  <Link to="/profile" className="user-profile-link">
-                    <div className="user-details">
-                      <span className="user-name-display">
+              <div className="navbar-user-menu">
+                {/* 1. Transparent Backdrop to close menu when clicking outside */}
+                {isDropdownOpen && (
+                  <div 
+                    className="dropdown-backdrop" 
+                    onClick={() => setIsDropdownOpen(false)} 
+                  />
+                )}
+
+                {/* 2. Avatar Trigger Button */}
+                <button 
+                  className="avatar-btn"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  title="Account Menu"
+                >
+                  <div className="user-avatar-small">
+                    {user.avatar ? (
+                      <img 
+                        src={user.avatar} 
+                        alt="Profile" 
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <div className="user-avatar-placeholder">
+                        {user.firstName ? user.firstName[0].toUpperCase() : <User size={20} />}
+                      </div>
+                    )}
+                  </div>
+                </button>
+
+                {/* 3. Dropdown Menu Modal */}
+                {isDropdownOpen && (
+                  <div className="dropdown-menu animate-fade-in">
+                    <div className="dropdown-header">
+                      <span className="dropdown-name">
                         {user.firstName} {user.lastName}
                       </span>
-                      <span className="user-email-display">
+                      <span className="dropdown-email">
                         {user.email}
                       </span>
                     </div>
-                  </Link>
-                  <button
-                    onClick={logout}
-                    className="theme-toggle-btn"
-                    title="Sign Out"
-                  >
-                    <LogOut size={20} />
-                  </button>
-                </div>
+                    
+                    <Link 
+                      to="/profile" 
+                      className="dropdown-item"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <User size={16} />
+                      <span>My Profile</span>
+                    </Link>
+
+                    <div className="dropdown-divider"></div>
+
+                    <button 
+                      className="dropdown-item danger"
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        logout();
+                      }}
+                    >
+                      <LogOut size={16} />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
               </div>
             )
           ) : (
@@ -117,6 +168,7 @@ const Navbar = () => {
   );
 };
 
+ 
 function AppContent() {
   const { theme } = useTheme();
   const screenSize = useScreenSize();

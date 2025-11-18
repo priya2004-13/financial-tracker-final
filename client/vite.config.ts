@@ -5,7 +5,7 @@ import mkcert from 'vite-plugin-mkcert'
 export default defineConfig({
   plugins: [react(),mkcert()],
   server: {
-    https: true,
+  
     headers: {
       "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
       "Cross-Origin-Embedder-Policy": "unsafe-none" 

@@ -110,6 +110,7 @@ export const ProfilePage = () => {
                                     <img
                                         src={user.avatar}
                                         alt="Profile"
+                                        referrerPolicy="no-referrer" 
                                         onError={(e) => {
                                             e.currentTarget.style.display = 'none';
                                             e.currentTarget.parentElement?.classList.add('fallback-active');
