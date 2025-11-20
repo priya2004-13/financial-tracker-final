@@ -476,7 +476,7 @@ export const GlobalFeatures: React.FC = () => {
                             <span>Exporting {records.length} transactions</span>
                         </div>
 
-                        <button className="export-btn primary-btn" onClick={handleExport}>
+                        <button className="global-export-btn primary-btn" onClick={handleExport}>
                             <Download size={18} />
                             Export {exportFormat.toUpperCase()}
                         </button>

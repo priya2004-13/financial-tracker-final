@@ -12,7 +12,7 @@ import { FinancialRecordsProvider } from "./contexts/financial-record-context";
 import { ThemeProvider, useTheme } from "./contexts/themeContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { GlobalFeatures } from "./components/GlobalFeatures";
-import { AuthProvider, useAuth } from "./contexts/AuthContext"; // ✅ Custom Auth Hook
+import { AuthProvider, useAuth } from "./contexts/AuthContext"; 
 import { Sun, Moon, LogOut, User } from "lucide-react";
 import logo from "./assets/brand_logo.png";
 import MobileLayout from "./pages/MobileLayout";

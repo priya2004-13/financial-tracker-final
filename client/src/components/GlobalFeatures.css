@@ -317,7 +317,7 @@
     color: var(--text-secondary);
 }
 
-.export-btn,
+.global-export-btn,
 .backup-btn {
     width: 100%;
     padding: 0.875rem;
