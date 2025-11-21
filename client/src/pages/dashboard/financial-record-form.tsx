@@ -271,12 +271,12 @@ export const FinancialRecordForm = () => {
         )}
 
         <div className="form-action-buttons" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <button type="submit" className="btn-primary ripple-button" style={{ flex: 1 }}>
+          <button type="submit" className="form-btn-primary ripple-button" style={{ flex: 1 }}>
             <PlusCircle size={18} /> Add Record
           </button>
           <button
             type="button"
-            className="btn-secondary ripple-button"
+            className="form-btn-secondary ripple-button"
             onClick={() => setIsSplitModalOpen(true)}
             title="Split Transaction"
             style={{ flex: 1 }}
@@ -285,7 +285,7 @@ export const FinancialRecordForm = () => {
           </button>
           <button
             type="button"
-            className="btn-secondary ripple-button"
+            className="form-btn-secondary ripple-button"
             onClick={() => setShowTemplateNameInput(true)}
             disabled={!description || !amount || !category || !paymentMethod}
             title="Save as Template"

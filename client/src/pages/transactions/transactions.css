@@ -1307,6 +1307,9 @@
     grid-template-columns: 1fr 1fr 1fr;
     gap: 0.75rem;
     padding: 0 1rem 1rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
 }
 
 .mobile-stat-card {
@@ -1578,9 +1581,8 @@
     background: var(--hover-bg);
 }
 
-.apply-filters-mobile-btn {}
-
-color: white;
+.apply-filters-mobile-btn {
+color: var(--text-primary);
 box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 

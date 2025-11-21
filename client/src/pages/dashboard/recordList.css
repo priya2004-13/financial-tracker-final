@@ -426,6 +426,7 @@
   /* Adjust as needed */
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
   /* Smooth scrolling on iOS */
 }
 
@@ -656,6 +657,7 @@
 
 .record-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   align-items: center;
   justify-content: flex-end;
@@ -882,14 +884,14 @@
   }
 
   .record-card {
-    flex-direction: row;
+    /* flex-direction: column; */
     /* Horizontal layout */
     align-items: center;
     gap: var(--spacing-lg);
   }
 
   .record-card-left {
-    flex-direction: row;
+    flex-direction: column;
     /* Horizontal */
     align-items: center;
     width: auto;
@@ -910,6 +912,7 @@
     justify-content: flex-end;
     /* Align right */
     flex-shrink: 0;
+    flex-direction: column;
     /* Prevent shrinking */
   }
 
@@ -1675,4 +1678,7 @@
     gap: 0.75rem;
     padding: 0.5rem;
   }
+}
+.form-btn-primary{
+background: var(--background-light);
 }
