@@ -28,7 +28,7 @@
   /* Smooth scrolling on iOS */
   overscroll-behavior-y: contain;
   /* Prevent bounce effect */
-  padding: 0;
+  padding-top: 3.5rem;
   padding-bottom: 90px;
   /* Space for bottom nav + safe area */
   width: 100%;

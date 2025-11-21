@@ -7,6 +7,7 @@ import {
     PieChart,
     Target,
     User,
+    Calculator,
 } from 'lucide-react';
 import './MobileLayout.css';
 
@@ -15,6 +16,7 @@ const TABS = [
     { id: 'home', path: '/', icon: LayoutGrid, label: 'Home' },
     { id: 'transactions', path: '/transactions', icon: List, label: 'Transactions' },
     { id: 'analytics', path: '/analytics', icon: PieChart, label: 'Analytics' },
+    { id: 'calculators', path: '/calculators', icon: Calculator, label: 'Calculators' },
     { id: 'budget', path: '/budget', icon: Target, label: 'Budget' },
     { id: 'profile', path: '/profile', icon: User, label: 'Profile' },
 ];
@@ -34,6 +36,7 @@ const MobileLayout = () => {
         if (path === '/') return 'home';
         if (path.includes('/transactions')) return 'transactions';
         if (path.includes('/analytics')) return 'analytics';
+        if (path.includes('/calculators')) return 'calculators';
         if (path.includes('/budget')) return 'budget';
         if (path.includes('/profile')) return 'profile';
         return 'home';
@@ -42,65 +45,65 @@ const MobileLayout = () => {
     const activeTab = getActiveTab();
 
     // Pull-to-refresh functionality
-    useEffect(() => {
-        const content = contentRef.current;
-        if (!content) return;
+    // useEffect(() => {
+    //     const content = contentRef.current;
+    //     if (!content) return;
 
-        const handleScroll = () => {
-            isScrolledToTop.current = content.scrollTop === 0;
-        };
+    //     const handleScroll = () => {
+    //         isScrolledToTop.current = content.scrollTop === 0;
+    //     };
 
-        const handleTouchStart = (e: TouchEvent) => {
-            if (isScrolledToTop.current) {
-                touchStartY.current = e.touches[0].clientY;
-            }
-        };
+    //     const handleTouchStart = (e: TouchEvent) => {
+    //         if (isScrolledToTop.current) {
+    //             touchStartY.current = e.touches[0].clientY;
+    //         }
+    //     };
 
-        const handleTouchMove = (e: TouchEvent) => {
-            if (!isScrolledToTop.current) return;
+    //     const handleTouchMove = (e: TouchEvent) => {
+    //         if (!isScrolledToTop.current) return;
 
-            const touchY = e.touches[0].clientY;
-            const distance = touchY - touchStartY.current;
+    //         const touchY = e.touches[0].clientY;
+    //         const distance = touchY - touchStartY.current;
 
-            if (distance > 0 && distance < 100) {
-                setIsPulling(true);
-                setPullDistance(distance);
-            }
-        };
+    //         if (distance > 0 && distance < 150) {
+    //             setIsPulling(true);
+    //             setPullDistance(distance);
+    //         }
+    //     };
 
-        const handleTouchEnd = () => {
-            if (isPulling && pullDistance > 60) {
-                // Trigger refresh
-                window.location.reload();
-            }
-            setIsPulling(false);
-            setPullDistance(0);
-        };
+    //     const handleTouchEnd = () => {
+    //         if (isPulling && pullDistance > 90) {
+    //             // Trigger refresh
+    //             window.location.reload();
+    //         }
+    //         setIsPulling(false);
+    //         setPullDistance(0);
+    //     };
 
-        content.addEventListener('scroll', handleScroll);
-        content.addEventListener('touchstart', handleTouchStart, { passive: true });
-        content.addEventListener('touchmove', handleTouchMove, { passive: true });
-        content.addEventListener('touchend', handleTouchEnd);
+    //     content.addEventListener('scroll', handleScroll);
+    //     content.addEventListener('touchstart', handleTouchStart, { passive: true });
+    //     content.addEventListener('touchmove', handleTouchMove, { passive: true });
+    //     content.addEventListener('touchend', handleTouchEnd);
 
-        return () => {
-            content.removeEventListener('scroll', handleScroll);
-            content.removeEventListener('touchstart', handleTouchStart);
-            content.removeEventListener('touchmove', handleTouchMove);
-            content.removeEventListener('touchend', handleTouchEnd);
-        };
-    }, [isPulling, pullDistance]);
+    //     return () => {
+    //         content.removeEventListener('scroll', handleScroll);
+    //         content.removeEventListener('touchstart', handleTouchStart);
+    //         content.removeEventListener('touchmove', handleTouchMove);
+    //         content.removeEventListener('touchend', handleTouchEnd);
+    //     };
+    // }, [isPulling, pullDistance]);
 
-    // Page transition animation
-    useEffect(() => {
-        if (contentRef.current) {
-            contentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    }, [location.pathname]);
+    // // Page transition animation
+    // useEffect(() => {
+    //     if (contentRef.current) {
+    //         contentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    //     }
+    // }, [location.pathname]);
 
     return (
         <div className="mobile-layout-container">
             {/* Pull-to-refresh indicator */}
-            {isPulling && (
+            {/* {isPulling && (
                 <div
                     className="pull-to-refresh-indicator"
                     style={{
@@ -110,14 +113,13 @@ const MobileLayout = () => {
                 >
                     <div className="refresh-spinner"></div>
                 </div>
-            )}
+            )}  */}
 
             <main
                 ref={contentRef}
                 className="mobile-content-area"
                 style={{ transform: isPulling ? `translateY(${pullDistance}px)` : 'none' }}
             >
-                {/* Content will be rendered by the router through Outlet */}
                 <Outlet />
             </main>
 

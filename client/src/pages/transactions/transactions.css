@@ -1578,10 +1578,10 @@
     background: var(--hover-bg);
 }
 
-.apply-filters-mobile-btn {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+.apply-filters-mobile-btn {}
+
+color: white;
+box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
 .apply-filters-mobile-btn:active {
@@ -1646,6 +1646,7 @@
 @media (min-width: 768px) {
 
     .mobile-transactions-wrapper,
+
     .mobile-form-overlay,
     .mobile-filter-overlay {
         display: none;

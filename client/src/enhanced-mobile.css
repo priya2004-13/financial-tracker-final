@@ -300,18 +300,7 @@
   animation-delay: 0.4s;
 }
 
-/* Enhanced Stat Cards */
-/* .stat-card {
-    background-color: var(--card-bg);
-    border-radius: var(--radius-xl);
-    padding: 1rem;
-    box-shadow: var(--shadow-lg);
-    border-left: 4px solid;
-    transition: all var(--transition-base);
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-} */
+
 
 .stat-card::before {
   content: '';
@@ -829,8 +818,8 @@
   }
 
   /* Larger touch targets */
-  button,
-  a,
+  
+  
   .action-btn {
     min-height: 44px;
     min-width: 44px;
@@ -860,8 +849,7 @@
 /* Larger touch targets for mobile */
 @media (max-width: 768px) {
 
-  button,
-  a,
+
   .clickable {
     min-height: 48px;
     /* Increased from 44px */
