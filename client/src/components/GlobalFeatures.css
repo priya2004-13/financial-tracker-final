@@ -561,7 +561,9 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+
     .global-features {
+        display: none;
         bottom: 15px;
         right: 15px;
         gap: 0.625rem;

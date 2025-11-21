@@ -307,9 +307,12 @@
     :root {
         --nav-width: 0px;
     }
-
+.navbar-content{
+    padding: .0rem;
+} 
     .app-container .navbar-enhanced {
         left: 0;
+        padding: .0rem;
         width: 100%;
     }
 
