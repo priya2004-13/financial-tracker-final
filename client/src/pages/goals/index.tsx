@@ -30,9 +30,6 @@ interface IDebt {
 
 type DebtStrategy = 'snowball' | 'avalanche';
 
-type NewGoalData = Omit<IGoal, 'id'>;
-type NewDebtData = Omit<IDebt, 'id'>;
-
 // --- Helper Components ---
 
 // AddGoalForm
@@ -49,6 +46,7 @@ const AddGoalForm: React.FC<{
         priority: 'medium' as 'low' | 'medium' | 'high',
     });
     const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,6 +55,7 @@ const AddGoalForm: React.FC<{
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+        setIsSubmitting(true);
 
         try {
             const res = await fetch("/api/savings-goals", {
@@ -67,10 +66,10 @@ const AddGoalForm: React.FC<{
                 },
                 body: JSON.stringify({
                     userId: user?._id,
-                    name: formData.name,
+                    goalName: formData.name,
                     targetAmount: parseFloat(formData.target),
                     currentAmount: parseFloat(formData.current) || 0,
-                    deadline: formData.deadline,
+                    targetDate: formData.deadline,
                     priority: formData.priority,
                 }),
             });
@@ -84,11 +83,11 @@ const AddGoalForm: React.FC<{
 
             const newGoal: IGoal = {
                 id: newGoalFromServer._id,
-                name: newGoalFromServer.name,
+                name: newGoalFromServer.goalName,
                 target: newGoalFromServer.targetAmount,
                 current: newGoalFromServer.currentAmount,
-                deadline: new Date(newGoalFromServer.deadline).toISOString(),
-                priority: newGoalFromServer.priority,
+                deadline: newGoalFromServer.targetDate,
+                priority: newGoalFromServer.priority || 'medium',
             };
 
             onAddGoal(newGoal);
@@ -96,6 +95,8 @@ const AddGoalForm: React.FC<{
 
         } catch (err: any) {
             setError(err.message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -109,30 +110,81 @@ const AddGoalForm: React.FC<{
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label className="label">Goal Name</label>
-                        <input className="input" type="text" name="name" value={formData.name} onChange={handleChange} placeholder="e.g., Emergency Fund" required />
+                        <input 
+                            className="input" 
+                            type="text" 
+                            name="name" 
+                            value={formData.name} 
+                            onChange={handleChange} 
+                            placeholder="e.g., Emergency Fund" 
+                            required 
+                            disabled={isSubmitting}
+                        />
                     </div>
                     <div className="form-group">
                         <label className="label">Target Amount (₹)</label>
-                        <input className="input" type="number" name="target" value={formData.target} onChange={handleChange} placeholder="100000" required />
+                        <input 
+                            className="input" 
+                            type="number" 
+                            name="target" 
+                            value={formData.target} 
+                            onChange={handleChange} 
+                            placeholder="100000" 
+                            required 
+                            disabled={isSubmitting}
+                            min="0"
+                            step="0.01"
+                        />
                     </div>
                     <div className="form-group">
                         <label className="label">Current Amount (₹)</label>
-                        <input className="input" type="number" name="current" value={formData.current} onChange={handleChange} placeholder="0" />
+                        <input 
+                            className="input" 
+                            type="number" 
+                            name="current" 
+                            value={formData.current} 
+                            onChange={handleChange} 
+                            placeholder="0" 
+                            disabled={isSubmitting}
+                            min="0"
+                            step="0.01"
+                        />
                     </div>
                     <div className="form-group">
                         <label className="label">Deadline</label>
-                        <input className="input" type="date" name="deadline" value={formData.deadline} onChange={handleChange} required />
+                        <input 
+                            className="input" 
+                            type="date" 
+                            name="deadline" 
+                            value={formData.deadline} 
+                            onChange={handleChange} 
+                            required 
+                            disabled={isSubmitting}
+                            min={new Date().toISOString().split('T')[0]}
+                        />
                     </div>
                     <div className="form-group">
                         <label className="label">Priority</label>
-                        <select className="input" name="priority" value={formData.priority} onChange={handleChange}>
+                        <select 
+                            className="input" 
+                            name="priority" 
+                            value={formData.priority} 
+                            onChange={handleChange}
+                            disabled={isSubmitting}
+                        >
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
                             <option value="high">High</option>
                         </select>
                     </div>
-                    {error && <p style={{ color: 'var(--danger-color)', textAlign: 'center' }}>{error}</p>}
-                    <button type="submit" className="submit-btn">Save Goal</button>
+                    {error && <p style={{ color: 'var(--danger-color)', textAlign: 'center', marginBottom: '1rem' }}>{error}</p>}
+                    <button 
+                        type="submit" 
+                        className="submit-btn"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Saving...' : 'Save Goal'}
+                    </button>
                 </form>
             </div>
         </div>
@@ -154,6 +206,7 @@ const AddDebtForm: React.FC<{
         minimumPayment: '',
     });
     const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -162,6 +215,7 @@ const AddDebtForm: React.FC<{
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+        setIsSubmitting(true);
 
         try {
             const res = await fetch("/api/debts", {
@@ -203,6 +257,8 @@ const AddDebtForm: React.FC<{
 
         } catch (err: any) {
             setError(err.message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -216,30 +272,101 @@ const AddDebtForm: React.FC<{
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label className="label">Debt Name</label>
-                        <input className="input" type="text" name="name" value={formData.name} onChange={handleChange} placeholder="e.g., Credit Card" required />
+                        <input 
+                            className="input" 
+                            type="text" 
+                            name="name" 
+                            value={formData.name} 
+                            onChange={handleChange} 
+                            placeholder="e.g., Credit Card" 
+                            required 
+                            disabled={isSubmitting}
+                        />
                     </div>
                     <div className="form-group">
                         <label className="label">Principal Amount (₹)</label>
-                        <input className="input" type="number" name="principal" value={formData.principal} onChange={handleChange} placeholder="50000" required />
+                        <input 
+                            className="input" 
+                            type="number" 
+                            name="principal" 
+                            value={formData.principal} 
+                            onChange={handleChange} 
+                            placeholder="50000" 
+                            required 
+                            disabled={isSubmitting}
+                            min="0"
+                            step="0.01"
+                        />
                     </div>
                     <div className="form-group">
                         <label className="label">Remaining Amount (₹)</label>
-                        <input className="input" type="number" name="remaining" value={formData.remaining} onChange={handleChange} placeholder="45000" required />
+                        <input 
+                            className="input" 
+                            type="number" 
+                            name="remaining" 
+                            value={formData.remaining} 
+                            onChange={handleChange} 
+                            placeholder="45000" 
+                            required 
+                            disabled={isSubmitting}
+                            min="0"
+                            step="0.01"
+                        />
                     </div>
                     <div className="form-group">
                         <label className="label">Interest Rate (%)</label>
-                        <input className="input" type="number" step="0.1" name="interestRate" value={formData.interestRate} onChange={handleChange} placeholder="18" required />
+                        <input 
+                            className="input" 
+                            type="number" 
+                            step="0.1" 
+                            name="interestRate" 
+                            value={formData.interestRate} 
+                            onChange={handleChange} 
+                            placeholder="18" 
+                            required 
+                            disabled={isSubmitting}
+                            min="0"
+                            max="100"
+                        />
                     </div>
                     <div className="form-group">
                         <label className="label">Monthly Payment (₹)</label>
-                        <input className="input" type="number" name="monthlyPayment" value={formData.monthlyPayment} onChange={handleChange} placeholder="5000" required />
+                        <input 
+                            className="input" 
+                            type="number" 
+                            name="monthlyPayment" 
+                            value={formData.monthlyPayment} 
+                            onChange={handleChange} 
+                            placeholder="5000" 
+                            required 
+                            disabled={isSubmitting}
+                            min="0"
+                            step="0.01"
+                        />
                     </div>
                     <div className="form-group">
                         <label className="label">Minimum Payment (₹)</label>
-                        <input className="input" type="number" name="minimumPayment" value={formData.minimumPayment} onChange={handleChange} placeholder="2000" required />
+                        <input 
+                            className="input" 
+                            type="number" 
+                            name="minimumPayment" 
+                            value={formData.minimumPayment} 
+                            onChange={handleChange} 
+                            placeholder="2000" 
+                            required 
+                            disabled={isSubmitting}
+                            min="0"
+                            step="0.01"
+                        />
                     </div>
-                    {error && <p style={{ color: 'var(--danger-color)', textAlign: 'center' }}>{error}</p>}
-                    <button type="submit" className="submit-btn">Save Debt</button>
+                    {error && <p style={{ color: 'var(--danger-color)', textAlign: 'center', marginBottom: '1rem' }}>{error}</p>}
+                    <button 
+                        type="submit" 
+                        className="submit-btn"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Saving...' : 'Save Debt'}
+                    </button>
                 </form>
             </div>
         </div>
@@ -248,7 +375,7 @@ const AddDebtForm: React.FC<{
 
 // --- Main Page Component ---
 export const GoalsPage = () => {
-    const { token, user } = useAuth(); // CORRECTED: Use useAuth()
+    const { token, user } = useAuth();
     const [activeTab, setActiveTab] = useState('overview');
 
     const [goals, setGoals] = useState<IGoal[]>([]);
@@ -264,36 +391,72 @@ export const GoalsPage = () => {
     // --- Data Fetching ---
     useEffect(() => {
         const loadData = async () => {
+            if (!user?._id || !token) {
+                setIsLoading(false);
+                return;
+            }
+
             setIsLoading(true);
             setError(null);
+            
             try {
                 const [goalsResponse, debtsResponse] = await Promise.all([
-                    fetch(`/api/savings-goals/${user?._id}`, { headers: { Authorization: `Bearer ${token}` } }),
-                    fetch(`/api/debts/${user?._id}`, { headers: { Authorization: `Bearer ${token}` } })
+                    fetch(`/api/savings-goals/${user._id}`, { 
+                        headers: { Authorization: `Bearer ${token}` } 
+                    }),
+                    fetch(`/api/debts/${user._id}`, { 
+                        headers: { Authorization: `Bearer ${token}` } 
+                    })
                 ]);
 
-                if (!goalsResponse.ok || !debtsResponse.ok) {
-                    throw new Error("Failed to fetch data");
+                // Handle 404 gracefully (no data yet)
+                let goalsData = [];
+                let debtsData = [];
+
+                if (goalsResponse.ok) {
+                    goalsData = await goalsResponse.json();
+                } else if (goalsResponse.status !== 404) {
+                    throw new Error("Failed to fetch goals");
                 }
 
-                const goalsData = await goalsResponse.json();
-                const debtsData = await debtsResponse.json();
+                if (debtsResponse.ok) {
+                    debtsData = await debtsResponse.json();
+                } else if (debtsResponse.status !== 404) {
+                    throw new Error("Failed to fetch debts");
+                }
 
-                setGoals(goalsData);
-                setDebts(debtsData);
-            } catch (err) {
+                // Map backend data to frontend format
+                const mappedGoals: IGoal[] = goalsData.map((goal: any) => ({
+                    id: goal._id,
+                    name: goal.goalName,
+                    target: goal.targetAmount,
+                    current: goal.currentAmount,
+                    deadline: goal.targetDate,
+                    priority: goal.priority || 'medium'
+                }));
+
+                const mappedDebts: IDebt[] = debtsData.map((debt: any) => ({
+                    id: debt._id,
+                    name: debt.name,
+                    principal: debt.principal,
+                    remaining: debt.remaining,
+                    interestRate: debt.interestRate,
+                    monthlyPayment: debt.monthlyPayment,
+                    minimumPayment: debt.minimumPayment
+                }));
+
+                setGoals(mappedGoals);
+                setDebts(mappedDebts);
+            } catch (err: any) {
                 console.error("Error loading data:", err);
-                setError("Failed to load data. Please try again later.");
+                setError(err.message || "Failed to load data. Please try again later.");
             } finally {
                 setIsLoading(false);
             }
         };
 
-        if (user?._id && token) {
-            loadData();
-        }
+        loadData();
     }, [token, user?._id]);
-
 
     // --- Memos (Calculations) ---
     const goalStats = useMemo(() => {
@@ -312,7 +475,6 @@ export const GoalsPage = () => {
                 const daysLeft = Math.floor((new Date(g.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
                 if (daysLeft <= 0 || g.current >= g.target) return false;
                 const monthlyNeeded = (g.target - g.current) / (daysLeft / 30);
-                // Simple at-risk logic: needs more than 1/6th of remaining amount per month
                 return monthlyNeeded > (g.target - g.current) / 6;
             }).length
         };
@@ -335,7 +497,7 @@ export const GoalsPage = () => {
             }
             const monthlyRate = debt.interestRate / 100 / 12;
             if (debt.monthlyPayment <= debt.remaining * monthlyRate) {
-                return Infinity; // Doesn't get paid off
+                return Infinity;
             }
             const months = Math.ceil(
                 Math.log(debt.monthlyPayment / (debt.monthlyPayment - debt.remaining * monthlyRate))
@@ -351,7 +513,7 @@ export const GoalsPage = () => {
             totalPaid,
             totalMonthly,
             weightedRate,
-            monthsToPayoff: isFinite(monthsToPayoff) ? monthsToPayoff : -1, // -1 for infinity
+            monthsToPayoff: isFinite(monthsToPayoff) ? monthsToPayoff : -1,
             progress: totalPrincipal > 0 ? (totalPaid / totalPrincipal) * 100 : 0
         };
     }, [debts]);
@@ -359,7 +521,7 @@ export const GoalsPage = () => {
     const optimizedDebts = useMemo(() => {
         return [...debts].sort((a, b) => {
             if (debtStrategy === 'snowball') return a.remaining - b.remaining;
-            return b.interestRate - a.interestRate; // Avalanche
+            return b.interestRate - a.interestRate;
         }).map((debt, idx) => ({
             ...debt,
             order: idx + 1,
@@ -370,7 +532,6 @@ export const GoalsPage = () => {
 
     // --- Render Functions ---
 
-    // Overview Tab Content
     const OverviewContent = () => (
         <>
             <div className="stats-grid">
@@ -430,7 +591,6 @@ export const GoalsPage = () => {
         </>
     );
 
-    // Goals Tab Content
     const GoalsContent = () => (
         <div className="content-card">
             <div className="section-header">
@@ -480,10 +640,10 @@ export const GoalsPage = () => {
                             </div>
 
                             <div className="action-buttons">
-                                <button className="icon-btn edit-btn" title="Edit (Not Implemented)">
+                                <button className="icon-btn edit-btn" title="Edit (Coming Soon)">
                                     <Edit2 size={16} />
                                 </button>
-                                <button className="icon-btn delete-btn" title="Delete (Not Implemented)">
+                                <button className="icon-btn delete-btn" title="Delete (Coming Soon)">
                                     <Trash2 size={16} />
                                 </button>
                             </div>
@@ -494,7 +654,6 @@ export const GoalsPage = () => {
         </div>
     );
 
-    // Debt Tab Content
     const DebtContent = () => (
         <div className="content-card">
             <div className="section-header">
@@ -575,7 +734,6 @@ export const GoalsPage = () => {
                         <span>{debt.progress.toFixed(0)}%</span>
                     </div>
 
-
                     {debt.isPriority && (
                         <div className="recommendation">
                             <Zap size={16} />
@@ -584,10 +742,10 @@ export const GoalsPage = () => {
                     )}
 
                     <div className="action-buttons">
-                        <button className="icon-btn edit-btn" title="Edit (Not Implemented)">
+                        <button className="icon-btn edit-btn" title="Edit (Coming Soon)">
                             <Edit2 size={16} />
                         </button>
-                        <button className="icon-btn delete-btn" title="Delete (Not Implemented)">
+                        <button className="icon-btn delete-btn" title="Delete (Coming Soon)">
                             <Trash2 size={16} />
                         </button>
                     </div>

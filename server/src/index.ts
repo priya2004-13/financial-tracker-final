@@ -56,8 +56,8 @@ app.get("/health", (req, res) => {
 // Routes
 app.use("/financial-records", financialRecordRouter);
 app.use("/budget", budgetRouter);
-app.use("/savings-goals", savingsGoalRouter);
-app.use("/debts", debtsRouter);
+app.use("/api/savings-goals", savingsGoalRouter);  // ✅ Add /api
+app.use("/api/debts", debtsRouter);
 app.use("/recurring-payments", recurringPaymentRouter);
 app.use("/ai", aiInsightsRouter);
 app.use("/categories", categoryRouter);

@@ -8,6 +8,7 @@ interface Debt {
     interestRate: number; // yearly percentage
     minimumPayment: number;
     monthlyPayment: number;
+    priority?: 'high' | 'medium' | 'low';
     type?: string;
     startDate?: Date;
 }
@@ -22,7 +23,13 @@ const debtSchema = new mongoose.Schema<Debt>(
         minimumPayment: { type: Number, required: true, min: 0 },
         monthlyPayment: { type: Number, required: true, min: 0 },
         type: { type: String, required: false },
-        startDate: { type: Date, required: false }
+        startDate: { type: Date, required: false },
+        priority: {
+            type: String,
+            enum: ['high', 'medium', 'low'],
+            default: 'medium'   
+        },
+
     },
     {
         timestamps: true,
