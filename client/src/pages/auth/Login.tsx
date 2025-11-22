@@ -1,9 +1,10 @@
 ﻿import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google"; // ✅ Added
+import { GoogleLogin, } from "@react-oauth/google"; // ✅ Added
 import { AuthCard } from "./AuthCard";
 import { useAuth } from "../../contexts/AuthContext";
 import "./AuthForms.css"; // Assuming you created this in the previous step
+import { useScreenInfo } from "../../hooks/useScreenSize";
 
 export const Login = () => {
     const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ export const Login = () => {
         e.preventDefault();
         await login(email, password);
     };
-
+    const screenInfo = useScreenInfo();
     return (
         <AuthCard>
             <div className="auth-form-container">
@@ -33,9 +34,10 @@ export const Login = () => {
                         onError={() => {
                             console.log('Login Failed');
                         }}
+                        size={screenInfo.isMobile ? "small" : screenInfo.isTablet ? "medium" : "large"}
                         theme="filled_blue"
-                        shape="pill"
-                        width="350"
+                        // shape="pill"
+                        width="230"
                     />
                 </div>
 
@@ -48,7 +50,6 @@ export const Login = () => {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    {/* ... existing form fields (Email/Password) ... */}
                     <div className="form-group">
                         <label className="form-label">Email</label>
                         <input

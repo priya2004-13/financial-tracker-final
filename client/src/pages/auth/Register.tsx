@@ -4,6 +4,7 @@ import { GoogleLogin } from "@react-oauth/google"; // ✅ Added
 import { AuthCard } from "./AuthCard";
 import { useAuth } from "../../contexts/AuthContext";
 import "./AuthForms.css";
+import { useScreenInfo } from "../../hooks/useScreenSize";
 
 export const Register = () => {
     const [formData, setFormData] = useState({
@@ -19,6 +20,8 @@ export const Register = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
+    const screenInfo = useScreenInfo();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -41,12 +44,12 @@ export const Register = () => {
                             }
                         }}
                         onError={() => {
-                            console.log('Sign Up Failed');
+                            console.log('Login Failed');
                         }}
-                        text="signup_with" // Specific text for register page
+                        size={screenInfo.isMobile ? "small" : screenInfo.isTablet ? "medium" : "large"}
                         theme="filled_blue"
-                        shape="pill"
-                        width="350"
+                        // shape="pill"
+                        width="230"
                     />
                 </div>
 

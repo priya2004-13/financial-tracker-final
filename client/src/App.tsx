@@ -154,12 +154,12 @@ const Navbar = () => {
             )
           ) : (
             <div className="auth-buttons-compact">
-              <Link to="/register">
+              {/* <Link to="/register">
                 <button className="btn-signup-compact">Sign Up</button>
               </Link>
               <Link to="/auth">
                 <button className="btn-signin-compact">Sign In</button>
-              </Link>
+              </Link> */}
             </div>
           )}
         </div>
