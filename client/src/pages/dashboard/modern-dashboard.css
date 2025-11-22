@@ -1487,13 +1487,13 @@ details[open] .chevron-icon {
     margin-bottom: 1.25rem;
 }
 
-.form-group label {
+/* .form-group label {
     display: block;
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--background-light, #1f2937);
     margin-bottom: 0.5rem;
-}
+} */
 
 .form-input {
     width: 100%;

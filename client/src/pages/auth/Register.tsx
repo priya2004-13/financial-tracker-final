@@ -70,6 +70,7 @@ export const Register = () => {
                             value={formData.firstName}
                             onChange={handleChange}
                             className="form-input"
+                            placeholder="First Name"
                             required
                         />
                     </div>
@@ -79,6 +80,7 @@ export const Register = () => {
                         <input
                             name="lastName"
                             value={formData.lastName}
+                            placeholder="last Name"
                             onChange={handleChange}
                             className="form-input"
                             required
@@ -88,6 +90,7 @@ export const Register = () => {
                     <div className="form-group">
                         <label className="form-label">Email</label>
                         <input
+                        placeholder="Email"
                             type="email"
                             name="email"
                             value={formData.email}
@@ -100,6 +103,7 @@ export const Register = () => {
                     <div className="form-group">
                         <label className="form-label">Password</label>
                         <input
+                            placeholder="Password"
                             type="password"
                             name="password"
                             value={formData.password}
